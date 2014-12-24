@@ -26,3 +26,12 @@
 *.exe
 *.out
 *.app
+
+#Temp Files generated during compilation/linking
+Temp Files/
+
+#Compiled Build Files
+Build/
+
+#Compiled Library Files
+Libraries/

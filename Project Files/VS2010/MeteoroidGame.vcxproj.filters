@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Code">
+      <UniqueIdentifier>{2e178aae-305d-4518-9b1c-7aab7f56fbe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{9dd32cef-b664-4686-bf58-6ce71c568ad2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Code\VingineBuildPreferences.hpp">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\MeteoroidGame.hpp">
+      <Filter>Code</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Code\MeteoroidGame.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
