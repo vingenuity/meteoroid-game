@@ -4,6 +4,7 @@
 #include <Code/AssertionError.hpp>
 #include <Code/CameraComponent.hpp>
 #include <Code/Entity.hpp>
+#include <Code/PhysicsComponent.hpp>
 
 //-----------------------------------------------------------------------------------------------
 struct Simple2DVertex
@@ -70,7 +71,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	m_entities.push_back( m_cameraman );
 	CameraComponent* m_gameCam = new CameraComponent( m_cameraman,	0.0, m_windowDimensions.x,
 																	0.0, m_windowDimensions.y,
-																	0.0, 1.0 );
+																	-1.0, 1.0 );
 	m_worldRenderingSystem->SetActiveCamera( m_gameCam );
 
 
@@ -78,10 +79,10 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	Entity* playerShip = new Entity();
 	playerShip->position.x = 400.f;
 	playerShip->position.y = 400.f;
+	playerShip->velocity.y = -6.f;
 	m_entities.push_back( playerShip );
 
 	MeshComponent* m_shipMesh = new MeshComponent( playerShip );
-	playerShip->attachedComponents.push_back( m_shipMesh );
 	m_worldRenderingSystem->AddMeshComponent( m_shipMesh );
 
 	m_shipMesh->material = renderer->CreateOrGetNewMaterial( L"ShipMaterial" );
@@ -114,6 +115,10 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 
 	renderer->GenerateBuffer( 1, &shipVertData.bufferID );
 	renderer->BufferVertexData( &shipVertData );
+
+	PhysicsComponent* shipPhysics = new PhysicsComponent( playerShip );
+	shipPhysics->percentAcceleratedByGravity = 0.f;
+	m_worldPhysicsSystem->AddPhysicsComponent( shipPhysics );
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -127,6 +132,11 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::DoRender() const
 {
+	Renderer* renderer = Renderer::GetRenderer();
+
+	renderer->ClearColorBuffer();
+	renderer->ClearDepthBuffer();
+
 	m_worldPhysicsSystem->OnRender();
 	m_worldRenderingSystem->OnRender();
 	m_debugUIRenderingSystem->OnRender();
@@ -146,7 +156,7 @@ void MeteoroidGame::DoAtEndOfFrame()
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::StartupGameSystems()
 {
-	m_worldPhysicsSystem = new TerrestrialPhysicsSystem( FloatVector3( 0.f, 0.f, 0.f ) );
+	m_worldPhysicsSystem = new OuterSpacePhysicsSystem();
 	m_worldPhysicsSystem->OnAttachment( nullptr );
 
 	m_worldRenderingSystem = new PerspectiveRenderingSystem( 45.0, 1280.0/720.0, 0.1, 1000 );

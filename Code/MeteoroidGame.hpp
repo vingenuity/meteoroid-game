@@ -12,7 +12,8 @@
 #include <Code/Math/IntVector2.hpp>
 
 #include <Code/GameInterface.hpp>
-#include <Code/TerrestrialPhysicsSystem.hpp>
+
+#include "OuterSpacePhysicsSystem.hpp"
 
 struct Entity;
 
@@ -36,7 +37,7 @@ public:
 	virtual void DoAfterEngineDestruction() { }
 
 	//Game Systems
-	TerrestrialPhysicsSystem* m_worldPhysicsSystem;
+	OuterSpacePhysicsSystem* m_worldPhysicsSystem;
 	RenderingSystem* m_worldRenderingSystem;
 	DebugDrawingSystem2D* m_debugUIRenderingSystem;
 
