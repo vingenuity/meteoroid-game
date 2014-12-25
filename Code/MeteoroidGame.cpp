@@ -69,9 +69,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	playerShip->velocity.y = -6.f;
 	m_entities.push_back( playerShip );
 
-	Entity* testMeteor = new Entity();
-	m_meteoroidBlueprint->BuildEntityIntoGame( *testMeteor, this, FloatVector2( 400.f, 350.f ) );
-	m_entities.push_back( testMeteor );
+	SpawnInitialMeteoroids();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -108,6 +106,22 @@ void MeteoroidGame::DoAtEndOfFrame()
 #pragma endregion //Lifecycle
 
 
+
+//-----------------------------------------------------------------------------------------------
+void MeteoroidGame::SpawnInitialMeteoroids()
+{
+	Entity* spawnedMeteor = nullptr;
+	FloatVector2 spawnPosition;
+
+	for( unsigned int i = 0; i < 15; ++i )
+	{
+		spawnedMeteor = new Entity();
+		spawnPosition.x = GetRandomFloatBetweenZeroandOne() * m_windowDimensions.x;
+		spawnPosition.y = GetRandomFloatBetweenZeroandOne() * m_windowDimensions.y;
+		m_meteoroidBlueprint->BuildEntityIntoGame( *spawnedMeteor, this, spawnPosition );
+		m_entities.push_back( spawnedMeteor );
+	}
+}
 
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::StartupGameSystems()

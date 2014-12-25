@@ -46,6 +46,7 @@ public:
 
 
 private:
+	void SpawnInitialMeteoroids();
 	void StartupGameSystems();
 	IntVector2 m_windowDimensions;
 

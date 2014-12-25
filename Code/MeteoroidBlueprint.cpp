@@ -8,12 +8,17 @@
 
 
 //-----------------------------------------------------------------------------------------------
+STATIC const float MeteoroidBlueprint::MAX_METEOROID_SPEED = 30.f;
+STATIC const float MeteoroidBlueprint::MAX_METEOROID_ANGULAR_SPEED = 45.f;
+STATIC const float s_meteoroidMinRadiuses[ MeteoroidBlueprint::NUM_METEOROID_SIZES ] = { 10.f, 25.f, 35.f };
+STATIC const float s_meteoroidSizeDeltas [ MeteoroidBlueprint::NUM_METEOROID_SIZES ] = { 10.f, 12.f, 15.f };
+
+
+
+//-----------------------------------------------------------------------------------------------
 MeteoroidBlueprint::MeteoroidBlueprint()
 	: m_colliderCenter( 0.f, 0.f )
-	, m_colliderRadius( 9.f )
 {
-	BuildMeteoroidVertexData();
-
 	Renderer* renderer = Renderer::GetRenderer();
 	m_material = renderer->CreateOrGetNewMaterial( L"MeteoroidMaterial" );
 	m_material->SetShaderProgram( ShaderProgram::CreateOrGetShaderProgram( "Data/Shaders/BasicNoTexture.110.vertex.glsl", "Data/Shaders/BasicNoTexture.110.fragment.glsl" ) );
@@ -35,8 +40,15 @@ void MeteoroidBlueprint::BuildEntityIntoGame( Entity& out_entity, const Meteoroi
 	out_entity.position.x = atPosition.x;
 	out_entity.position.y = atPosition.y;
 
+	//The multiplications get us on the range -1.0 to 1.0
+	out_entity.angularVelocity.yawDegreesAboutZ = ( GetRandomFloatBetweenZeroandOne() * 2.f - 0.5f ) * MAX_METEOROID_ANGULAR_SPEED;
+
+	unsigned int meteorSize = static_cast< unsigned int >( GetRandomIntBetween( 0, NUM_METEOROID_SIZES ) );
+
 	MeshComponent* meteorMesh = new MeshComponent( &out_entity );
-	meteorMesh->vertexData = &m_vertices;
+	VertexData* meteorVertData = new VertexData();
+	BuildMeteoroidVertexData( *meteorVertData, meteorSize );
+	meteorMesh->vertexData = meteorVertData;
 	meteorMesh->material = m_material;
 	game->m_worldRenderingSystem->AddMeshComponent( meteorMesh );
 
@@ -44,7 +56,9 @@ void MeteoroidBlueprint::BuildEntityIntoGame( Entity& out_entity, const Meteoroi
 	meteorPhysics->percentAcceleratedByGravity = 0.f;
 	game->m_worldPhysicsSystem->AddPhysicsComponent( meteorPhysics );
 
-	CollisionComponent2D* meteorCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, m_colliderRadius );
+	//We want the collider radius to be in between the possible mins and maxes (it should feel better that way)
+	float colliderRadius = s_meteoroidMinRadiuses[ meteorSize ] + ( 0.5f * s_meteoroidSizeDeltas[ meteorSize ] );
+	CollisionComponent2D* meteorCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, colliderRadius );
 	game->m_worldCollisionSystem->AddCollisionComponent( meteorCollider );
 }
 
@@ -77,28 +91,33 @@ struct Simple2DVertex
 };
 
 
-//-----------------------------------------------------------------------------------------------
-void MeteoroidBlueprint::BuildMeteoroidVertexData()
-{
-	static const float RADIUS_LARGE = 10.f;
 
-	static const unsigned int NUM_SHIP_VERTICES = 12;
+//-----------------------------------------------------------------------------------------------
+void MeteoroidBlueprint::BuildMeteoroidVertexData( VertexData& out_vertData, unsigned int meteorSize )
+{
+	static const unsigned int NUM_METEOR_VERTICES = 12;
 	static const Color METEOROID_COLOR( 255, 255, 255, 255 );
 
+	Simple2DVertex* meteoroidVertexArray = new Simple2DVertex[ NUM_METEOR_VERTICES ];
+	float radiansRotatedPerVertex =  ( 2.f * PI ) / NUM_METEOR_VERTICES;
+	for( unsigned int i = 0; i < NUM_METEOR_VERTICES; ++i )
+	{
+		float meteorRadiusAtThisVert = s_meteoroidMinRadiuses[ meteorSize ] + 
+			( GetRandomFloatBetweenZeroandOne() * s_meteoroidSizeDeltas[ meteorSize ] );
+		meteoroidVertexArray[ i ] = Simple2DVertex( cos( radiansRotatedPerVertex * i ) * meteorRadiusAtThisVert,  
+													sin( radiansRotatedPerVertex * i ) * meteorRadiusAtThisVert, 
+													METEOROID_COLOR );
+	}
 
-	Simple2DVertex* meteoroidVertexArray = new Simple2DVertex[ NUM_SHIP_VERTICES ];
-	meteoroidVertexArray[ 0] = Simple2DVertex( 0.f,  RADIUS_LARGE, METEOROID_COLOR );
-	meteoroidVertexArray[ 1] = Simple2DVertex( 0.f, -RADIUS_LARGE, METEOROID_COLOR );
-
-	m_vertices.data = &meteoroidVertexArray[0];
-	m_vertices.vertexSizeBytes = sizeof( Simple2DVertex );
-	m_vertices.numberOfVertices = NUM_SHIP_VERTICES;
-	m_vertices.attributes.push_back( VertexAttribute( Renderer::LOCATION_Vertex, 2, Renderer::TYPE_FLOAT, false, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, position.x ) ) );
-	m_vertices.attributes.push_back( VertexAttribute( Renderer::LOCATION_Color, 4, Renderer::TYPE_UNSIGNED_BYTE, true, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, color.r ) ) );
-	m_vertices.shape = Renderer::LINE_LOOP;
+	out_vertData.data = &meteoroidVertexArray[0];
+	out_vertData.vertexSizeBytes = sizeof( Simple2DVertex );
+	out_vertData.numberOfVertices = NUM_METEOR_VERTICES;
+	out_vertData.attributes.push_back( VertexAttribute( Renderer::LOCATION_Vertex, 2, Renderer::TYPE_FLOAT, false, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, position.x ) ) );
+	out_vertData.attributes.push_back( VertexAttribute( Renderer::LOCATION_Color,	4, Renderer::TYPE_UNSIGNED_BYTE, true, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, color.r ) ) );
+	out_vertData.shape = Renderer::LINE_LOOP;
 
 	Renderer* renderer = Renderer::GetRenderer();
-	renderer->GenerateBuffer( 1, &m_vertices.bufferID );
-	renderer->BufferVertexData( &m_vertices );
+	renderer->GenerateBuffer( 1, &out_vertData.bufferID );
+	renderer->BufferVertexData( &out_vertData );
 }
 #pragma endregion //Private Functions
