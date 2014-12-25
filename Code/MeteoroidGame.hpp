@@ -16,7 +16,7 @@
 #include "OuterSpacePhysicsSystem.hpp"
 
 struct Entity;
-
+class ShipBlueprint;
 
 //-----------------------------------------------------------------------------------------------
 class MeteoroidGame : public GameInterface
@@ -49,12 +49,14 @@ private:
 	//Game Pointers
 	std::vector< Entity* > m_entities;
 	Entity* m_cameraman;
+	ShipBlueprint* m_shipBlueprint;
 };
 
 
 
 //-----------------------------------------------------------------------------------------------
-MeteoroidGame g_game; //This initializes the game and the game interface for the engine simultaneously.
+//This declaration is used to initialize the game and game interface simultaneously before main.
+extern MeteoroidGame g_game;
 
 //-----------------------------------------------------------------------------------------------
 inline MeteoroidGame::MeteoroidGame()
@@ -63,5 +65,6 @@ inline MeteoroidGame::MeteoroidGame()
 	, m_worldRenderingSystem( nullptr )
 	, m_debugUIRenderingSystem( nullptr )
 	, m_cameraman( nullptr )
+	, m_shipBlueprint( nullptr )
 { }
 #endif //INCLUDED_METEOROID_GAME_HPP

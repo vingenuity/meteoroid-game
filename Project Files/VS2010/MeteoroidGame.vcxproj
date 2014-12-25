@@ -144,11 +144,13 @@
   <ItemGroup>
     <ClInclude Include="..\..\Code\MeteoroidGame.hpp" />
     <ClInclude Include="..\..\Code\OuterSpacePhysicsSystem.hpp" />
+    <ClInclude Include="..\..\Code\ShipBlueprint.hpp" />
     <ClInclude Include="..\..\Code\VingineBuildPreferences.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp" />
     <ClCompile Include="..\..\Code\OuterSpacePhysicsSystem.cpp" />
+    <ClCompile Include="..\..\Code\ShipBlueprint.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
