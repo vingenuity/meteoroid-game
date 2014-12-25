@@ -86,6 +86,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>ENABLE_ASSERTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -111,6 +112,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\..\vingine-core</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Wno-invalid-offsetof %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EmbedFile>
@@ -126,6 +128,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Emscripten'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\..\vingine-core</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Wno-invalid-offsetof %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EmbedFile>
@@ -140,10 +143,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\MeteoroidGame.hpp" />
+    <ClInclude Include="..\..\Code\OuterSpacePhysicsSystem.hpp" />
+    <ClInclude Include="..\..\Code\ShipBlueprint.hpp" />
     <ClInclude Include="..\..\Code\VingineBuildPreferences.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp" />
+    <ClCompile Include="..\..\Code\OuterSpacePhysicsSystem.cpp" />
+    <ClCompile Include="..\..\Code\ShipBlueprint.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

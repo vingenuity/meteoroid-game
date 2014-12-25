@@ -15,9 +15,21 @@
     <ClInclude Include="..\..\Code\MeteoroidGame.hpp">
       <Filter>Code</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Code\OuterSpacePhysicsSystem.hpp">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\ShipBlueprint.hpp">
+      <Filter>Code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\OuterSpacePhysicsSystem.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\ShipBlueprint.cpp">
       <Filter>Code</Filter>
     </ClCompile>
   </ItemGroup>
