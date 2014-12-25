@@ -24,6 +24,12 @@
     <ClInclude Include="..\..\Code\MeteoroidBlueprint.hpp">
       <Filter>Code</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Code\CollisionComponent2D.hpp">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\CollisionSystem2D.hpp">
+      <Filter>Code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp">
@@ -36,6 +42,9 @@
       <Filter>Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\MeteoroidBlueprint.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\CollisionSystem2D.cpp">
       <Filter>Code</Filter>
     </ClCompile>
   </ItemGroup>

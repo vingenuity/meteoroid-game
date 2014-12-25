@@ -26,5 +26,8 @@ private:
 	//Data Members
 	Material* m_material;
 	VertexData m_vertices;
+
+	FloatVector2 m_colliderCenter;
+	float m_colliderRadius;
 };
 #endif //INCLUDED_SHIP_BLUEPRINT_HPP

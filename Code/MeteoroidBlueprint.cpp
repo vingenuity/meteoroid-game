@@ -3,11 +3,14 @@
 #include <Code/Graphics/MeshComponent.hpp>
 #include <Code/PhysicsComponent.hpp>
 
+#include "CollisionComponent2D.hpp"
 #include "MeteoroidGame.hpp"
 
 
 //-----------------------------------------------------------------------------------------------
 MeteoroidBlueprint::MeteoroidBlueprint()
+	: m_colliderCenter( 0.f, 0.f )
+	, m_colliderRadius( 9.f )
 {
 	BuildMeteoroidVertexData();
 
@@ -32,14 +35,17 @@ void MeteoroidBlueprint::BuildEntityIntoGame( Entity& out_entity, const Meteoroi
 	out_entity.position.x = atPosition.x;
 	out_entity.position.y = atPosition.y;
 
-	MeshComponent* shipMesh = new MeshComponent( &out_entity );
-	shipMesh->vertexData = &m_vertices;
-	shipMesh->material = m_material;
-	game->m_worldRenderingSystem->AddMeshComponent( shipMesh );
+	MeshComponent* meteorMesh = new MeshComponent( &out_entity );
+	meteorMesh->vertexData = &m_vertices;
+	meteorMesh->material = m_material;
+	game->m_worldRenderingSystem->AddMeshComponent( meteorMesh );
 
-	PhysicsComponent* shipPhysics = new PhysicsComponent( &out_entity );
-	shipPhysics->percentAcceleratedByGravity = 0.f;
-	game->m_worldPhysicsSystem->AddPhysicsComponent( shipPhysics );
+	PhysicsComponent* meteorPhysics = new PhysicsComponent( &out_entity );
+	meteorPhysics->percentAcceleratedByGravity = 0.f;
+	game->m_worldPhysicsSystem->AddPhysicsComponent( meteorPhysics );
+
+	CollisionComponent2D* meteorCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, m_colliderRadius );
+	game->m_worldCollisionSystem->AddCollisionComponent( meteorCollider );
 }
 
 

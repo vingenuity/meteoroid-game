@@ -3,11 +3,14 @@
 #include <Code/Graphics/MeshComponent.hpp>
 #include <Code/PhysicsComponent.hpp>
 
+#include "CollisionComponent2D.hpp"
 #include "MeteoroidGame.hpp"
 
 
 //-----------------------------------------------------------------------------------------------
 ShipBlueprint::ShipBlueprint()
+	: m_colliderCenter( 0.f, 0.f )
+	, m_colliderRadius( 8.f )
 {
 	BuildShipVertexData();
 
@@ -40,6 +43,9 @@ void ShipBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame
 	PhysicsComponent* shipPhysics = new PhysicsComponent( &out_entity );
 	shipPhysics->percentAcceleratedByGravity = 0.f;
 	game->m_worldPhysicsSystem->AddPhysicsComponent( shipPhysics );
+
+	CollisionComponent2D* shipCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, m_colliderRadius );
+	game->m_worldCollisionSystem->AddCollisionComponent( shipCollider );
 }
 
 

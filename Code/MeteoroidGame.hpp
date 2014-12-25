@@ -13,6 +13,7 @@
 
 #include <Code/GameInterface.hpp>
 
+#include "CollisionSystem2D.hpp"
 #include "OuterSpacePhysicsSystem.hpp"
 
 struct Entity;
@@ -38,9 +39,10 @@ public:
 	virtual void DoAfterEngineDestruction() { }
 
 	//Game Systems
+	DebugDrawingSystem2D* m_debugUIRenderingSystem;
+	CollisionSystem2D* m_worldCollisionSystem;
 	OuterSpacePhysicsSystem* m_worldPhysicsSystem;
 	RenderingSystem* m_worldRenderingSystem;
-	DebugDrawingSystem2D* m_debugUIRenderingSystem;
 
 
 private:
@@ -63,9 +65,10 @@ extern MeteoroidGame g_game;
 //-----------------------------------------------------------------------------------------------
 inline MeteoroidGame::MeteoroidGame()
 	: m_windowDimensions()
+	, m_debugUIRenderingSystem( nullptr )
+	, m_worldCollisionSystem( nullptr )
 	, m_worldPhysicsSystem( nullptr )
 	, m_worldRenderingSystem( nullptr )
-	, m_debugUIRenderingSystem( nullptr )
 	, m_cameraman( nullptr )
 	, m_meteoroidBlueprint( nullptr )
 	, m_shipBlueprint( nullptr )

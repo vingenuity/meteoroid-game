@@ -24,14 +24,17 @@ MeteoroidGame::~MeteoroidGame()
 
 
 	//Afterwards, the systems may clean up their components
+	m_debugUIRenderingSystem->OnDestruction();
+	delete m_debugUIRenderingSystem;
+
+	m_worldCollisionSystem->OnDestruction();
+	delete m_worldCollisionSystem;
+
 	m_worldPhysicsSystem->OnDestruction();
 	delete m_worldPhysicsSystem;
 
 	m_worldRenderingSystem->OnDestruction();
 	delete m_worldRenderingSystem;
-
-	m_debugUIRenderingSystem->OnDestruction();
-	delete m_debugUIRenderingSystem;
 
 	delete m_meteoroidBlueprint;
 	delete m_shipBlueprint;
@@ -67,7 +70,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	m_entities.push_back( playerShip );
 
 	Entity* testMeteor = new Entity();
-	m_meteoroidBlueprint->BuildEntityIntoGame( *testMeteor, this, FloatVector2( 400.f, 200.f ) );
+	m_meteoroidBlueprint->BuildEntityIntoGame( *testMeteor, this, FloatVector2( 400.f, 350.f ) );
 	m_entities.push_back( testMeteor );
 }
 
@@ -75,6 +78,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 void MeteoroidGame::DoUpdate( float deltaSeconds )
 {
 	m_worldPhysicsSystem->OnUpdate( deltaSeconds );
+	m_worldCollisionSystem->OnUpdate( deltaSeconds );
 	m_worldRenderingSystem->OnUpdate( deltaSeconds );
 	m_debugUIRenderingSystem->OnUpdate( deltaSeconds );
 }
@@ -88,6 +92,7 @@ void MeteoroidGame::DoRender() const
 	renderer->ClearDepthBuffer();
 
 	m_worldPhysicsSystem->OnRender();
+	m_worldCollisionSystem->OnRender();
 	m_worldRenderingSystem->OnRender();
 	m_debugUIRenderingSystem->OnRender();
 }
@@ -96,6 +101,7 @@ void MeteoroidGame::DoRender() const
 void MeteoroidGame::DoAtEndOfFrame()
 {
 	m_worldPhysicsSystem->OnEndFrame();
+	m_worldCollisionSystem->OnEndFrame();
 	m_worldRenderingSystem->OnEndFrame();
 	m_debugUIRenderingSystem->OnEndFrame();
 }
@@ -106,13 +112,16 @@ void MeteoroidGame::DoAtEndOfFrame()
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::StartupGameSystems()
 {
+	m_debugUIRenderingSystem = new DebugDrawingSystem2D( 0.f, static_cast<float>( m_windowDimensions.x ), 
+		0.f, static_cast<float>( m_windowDimensions.y ) );
+	m_debugUIRenderingSystem->OnAttachment( nullptr );
+
+	m_worldCollisionSystem = new CollisionSystem2D();
+	m_worldCollisionSystem->OnAttachment( nullptr );
+
 	m_worldPhysicsSystem = new OuterSpacePhysicsSystem();
 	m_worldPhysicsSystem->OnAttachment( nullptr );
 
 	m_worldRenderingSystem = new PerspectiveRenderingSystem( 45.0, (double)m_windowDimensions.x/m_windowDimensions.y, 0.1, 1000 );
 	m_worldRenderingSystem->OnAttachment( nullptr );
-
-	m_debugUIRenderingSystem = new DebugDrawingSystem2D( 0.f, static_cast<float>( m_windowDimensions.x ), 
-														 0.f, static_cast<float>( m_windowDimensions.y ) );
-	m_debugUIRenderingSystem->OnAttachment( nullptr );
 }
