@@ -44,7 +44,7 @@ void CollisionSystem2D::OnUpdate( float /*deltaSeconds*/ )
 			float squaredDistance = ( xDistance * xDistance ) + ( yDistance * yDistance );
 			float combinedColliderRadius = firstCollider->collider.circle.radius + secondCollider->collider.circle.radius;
 
-			if( squaredDistance < combinedColliderRadius * combinedColliderRadius )
+			if( squaredDistance < ( combinedColliderRadius * combinedColliderRadius ) && i == 0 )
 			{
 				WriteToDebuggerOutput( "COLLISION!" );
 			}

@@ -66,6 +66,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	static const FloatVector2 SPAWN_POSITION( 400.f, 400.f );
 	Entity* playerShip = new Entity();
 	m_shipBlueprint->BuildEntityIntoGame( *playerShip, this, SPAWN_POSITION );
+	playerShip->velocity.x = 10.f;
 	playerShip->velocity.y = -6.f;
 	m_entities.push_back( playerShip );
 
