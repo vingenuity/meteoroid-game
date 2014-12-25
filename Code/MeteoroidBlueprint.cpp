@@ -40,8 +40,8 @@ void MeteoroidBlueprint::BuildEntityIntoGame( Entity& out_entity, const Meteoroi
 	out_entity.position.x = atPosition.x;
 	out_entity.position.y = atPosition.y;
 
-	//The multiplications get us on the range -1.0 to 1.0
-	out_entity.angularVelocity.yawDegreesAboutZ = ( GetRandomFloatBetweenZeroandOne() * 2.f - 0.5f ) * MAX_METEOROID_ANGULAR_SPEED;
+	//The multiplication and subtraction get us on the range -1.0 to 1.0
+	out_entity.angularVelocity.yawDegreesAboutZ = ( GetRandomFloatBetweenZeroandOne() * 2.f - 1.f ) * MAX_METEOROID_ANGULAR_SPEED;
 
 	unsigned int meteorSize = static_cast< unsigned int >( GetRandomIntBetween( 0, NUM_METEOROID_SIZES ) );
 
