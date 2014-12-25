@@ -5,6 +5,7 @@
 #include <Code/CameraComponent.hpp>
 #include <Code/Entity.hpp>
 
+#include "MeteoroidBlueprint.hpp"
 #include "ShipBlueprint.hpp"
 
 
@@ -32,6 +33,7 @@ MeteoroidGame::~MeteoroidGame()
 	m_debugUIRenderingSystem->OnDestruction();
 	delete m_debugUIRenderingSystem;
 
+	delete m_meteoroidBlueprint;
 	delete m_shipBlueprint;
 }
 
@@ -54,6 +56,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	m_worldRenderingSystem->SetActiveCamera( m_gameCam );
 
 	//Initialize Blueprints
+	m_meteoroidBlueprint = new MeteoroidBlueprint();
 	m_shipBlueprint = new ShipBlueprint();
 
 	//Ship Creation
@@ -62,6 +65,10 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	m_shipBlueprint->BuildEntityIntoGame( *playerShip, this, SPAWN_POSITION );
 	playerShip->velocity.y = -6.f;
 	m_entities.push_back( playerShip );
+
+	Entity* testMeteor = new Entity();
+	m_meteoroidBlueprint->BuildEntityIntoGame( *testMeteor, this, FloatVector2( 400.f, 200.f ) );
+	m_entities.push_back( testMeteor );
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -105,7 +112,7 @@ void MeteoroidGame::StartupGameSystems()
 	m_worldRenderingSystem = new PerspectiveRenderingSystem( 45.0, (double)m_windowDimensions.x/m_windowDimensions.y, 0.1, 1000 );
 	m_worldRenderingSystem->OnAttachment( nullptr );
 
-	m_debugUIRenderingSystem = new DebugDrawingSystem2D( 0.f, m_windowDimensions.x, 
-														 0.f, m_windowDimensions.y );
+	m_debugUIRenderingSystem = new DebugDrawingSystem2D( 0.f, static_cast<float>( m_windowDimensions.x ), 
+														 0.f, static_cast<float>( m_windowDimensions.y ) );
 	m_debugUIRenderingSystem->OnAttachment( nullptr );
 }

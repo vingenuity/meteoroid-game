@@ -16,6 +16,7 @@
 #include "OuterSpacePhysicsSystem.hpp"
 
 struct Entity;
+class MeteoroidBlueprint;
 class ShipBlueprint;
 
 //-----------------------------------------------------------------------------------------------
@@ -49,6 +50,7 @@ private:
 	//Game Pointers
 	std::vector< Entity* > m_entities;
 	Entity* m_cameraman;
+	MeteoroidBlueprint* m_meteoroidBlueprint;
 	ShipBlueprint* m_shipBlueprint;
 };
 
@@ -65,6 +67,7 @@ inline MeteoroidGame::MeteoroidGame()
 	, m_worldRenderingSystem( nullptr )
 	, m_debugUIRenderingSystem( nullptr )
 	, m_cameraman( nullptr )
+	, m_meteoroidBlueprint( nullptr )
 	, m_shipBlueprint( nullptr )
 { }
 #endif //INCLUDED_METEOROID_GAME_HPP

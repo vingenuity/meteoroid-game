@@ -1,4 +1,4 @@
-#include "ShipBlueprint.hpp"
+#include "MeteoroidBlueprint.hpp"
 
 #include <Code/Graphics/MeshComponent.hpp>
 #include <Code/PhysicsComponent.hpp>
@@ -7,12 +7,12 @@
 
 
 //-----------------------------------------------------------------------------------------------
-ShipBlueprint::ShipBlueprint()
+MeteoroidBlueprint::MeteoroidBlueprint()
 {
-	BuildShipVertexData();
+	BuildMeteoroidVertexData();
 
 	Renderer* renderer = Renderer::GetRenderer();
-	m_material = renderer->CreateOrGetNewMaterial( L"ShipMaterial" );
+	m_material = renderer->CreateOrGetNewMaterial( L"MeteoroidMaterial" );
 	m_material->SetShaderProgram( ShaderProgram::CreateOrGetShaderProgram( "Data/Shaders/BasicNoTexture.110.vertex.glsl", "Data/Shaders/BasicNoTexture.110.fragment.glsl" ) );
 	m_material->SetModelMatrixUniform( "u_modelMatrix" );
 	m_material->SetViewMatrixUniform( "u_viewMatrix" );
@@ -20,14 +20,14 @@ ShipBlueprint::ShipBlueprint()
 }
 
 //-----------------------------------------------------------------------------------------------
-ShipBlueprint::~ShipBlueprint()
+MeteoroidBlueprint::~MeteoroidBlueprint()
 {
 
 }
 
 //-----------------------------------------------------------------------------------------------
-void ShipBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame* game,
-										const FloatVector2& atPosition )
+void MeteoroidBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame* game,
+	const FloatVector2& atPosition )
 {
 	out_entity.position.x = atPosition.x;
 	out_entity.position.y = atPosition.y;
@@ -72,26 +72,19 @@ struct Simple2DVertex
 
 
 //-----------------------------------------------------------------------------------------------
-void ShipBlueprint::BuildShipVertexData()
+void MeteoroidBlueprint::BuildMeteoroidVertexData()
 {
-	static const float DIST_FROM_CENTER_TO_ENGINE_X = 2.5f;
-	static const float DIST_FROM_CENTER_TO_ENGINE_Y = 2.5f;
-	static const float DIST_FROM_CENTER_TO_FRONT = 10.f;
-	static const float DIST_FROM_CENTER_TO_WINGTIP_X = 7.5f;
-	static const float DIST_FROM_CENTER_TO_WINGTIP_Y = 7.5f;
+	static const float RADIUS_LARGE = 10.f;
 
-	static const unsigned int NUM_SHIP_VERTICES = 5;
-	static const Color SHIP_COLOR( 255, 255, 255, 255 );
+	static const unsigned int NUM_SHIP_VERTICES = 12;
+	static const Color METEOROID_COLOR( 255, 255, 255, 255 );
 
 
-	Simple2DVertex* shipVertexArray = new Simple2DVertex[ NUM_SHIP_VERTICES ];
-	shipVertexArray[ 0] = Simple2DVertex( -DIST_FROM_CENTER_TO_ENGINE_Y	, -DIST_FROM_CENTER_TO_ENGINE_X		, SHIP_COLOR );
-	shipVertexArray[ 1] = Simple2DVertex( -DIST_FROM_CENTER_TO_WINGTIP_Y	, -DIST_FROM_CENTER_TO_WINGTIP_X	, SHIP_COLOR );
-	shipVertexArray[ 2] = Simple2DVertex(  DIST_FROM_CENTER_TO_FRONT		, 0.f								, SHIP_COLOR );
-	shipVertexArray[ 3] = Simple2DVertex( -DIST_FROM_CENTER_TO_WINGTIP_Y	,  DIST_FROM_CENTER_TO_WINGTIP_X	, SHIP_COLOR );
-	shipVertexArray[ 4] = Simple2DVertex( -DIST_FROM_CENTER_TO_ENGINE_Y	,  DIST_FROM_CENTER_TO_ENGINE_X		, SHIP_COLOR );
+	Simple2DVertex* meteoroidVertexArray = new Simple2DVertex[ NUM_SHIP_VERTICES ];
+	meteoroidVertexArray[ 0] = Simple2DVertex( 0.f,  RADIUS_LARGE, METEOROID_COLOR );
+	meteoroidVertexArray[ 1] = Simple2DVertex( 0.f, -RADIUS_LARGE, METEOROID_COLOR );
 
-	m_vertices.data = &shipVertexArray[0];
+	m_vertices.data = &meteoroidVertexArray[0];
 	m_vertices.vertexSizeBytes = sizeof( Simple2DVertex );
 	m_vertices.numberOfVertices = NUM_SHIP_VERTICES;
 	m_vertices.attributes.push_back( VertexAttribute( Renderer::LOCATION_Vertex, 2, Renderer::TYPE_FLOAT, false, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, position.x ) ) );
