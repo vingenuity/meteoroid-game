@@ -33,16 +33,19 @@ struct CircleCollider
 struct CollisionComponent2D : public Component
 {
 	//Internal Data Types
-	typedef unsigned char ColliderShape;
-	static const ColliderShape COLLIDER_None = 0;
-	static const ColliderShape COLLIDER_Circle = 1;
-	static const ColliderShape COLLIDER_AABB = 2;
-
 	union ColliderData
 	{
 		AABBCollider axisAlignedBox;	//16 bytes
 		CircleCollider circle;			//12 bytes
 	};
+
+	typedef unsigned char ColliderGroup;
+	static const ColliderGroup GROUP_None = 0;
+
+	typedef unsigned char ColliderShape;
+	static const ColliderShape COLLIDER_None = 0;
+	static const ColliderShape COLLIDER_Circle = 1;
+	static const ColliderShape COLLIDER_AABB = 2;
 
 
 	//Constructors
@@ -53,8 +56,9 @@ struct CollisionComponent2D : public Component
 
 
 	//Data Members
-	ColliderShape colliderShape;
 	ColliderData collider;
+	ColliderGroup group;
+	ColliderShape colliderShape;
 };
 
 
@@ -63,6 +67,7 @@ struct CollisionComponent2D : public Component
 //-----------------------------------------------------------------------------------------------
 inline CollisionComponent2D::CollisionComponent2D( Entity* owningEntity )
 	: Component( owningEntity )
+	, group( GROUP_None )
 	, colliderShape( COLLIDER_None )
 { }
 
@@ -70,6 +75,7 @@ inline CollisionComponent2D::CollisionComponent2D( Entity* owningEntity )
 inline CollisionComponent2D::CollisionComponent2D( Entity* owningEntity,
 													const FloatVector2& center, float radius )
 	: Component( owningEntity )
+	, group( GROUP_None )
 	, colliderShape( COLLIDER_Circle )
 {
 	collider.circle.centerX = center.x;
@@ -82,6 +88,7 @@ inline CollisionComponent2D::CollisionComponent2D( Entity* owningEntity,
 												   const FloatVector2& lowerLeftCorner,
 												   const FloatVector2& upperRightCorner )
 	: Component( owningEntity )
+	, group( GROUP_None )
 	, colliderShape( COLLIDER_AABB )
 {
 	collider.axisAlignedBox.lowerLeftCornerX  = lowerLeftCorner.x;

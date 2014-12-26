@@ -45,6 +45,7 @@ void ShipBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame
 	game->m_worldPhysicsSystem->AddPhysicsComponent( shipPhysics );
 
 	CollisionComponent2D* shipCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, m_colliderRadius );
+	shipCollider->group = SHIP_COLLISION_GROUP;
 	game->m_worldCollisionSystem->AddCollisionComponent( shipCollider );
 }
 

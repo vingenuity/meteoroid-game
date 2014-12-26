@@ -17,6 +17,7 @@ public:
 	static const unsigned int NUM_METEOROID_SIZES = 3;
 	static const float MAX_METEOROID_SPEED;
 	static const float MAX_METEOROID_ANGULAR_SPEED;
+	static const unsigned int METEOROID_COLLISION_GROUP = 2;
 
 	MeteoroidBlueprint();
 	~MeteoroidBlueprint();

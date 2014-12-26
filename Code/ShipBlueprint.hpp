@@ -13,6 +13,8 @@ class MeteoroidGame;
 //-----------------------------------------------------------------------------------------------
 class ShipBlueprint
 {
+	static const unsigned char SHIP_COLLISION_GROUP = 1;
+
 public:
 	ShipBlueprint();
 	~ShipBlueprint();

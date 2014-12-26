@@ -59,6 +59,7 @@ void MeteoroidBlueprint::BuildEntityIntoGame( Entity& out_entity, const Meteoroi
 	//We want the collider radius to be in between the possible mins and maxes (it should feel better that way)
 	float colliderRadius = s_meteoroidMinRadiuses[ meteorSize ] + ( 0.5f * s_meteoroidSizeDeltas[ meteorSize ] );
 	CollisionComponent2D* meteorCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, colliderRadius );
+	meteorCollider->group = METEOROID_COLLISION_GROUP;
 	game->m_worldCollisionSystem->AddCollisionComponent( meteorCollider );
 }
 
