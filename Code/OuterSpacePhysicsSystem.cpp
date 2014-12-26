@@ -32,6 +32,10 @@ void OuterSpacePhysicsSystem::OnUpdate( float deltaSeconds )
 		Entity*& physicsOwner = m_physComponents[i]->owner;
 		physicsOwner->velocity += physicsOwner->acceleration * deltaSeconds;
 		physicsOwner->position += physicsOwner->velocity * deltaSeconds;
+
+		physicsOwner->orientation.rollDegreesAboutX	 += physicsOwner->angularVelocity.rollDegreesAboutX	 * deltaSeconds;
+		physicsOwner->orientation.pitchDegreesAboutY += physicsOwner->angularVelocity.pitchDegreesAboutY * deltaSeconds;
+		physicsOwner->orientation.yawDegreesAboutZ	 += physicsOwner->angularVelocity.yawDegreesAboutZ   * deltaSeconds;
 	}
 }
 

@@ -5,6 +5,7 @@
 #include <Code/CameraComponent.hpp>
 #include <Code/Entity.hpp>
 
+#include "MeteoroidBlueprint.hpp"
 #include "ShipBlueprint.hpp"
 
 
@@ -23,15 +24,19 @@ MeteoroidGame::~MeteoroidGame()
 
 
 	//Afterwards, the systems may clean up their components
+	m_debugUIRenderingSystem->OnDestruction();
+	delete m_debugUIRenderingSystem;
+
+	m_worldCollisionSystem->OnDestruction();
+	delete m_worldCollisionSystem;
+
 	m_worldPhysicsSystem->OnDestruction();
 	delete m_worldPhysicsSystem;
 
 	m_worldRenderingSystem->OnDestruction();
 	delete m_worldRenderingSystem;
 
-	m_debugUIRenderingSystem->OnDestruction();
-	delete m_debugUIRenderingSystem;
-
+	delete m_meteoroidBlueprint;
 	delete m_shipBlueprint;
 }
 
@@ -54,20 +59,25 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	m_worldRenderingSystem->SetActiveCamera( m_gameCam );
 
 	//Initialize Blueprints
+	m_meteoroidBlueprint = new MeteoroidBlueprint();
 	m_shipBlueprint = new ShipBlueprint();
 
 	//Ship Creation
 	static const FloatVector2 SPAWN_POSITION( 400.f, 400.f );
 	Entity* playerShip = new Entity();
 	m_shipBlueprint->BuildEntityIntoGame( *playerShip, this, SPAWN_POSITION );
+	playerShip->velocity.x = 10.f;
 	playerShip->velocity.y = -6.f;
 	m_entities.push_back( playerShip );
+
+	SpawnInitialMeteoroids();
 }
 
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::DoUpdate( float deltaSeconds )
 {
 	m_worldPhysicsSystem->OnUpdate( deltaSeconds );
+	m_worldCollisionSystem->OnUpdate( deltaSeconds );
 	m_worldRenderingSystem->OnUpdate( deltaSeconds );
 	m_debugUIRenderingSystem->OnUpdate( deltaSeconds );
 }
@@ -81,6 +91,7 @@ void MeteoroidGame::DoRender() const
 	renderer->ClearDepthBuffer();
 
 	m_worldPhysicsSystem->OnRender();
+	m_worldCollisionSystem->OnRender();
 	m_worldRenderingSystem->OnRender();
 	m_debugUIRenderingSystem->OnRender();
 }
@@ -89,6 +100,7 @@ void MeteoroidGame::DoRender() const
 void MeteoroidGame::DoAtEndOfFrame()
 {
 	m_worldPhysicsSystem->OnEndFrame();
+	m_worldCollisionSystem->OnEndFrame();
 	m_worldRenderingSystem->OnEndFrame();
 	m_debugUIRenderingSystem->OnEndFrame();
 }
@@ -97,15 +109,34 @@ void MeteoroidGame::DoAtEndOfFrame()
 
 
 //-----------------------------------------------------------------------------------------------
+void MeteoroidGame::SpawnInitialMeteoroids()
+{
+	Entity* spawnedMeteor = nullptr;
+	FloatVector2 spawnPosition;
+
+	for( unsigned int i = 0; i < 15; ++i )
+	{
+		spawnedMeteor = new Entity();
+		spawnPosition.x = GetRandomFloatBetweenZeroandOne() * m_windowDimensions.x;
+		spawnPosition.y = GetRandomFloatBetweenZeroandOne() * m_windowDimensions.y;
+		m_meteoroidBlueprint->BuildEntityIntoGame( *spawnedMeteor, this, spawnPosition );
+		m_entities.push_back( spawnedMeteor );
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 void MeteoroidGame::StartupGameSystems()
 {
+	m_debugUIRenderingSystem = new DebugDrawingSystem2D( 0.f, static_cast<float>( m_windowDimensions.x ), 
+		0.f, static_cast<float>( m_windowDimensions.y ) );
+	m_debugUIRenderingSystem->OnAttachment( nullptr );
+
+	m_worldCollisionSystem = new CollisionSystem2D();
+	m_worldCollisionSystem->OnAttachment( nullptr );
+
 	m_worldPhysicsSystem = new OuterSpacePhysicsSystem();
 	m_worldPhysicsSystem->OnAttachment( nullptr );
 
 	m_worldRenderingSystem = new PerspectiveRenderingSystem( 45.0, (double)m_windowDimensions.x/m_windowDimensions.y, 0.1, 1000 );
 	m_worldRenderingSystem->OnAttachment( nullptr );
-
-	m_debugUIRenderingSystem = new DebugDrawingSystem2D( 0.f, m_windowDimensions.x, 
-														 0.f, m_windowDimensions.y );
-	m_debugUIRenderingSystem->OnAttachment( nullptr );
 }

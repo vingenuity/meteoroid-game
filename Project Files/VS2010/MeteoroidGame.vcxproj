@@ -142,12 +142,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Code\CollisionComponent2D.hpp" />
+    <ClInclude Include="..\..\Code\CollisionSystem2D.hpp" />
+    <ClInclude Include="..\..\Code\MeteoroidBlueprint.hpp" />
     <ClInclude Include="..\..\Code\MeteoroidGame.hpp" />
     <ClInclude Include="..\..\Code\OuterSpacePhysicsSystem.hpp" />
     <ClInclude Include="..\..\Code\ShipBlueprint.hpp" />
     <ClInclude Include="..\..\Code\VingineBuildPreferences.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Code\CollisionSystem2D.cpp" />
+    <ClCompile Include="..\..\Code\MeteoroidBlueprint.cpp" />
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp" />
     <ClCompile Include="..\..\Code\OuterSpacePhysicsSystem.cpp" />
     <ClCompile Include="..\..\Code\ShipBlueprint.cpp" />

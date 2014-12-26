@@ -3,11 +3,14 @@
 #include <Code/Graphics/MeshComponent.hpp>
 #include <Code/PhysicsComponent.hpp>
 
+#include "CollisionComponent2D.hpp"
 #include "MeteoroidGame.hpp"
 
 
 //-----------------------------------------------------------------------------------------------
 ShipBlueprint::ShipBlueprint()
+	: m_colliderCenter( 0.f, 0.f )
+	, m_colliderRadius( 8.f )
 {
 	BuildShipVertexData();
 
@@ -40,6 +43,10 @@ void ShipBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame
 	PhysicsComponent* shipPhysics = new PhysicsComponent( &out_entity );
 	shipPhysics->percentAcceleratedByGravity = 0.f;
 	game->m_worldPhysicsSystem->AddPhysicsComponent( shipPhysics );
+
+	CollisionComponent2D* shipCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, m_colliderRadius );
+	shipCollider->group = SHIP_COLLISION_GROUP;
+	game->m_worldCollisionSystem->AddCollisionComponent( shipCollider );
 }
 
 
@@ -84,14 +91,14 @@ void ShipBlueprint::BuildShipVertexData()
 	static const Color SHIP_COLOR( 255, 255, 255, 255 );
 
 
-	Simple2DVertex* boxVertexArray = new Simple2DVertex[ NUM_SHIP_VERTICES ];
-	boxVertexArray[ 0] = Simple2DVertex( -DIST_FROM_CENTER_TO_ENGINE_Y	, -DIST_FROM_CENTER_TO_ENGINE_X		, SHIP_COLOR );
-	boxVertexArray[ 1] = Simple2DVertex( -DIST_FROM_CENTER_TO_WINGTIP_Y	, -DIST_FROM_CENTER_TO_WINGTIP_X	, SHIP_COLOR );
-	boxVertexArray[ 2] = Simple2DVertex(  DIST_FROM_CENTER_TO_FRONT		, 0.f								, SHIP_COLOR );
-	boxVertexArray[ 3] = Simple2DVertex( -DIST_FROM_CENTER_TO_WINGTIP_Y	,  DIST_FROM_CENTER_TO_WINGTIP_X	, SHIP_COLOR );
-	boxVertexArray[ 4] = Simple2DVertex( -DIST_FROM_CENTER_TO_ENGINE_Y	,  DIST_FROM_CENTER_TO_ENGINE_X		, SHIP_COLOR );
+	Simple2DVertex* shipVertexArray = new Simple2DVertex[ NUM_SHIP_VERTICES ];
+	shipVertexArray[ 0] = Simple2DVertex( -DIST_FROM_CENTER_TO_ENGINE_Y	, -DIST_FROM_CENTER_TO_ENGINE_X		, SHIP_COLOR );
+	shipVertexArray[ 1] = Simple2DVertex( -DIST_FROM_CENTER_TO_WINGTIP_Y	, -DIST_FROM_CENTER_TO_WINGTIP_X	, SHIP_COLOR );
+	shipVertexArray[ 2] = Simple2DVertex(  DIST_FROM_CENTER_TO_FRONT		, 0.f								, SHIP_COLOR );
+	shipVertexArray[ 3] = Simple2DVertex( -DIST_FROM_CENTER_TO_WINGTIP_Y	,  DIST_FROM_CENTER_TO_WINGTIP_X	, SHIP_COLOR );
+	shipVertexArray[ 4] = Simple2DVertex( -DIST_FROM_CENTER_TO_ENGINE_Y	,  DIST_FROM_CENTER_TO_ENGINE_X		, SHIP_COLOR );
 
-	m_vertices.data = &boxVertexArray[0];
+	m_vertices.data = &shipVertexArray[0];
 	m_vertices.vertexSizeBytes = sizeof( Simple2DVertex );
 	m_vertices.numberOfVertices = NUM_SHIP_VERTICES;
 	m_vertices.attributes.push_back( VertexAttribute( Renderer::LOCATION_Vertex, 2, Renderer::TYPE_FLOAT, false, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, position.x ) ) );
