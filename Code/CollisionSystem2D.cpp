@@ -52,6 +52,17 @@ void CollisionSystem2D::OnUpdate( float /*deltaSeconds*/ )
 				WriteToDebuggerOutput( "COLLISION!" );
 			}
 		}
+
+		//Wrap the entity if they are offscreen
+		if( ( firstEntity->position.x - firstCollider->collider.circle.radius ) > 1280.f )
+			firstEntity->position.x = 0.f - firstCollider->collider.circle.radius;
+		else if( ( firstEntity->position.x + firstCollider->collider.circle.radius ) < 0.f )
+			firstEntity->position.x = 1280.f + firstCollider->collider.circle.radius;
+
+		if( ( firstEntity->position.y - firstCollider->collider.circle.radius ) > 720.f )
+			firstEntity->position.y = 0.f - firstCollider->collider.circle.radius;
+		else if( ( firstEntity->position.y + firstCollider->collider.circle.radius ) < 0.f )
+			firstEntity->position.y = 720.f + firstCollider->collider.circle.radius;
 	}
 }
 
