@@ -144,6 +144,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\Code\CollisionComponent2D.hpp" />
     <ClInclude Include="..\..\Code\CollisionSystem2D.hpp" />
+    <ClInclude Include="..\..\Code\GameEvents.hpp" />
+    <ClInclude Include="..\..\Code\GameplayComponent.hpp" />
     <ClInclude Include="..\..\Code\MeteoroidBlueprint.hpp" />
     <ClInclude Include="..\..\Code\MeteoroidGame.hpp" />
     <ClInclude Include="..\..\Code\OuterSpacePhysicsSystem.hpp" />
@@ -152,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\CollisionSystem2D.cpp" />
+    <ClCompile Include="..\..\Code\GameplayComponent.cpp" />
     <ClCompile Include="..\..\Code\MeteoroidBlueprint.cpp" />
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp" />
     <ClCompile Include="..\..\Code\OuterSpacePhysicsSystem.cpp" />

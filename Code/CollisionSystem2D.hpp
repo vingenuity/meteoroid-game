@@ -5,18 +5,20 @@
 //-----------------------------------------------------------------------------------------------
 #include <vector>
 
+#include <Code/Events/EventSubscriber.hpp>
 #include <Code/System.hpp>
 
 struct CollisionComponent2D;
 
 
 //-----------------------------------------------------------------------------------------------
-class CollisionSystem2D : public System
+class CollisionSystem2D : public System, public EventSubscriber
 {
 public:
 	CollisionSystem2D();
 
 	void AddCollisionComponent( CollisionComponent2D* collisionComponent ) { m_collisionComponents.push_back( collisionComponent ); }
+	void OnCollisionEvent( EventDataBundle& eventData );
 
 	//Lifecycle
 	void OnAttachment( SystemManager* manager );
