@@ -65,6 +65,7 @@ void ShipBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame
 	out_entity.position.y = atPosition.y;
 
 	MeshComponent* shipMesh = new MeshComponent( &out_entity );
+	shipMesh->vertexDataIsFlyweight = true;
 	shipMesh->vertexData = &m_vertices;
 	shipMesh->material = m_material;
 	game->m_worldRenderingSystem->AddMeshComponent( shipMesh );
