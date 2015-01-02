@@ -36,6 +36,15 @@
     <ClInclude Include="..\..\Code\GameEvents.hpp">
       <Filter>Code</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Code\EntityTypes.h">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\FracturingComponent.hpp">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\CleanupSystem.hpp">
+      <Filter>Code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp">
@@ -54,6 +63,9 @@
       <Filter>Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\GameplayComponent.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\CleanupSystem.cpp">
       <Filter>Code</Filter>
     </ClCompile>
   </ItemGroup>

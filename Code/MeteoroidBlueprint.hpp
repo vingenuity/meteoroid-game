@@ -4,14 +4,14 @@
 
 //-----------------------------------------------------------------------------------------------
 #include <Code/Graphics/VertexData.hpp>
-#include <Code/Entity.hpp>
+#include <Code/EntityBlueprint.hpp>
 
 struct Material;
 class MeteoroidGame;
 
 
 //-----------------------------------------------------------------------------------------------
-class MeteoroidBlueprint
+class MeteoroidBlueprint : public EntityBlueprint
 {
 public:
 	static const unsigned int NUM_METEOROID_SIZES = 3;
@@ -19,17 +19,21 @@ public:
 	static const float MAX_METEOROID_ANGULAR_SPEED;
 	static const unsigned int METEOROID_COLLISION_GROUP = 2;
 
-	MeteoroidBlueprint();
+	MeteoroidBlueprint( MeteoroidGame* const game );
 	~MeteoroidBlueprint();
 
-	void BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame* game,
-		const FloatVector2& atPosition );
+	void BuildEntity( Entity& out_entity );
 
+
+	//"hints" that can be given in order to change spawn behavior
+	FloatVector2 hint_spawnPosition;
+	unsigned int hint_meteorSize;
 
 private:
-	void BuildMeteoroidVertexData( VertexData& out_vertData, unsigned int meteorSize );
+	VertexData* BuildMeteoroidVertexData( unsigned int meteorSize );
 
 	//Data Members
+	MeteoroidGame* m_game;
 	Material* m_material;
 
 	FloatVector2 m_colliderCenter;

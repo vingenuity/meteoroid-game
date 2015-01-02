@@ -13,6 +13,7 @@
 
 #include <Code/GameInterface.hpp>
 
+#include "CleanupSystem.hpp"
 #include "CollisionSystem2D.hpp"
 #include "OuterSpacePhysicsSystem.hpp"
 
@@ -25,7 +26,7 @@ class MeteoroidGame : public GameInterface
 {
 public:
 	MeteoroidGame();
-	~MeteoroidGame();
+	~MeteoroidGame() { }
 
 	//Lifecycle
 	virtual void DoBeforeEngineInitialization() { }
@@ -35,10 +36,11 @@ public:
 	void DoRender() const;
 	void DoAtEndOfFrame();
 
-	virtual void DoBeforeEngineDestruction() { }
+	virtual void DoBeforeEngineDestruction();
 	virtual void DoAfterEngineDestruction() { }
 
 	//Game Systems
+	CleanupSystem* m_cleanupSystem;
 	DebugDrawingSystem2D* m_debugUIRenderingSystem;
 	CollisionSystem2D* m_worldCollisionSystem;
 	OuterSpacePhysicsSystem* m_worldPhysicsSystem;
@@ -46,6 +48,10 @@ public:
 
 
 private:
+	//Events
+	void OnCollisionEvent( EventDataBundle& eventData );
+
+	void HandleEntityDestructionOrReuse( Entity*& entity );
 	void SpawnInitialMeteoroids();
 	void StartupGameSystems();
 	IntVector2 m_windowDimensions;
@@ -66,6 +72,7 @@ extern MeteoroidGame g_game;
 //-----------------------------------------------------------------------------------------------
 inline MeteoroidGame::MeteoroidGame()
 	: m_windowDimensions()
+	, m_cleanupSystem( nullptr )
 	, m_debugUIRenderingSystem( nullptr )
 	, m_worldCollisionSystem( nullptr )
 	, m_worldPhysicsSystem( nullptr )

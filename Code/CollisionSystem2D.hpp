@@ -18,7 +18,6 @@ public:
 	CollisionSystem2D();
 
 	void AddCollisionComponent( CollisionComponent2D* collisionComponent ) { m_collisionComponents.push_back( collisionComponent ); }
-	void OnCollisionEvent( EventDataBundle& eventData );
 
 	//Lifecycle
 	void OnAttachment( SystemManager* manager );

@@ -10,7 +10,6 @@
 //-----------------------------------------------------------------------------------------------
 void CollisionSystem2D::OnAttachment( SystemManager* /*manager*/ )
 {
-	EventCourier::SubscribeForEvent( EVENT_Collision, EventObserver::GenerateFromOneArgFunction< CollisionSystem2D, &CollisionSystem2D::OnCollisionEvent >( this ) );
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -52,6 +51,8 @@ void CollisionSystem2D::OnUpdate( float /*deltaSeconds*/ )
 			if( squaredDistance < ( combinedColliderRadius * combinedColliderRadius ) )
 			{
 				EventDataBundle collisionData;
+				collisionData.SetParameter( STRING_1stEntity, firstEntity );
+				collisionData.SetParameter( STRING_2ndEntity, secondEntity );
 				EventCourier::SendEvent( EVENT_Collision, collisionData );
 			}
 		}
@@ -79,11 +80,3 @@ void CollisionSystem2D::OnDestruction()
 	m_collisionComponents.clear();
 }
 #pragma endregion //Lifecycle
-
-//-----------------------------------------------------------------------------------------------
-void CollisionSystem2D::OnCollisionEvent( EventDataBundle& eventData )
-{
-	//Warn if strange event name received?
-
-	WriteToDebuggerOutput( "Collision Event Received!" );
-}
