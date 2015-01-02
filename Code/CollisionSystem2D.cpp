@@ -1,14 +1,15 @@
 #include "CollisionSystem2D.hpp"
 
 #include <Code/DebuggerInterface.hpp>
+
 #include "CollisionComponent2D.hpp"
+#include "GameEvents.hpp"
 
 
 #pragma region Lifecycle
 //-----------------------------------------------------------------------------------------------
 void CollisionSystem2D::OnAttachment( SystemManager* /*manager*/ )
 {
-
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -49,7 +50,10 @@ void CollisionSystem2D::OnUpdate( float /*deltaSeconds*/ )
 
 			if( squaredDistance < ( combinedColliderRadius * combinedColliderRadius ) )
 			{
-				WriteToDebuggerOutput( "COLLISION!" );
+				EventDataBundle collisionData;
+				collisionData.SetParameter( STRING_1stEntity, firstEntity );
+				collisionData.SetParameter( STRING_2ndEntity, secondEntity );
+				EventCourier::SendEvent( EVENT_Collision, collisionData );
 			}
 		}
 

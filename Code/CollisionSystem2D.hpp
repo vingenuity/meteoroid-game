@@ -5,13 +5,14 @@
 //-----------------------------------------------------------------------------------------------
 #include <vector>
 
+#include <Code/Events/EventSubscriber.hpp>
 #include <Code/System.hpp>
 
 struct CollisionComponent2D;
 
 
 //-----------------------------------------------------------------------------------------------
-class CollisionSystem2D : public System
+class CollisionSystem2D : public System, public EventSubscriber
 {
 public:
 	CollisionSystem2D();

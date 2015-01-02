@@ -28,20 +28,16 @@
 *.app
 
 # Visual Studio User-specific files
-
 *.suo
-
 *.user
-
 *.userosscache
-
 *.sln.docstates
 
-#Temp Files generated during compilation/linking
+# Temp Files generated during compilation/linking
 Temp Files/
 
-#Compiled Build Files
+# Compiled Build Files
 Build/
 
-#Compiled Library Files
+# Compiled Library Files
 Libraries/
