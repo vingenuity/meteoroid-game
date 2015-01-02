@@ -27,6 +27,16 @@
 *.out
 *.app
 
+# Visual Studio User-specific files
+
+*.suo
+
+*.user
+
+*.userosscache
+
+*.sln.docstates
+
 #Temp Files generated during compilation/linking
 Temp Files/
 
