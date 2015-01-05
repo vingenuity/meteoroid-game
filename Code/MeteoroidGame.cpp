@@ -43,8 +43,6 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	//Ship Creation
 	Entity* playerShip = new Entity();
 	m_shipBlueprint->BuildEntityIntoGame( *playerShip, this, SHIP_SPAWN_POSITION );
-	playerShip->velocity.x = 30.f;
-	playerShip->velocity.y = -20.f;
 	m_entities.push_back( playerShip );
 
 	SpawnInitialMeteoroids();
@@ -53,10 +51,12 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::DoUpdate( float deltaSeconds )
 {
+	m_gameInputSystem->OnUpdate( deltaSeconds );
 	m_worldPhysicsSystem->OnUpdate( deltaSeconds );
 	m_worldCollisionSystem->OnUpdate( deltaSeconds );
 	m_worldRenderingSystem->OnUpdate( deltaSeconds );
 	m_debugUIRenderingSystem->OnUpdate( deltaSeconds );
+	m_warpSystem->OnUpdate( deltaSeconds );
 	m_cleanupSystem->OnUpdate( deltaSeconds );
 }
 
@@ -68,10 +68,12 @@ void MeteoroidGame::DoRender() const
 	renderer->ClearColorBuffer();
 	renderer->ClearDepthBuffer();
 
+	m_gameInputSystem->OnRender();
 	m_worldPhysicsSystem->OnRender();
 	m_worldCollisionSystem->OnRender();
 	m_worldRenderingSystem->OnRender();
 	m_debugUIRenderingSystem->OnRender();
+	m_warpSystem->OnRender();
 	m_cleanupSystem->OnRender();
 }
 
@@ -88,10 +90,12 @@ void MeteoroidGame::DoAtEndOfFrame()
 		}
 	}
 
+	m_gameInputSystem->OnEndFrame();
 	m_worldPhysicsSystem->OnEndFrame();
 	m_worldCollisionSystem->OnEndFrame();
 	m_worldRenderingSystem->OnEndFrame();
 	m_debugUIRenderingSystem->OnEndFrame();
+	m_warpSystem->OnEndFrame();
 	m_cleanupSystem->OnEndFrame();
 }
 
@@ -110,8 +114,14 @@ void MeteoroidGame::DoBeforeEngineDestruction()
 	m_cleanupSystem->OnDestruction();
 	delete m_cleanupSystem;
 
+	m_warpSystem->OnDestruction();
+	delete m_warpSystem;
+
 	m_debugUIRenderingSystem->OnDestruction();
 	delete m_debugUIRenderingSystem;
+
+	m_gameInputSystem->OnDestruction();
+	delete m_gameInputSystem;
 
 	m_worldCollisionSystem->OnDestruction();
 	delete m_worldCollisionSystem;
@@ -162,14 +172,10 @@ void MeteoroidGame::HandleEntityDestructionOrReuse( Entity*& entity )
 		entity->acceleration = FloatVector3( 0.f, 0.f, 0.f );
 		break;
 	case TYPEID_Meteoroid:
-		for( unsigned int i = 0; i < entity->attachedComponents.size(); ++i )
 		{
-			FracturingComponent* fracture = dynamic_cast< FracturingComponent* >( entity->attachedComponents[ i ] );
-			if( fracture != nullptr )
+			FracturingComponent* fracture = entity->FindAttachedComponentOfType< FracturingComponent >();
+			if( ( fracture != nullptr ) && ( fracture->fracturesRemaining != 0 ) )
 			{
-				if( fracture->fracturesRemaining == 0 )
-					return;
-
 				--fracture->fracturesRemaining;
 
 				Entity* spawnedMeteor = nullptr;
@@ -179,13 +185,13 @@ void MeteoroidGame::HandleEntityDestructionOrReuse( Entity*& entity )
 				{
 					spawnedMeteor = new Entity();
 					m_meteoroidBlueprint->hint_spawnPosition = spawnPosition;
-					m_meteoroidBlueprint->hint_meteorSize = fracture->fracturesRemaining + 1;
+					m_meteoroidBlueprint->hint_meteorSize = fracture->fracturesRemaining;
 					m_meteoroidBlueprint->BuildEntity( *spawnedMeteor );
 					m_entities.push_back( spawnedMeteor );
 				}
 			}
+			entity->markedForDeletion = true;
 		}
-		entity->markedForDeletion = true;
 		break;
 	default:
 		entity->markedForDeletion = true;
@@ -217,9 +223,15 @@ void MeteoroidGame::StartupGameSystems()
 	m_cleanupSystem = new CleanupSystem();
 	m_cleanupSystem->OnAttachment( nullptr );
 
+	m_gameInputSystem = new GameInputSystem();
+	m_gameInputSystem->OnAttachment( nullptr );
+
 	m_debugUIRenderingSystem = new DebugDrawingSystem2D( 0.f, static_cast<float>( m_windowDimensions.x ), 
 		0.f, static_cast<float>( m_windowDimensions.y ) );
 	m_debugUIRenderingSystem->OnAttachment( nullptr );
+
+	m_warpSystem = new WarpSystem( FloatVector2( (float)m_windowDimensions.x, (float)m_windowDimensions.y ) );
+	m_warpSystem->OnAttachment( nullptr );
 
 	m_worldCollisionSystem = new CollisionSystem2D();
 	m_worldCollisionSystem->OnAttachment( nullptr );

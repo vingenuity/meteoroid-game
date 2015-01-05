@@ -5,7 +5,9 @@
 
 #include "CollisionComponent2D.hpp"
 #include "EntityTypes.h"
+#include "GameInputComponent.hpp"
 #include "MeteoroidGame.hpp"
+#include "WarpComponent.hpp"
 
 
 //-----------------------------------------------------------------------------------------------
@@ -77,6 +79,13 @@ void ShipBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame
 	CollisionComponent2D* shipCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, m_colliderRadius );
 	shipCollider->group = SHIP_COLLISION_GROUP;
 	game->m_worldCollisionSystem->AddCollisionComponent( shipCollider );
+
+	GameInputComponent* playerInput = new GameInputComponent( &out_entity );
+	playerInput->playerID = 0;
+	game->m_gameInputSystem->AddInputComponent( playerInput );
+
+	WarpComponent* warpEngine = new WarpComponent( &out_entity, 2.f );
+	game->m_warpSystem->AddWarpComponent( warpEngine );
 }
 
 

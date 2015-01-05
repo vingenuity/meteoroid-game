@@ -15,7 +15,9 @@
 
 #include "CleanupSystem.hpp"
 #include "CollisionSystem2D.hpp"
+#include "GameInputSystem.hpp"
 #include "OuterSpacePhysicsSystem.hpp"
+#include "WarpSystem.hpp"
 
 struct Entity;
 class MeteoroidBlueprint;
@@ -43,8 +45,10 @@ public:
 	CleanupSystem* m_cleanupSystem;
 	DebugDrawingSystem2D* m_debugUIRenderingSystem;
 	CollisionSystem2D* m_worldCollisionSystem;
+	GameInputSystem* m_gameInputSystem;
 	OuterSpacePhysicsSystem* m_worldPhysicsSystem;
 	RenderingSystem* m_worldRenderingSystem;
+	WarpSystem* m_warpSystem;
 
 
 private:
@@ -75,6 +79,7 @@ inline MeteoroidGame::MeteoroidGame()
 	, m_cleanupSystem( nullptr )
 	, m_debugUIRenderingSystem( nullptr )
 	, m_worldCollisionSystem( nullptr )
+	, m_gameInputSystem( nullptr )
 	, m_worldPhysicsSystem( nullptr )
 	, m_worldRenderingSystem( nullptr )
 	, m_cameraman( nullptr )

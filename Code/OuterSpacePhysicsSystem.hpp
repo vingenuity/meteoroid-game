@@ -14,6 +14,8 @@ struct PhysicsComponent;
 //-----------------------------------------------------------------------------------------------
 class OuterSpacePhysicsSystem : public System
 {
+	static const float SPACE_DRAG_FACTOR;
+
 public:
 	OuterSpacePhysicsSystem();
 

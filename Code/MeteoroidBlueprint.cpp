@@ -70,7 +70,7 @@ void MeteoroidBlueprint::BuildEntity( Entity& out_entity )
 	m_game->m_worldCollisionSystem->AddCollisionComponent( meteorCollider );
 
 	FracturingComponent* meteorFracture = new FracturingComponent( &out_entity );
-	meteorFracture->fracturesRemaining = hint_meteorSize - 1;
+	meteorFracture->fracturesRemaining = hint_meteorSize;
 	m_game->m_cleanupSystem->AddComponent( meteorFracture );
 }
 

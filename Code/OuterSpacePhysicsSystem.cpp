@@ -3,6 +3,8 @@
 #include <Code/PhysicsComponent.hpp>
 
 
+//-----------------------------------------------------------------------------------------------
+STATIC const float OuterSpacePhysicsSystem::SPACE_DRAG_FACTOR = 0.8f;
 
 #pragma region Lifecycle
 //-----------------------------------------------------------------------------------------------
@@ -30,6 +32,7 @@ void OuterSpacePhysicsSystem::OnUpdate( float deltaSeconds )
 	for( unsigned int i = 0; i < m_physComponents.size(); ++i )
 	{
 		Entity*& physicsOwner = m_physComponents[i]->owner;
+		physicsOwner->acceleration *= SPACE_DRAG_FACTOR;
 		physicsOwner->velocity += physicsOwner->acceleration * deltaSeconds;
 		physicsOwner->position += physicsOwner->velocity * deltaSeconds;
 
