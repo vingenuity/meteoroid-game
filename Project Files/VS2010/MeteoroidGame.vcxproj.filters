@@ -57,6 +57,15 @@
     <ClInclude Include="..\..\Code\WarpSystem.hpp">
       <Filter>Code</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Code\WeaponSystem.hpp">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\WeaponComponent.hpp">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\MissileBlueprint.hpp">
+      <Filter>Code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp">
@@ -84,6 +93,12 @@
       <Filter>Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\WarpSystem.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\WeaponSystem.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\MissileBlueprint.cpp">
       <Filter>Code</Filter>
     </ClCompile>
   </ItemGroup>

@@ -18,6 +18,7 @@
 #include "GameInputSystem.hpp"
 #include "OuterSpacePhysicsSystem.hpp"
 #include "WarpSystem.hpp"
+#include "WeaponSystem.hpp"
 
 struct Entity;
 class MeteoroidBlueprint;
@@ -41,6 +42,9 @@ public:
 	virtual void DoBeforeEngineDestruction();
 	virtual void DoAfterEngineDestruction() { }
 
+	//Entity Helper
+	void AddEntity( Entity* entity ) { m_entities.push_back( entity ); }
+
 	//Game Systems
 	CleanupSystem* m_cleanupSystem;
 	DebugDrawingSystem2D* m_debugUIRenderingSystem;
@@ -49,6 +53,7 @@ public:
 	OuterSpacePhysicsSystem* m_worldPhysicsSystem;
 	RenderingSystem* m_worldRenderingSystem;
 	WarpSystem* m_warpSystem;
+	WeaponSystem* m_weaponSystem;
 
 
 private:
@@ -82,6 +87,7 @@ inline MeteoroidGame::MeteoroidGame()
 	, m_gameInputSystem( nullptr )
 	, m_worldPhysicsSystem( nullptr )
 	, m_worldRenderingSystem( nullptr )
+	, m_weaponSystem( nullptr )
 	, m_cameraman( nullptr )
 	, m_meteoroidBlueprint( nullptr )
 	, m_shipBlueprint( nullptr )

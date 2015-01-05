@@ -1,14 +1,11 @@
-#include "ShipBlueprint.hpp"
+#include "MissileBlueprint.hpp"
 
 #include <Code/Graphics/MeshComponent.hpp>
 #include <Code/PhysicsComponent.hpp>
 
 #include "CollisionComponent2D.hpp"
 #include "EntityTypes.h"
-#include "GameInputComponent.hpp"
 #include "MeteoroidGame.hpp"
-#include "WarpComponent.hpp"
-#include "WeaponComponent.hpp"
 
 
 //-----------------------------------------------------------------------------------------------
@@ -37,13 +34,15 @@ struct Simple2DVertex
 };
 
 
+
 //-----------------------------------------------------------------------------------------------
-ShipBlueprint::ShipBlueprint()
+MissileBlueprint::MissileBlueprint( MeteoroidGame* const game )
 	: m_colliderCenter( 0.f, 0.f )
 	, m_colliderRadius( 8.f )
-	, m_vertices( NUM_SHIP_VERTICES, sizeof( Simple2DVertex ) )
+	, m_game( game )
+	, m_vertices( NUM_MISSILE_VERTICES, sizeof( Simple2DVertex ) )
 {
-	BuildShipVertexData();
+	BuildMissileVertexData();
 
 	Renderer* renderer = Renderer::GetRenderer();
 	m_material = renderer->CreateOrGetNewMaterial( L"ShipMaterial" );
@@ -54,75 +53,49 @@ ShipBlueprint::ShipBlueprint()
 }
 
 //-----------------------------------------------------------------------------------------------
-ShipBlueprint::~ShipBlueprint()
+MissileBlueprint::~MissileBlueprint()
 {
 
 }
 
 //-----------------------------------------------------------------------------------------------
-void ShipBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame* game,
-										const FloatVector2& atPosition )
+void MissileBlueprint::BuildEntity( Entity& out_entity )
 {
-	out_entity.typeID = TYPEID_Ship;
-	out_entity.position.x = atPosition.x;
-	out_entity.position.y = atPosition.y;
+	out_entity.typeID = TYPEID_Bullet;
 
 	MeshComponent* shipMesh = new MeshComponent( &out_entity );
 	shipMesh->vertexDataIsFlyweight = true;
 	shipMesh->vertexData = &m_vertices;
 	shipMesh->material = m_material;
-	game->m_worldRenderingSystem->AddMeshComponent( shipMesh );
+	m_game->m_worldRenderingSystem->AddMeshComponent( shipMesh );
 
 	PhysicsComponent* shipPhysics = new PhysicsComponent( &out_entity );
 	shipPhysics->percentAcceleratedByGravity = 0.f;
-	game->m_worldPhysicsSystem->AddPhysicsComponent( shipPhysics );
+	m_game->m_worldPhysicsSystem->AddPhysicsComponent( shipPhysics );
 
 	CollisionComponent2D* shipCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, m_colliderRadius );
-	shipCollider->group = SHIP_COLLISION_GROUP;
-	game->m_worldCollisionSystem->AddCollisionComponent( shipCollider );
-
-	GameInputComponent* playerInput = new GameInputComponent( &out_entity );
-	playerInput->playerID = 0;
-	game->m_gameInputSystem->AddInputComponent( playerInput );
-
-	WarpComponent* warpEngine = new WarpComponent( &out_entity, 2.f );
-	game->m_warpSystem->AddWarpComponent( warpEngine );
-
-	WeaponComponent* missilePort = new WeaponComponent( &out_entity, 0.5f );
-	game->m_weaponSystem->AddWeaponComponent( missilePort );
+	shipCollider->group = 1;
+	m_game->m_worldCollisionSystem->AddCollisionComponent( shipCollider );
 }
 
 
-
-#pragma region Private Functions
 //-----------------------------------------------------------------------------------------------
-void ShipBlueprint::BuildShipVertexData()
+void MissileBlueprint::BuildMissileVertexData()
 {
-	static const float DIST_FROM_CENTER_TO_ENGINE_X = 2.5f;
-	static const float DIST_FROM_CENTER_TO_ENGINE_Y = 2.5f;
-	static const float DIST_FROM_CENTER_TO_FRONT = 10.f;
-	static const float DIST_FROM_CENTER_TO_WINGTIP_X = 7.5f;
-	static const float DIST_FROM_CENTER_TO_WINGTIP_Y = 7.5f;
-
-	static const Color SHIP_COLOR( 255, 255, 255, 255 );
-
+	static const Color MISSILE_COLOR( 255, 255, 255, 255 );
 
 	Simple2DVertex* shipVertexArray = reinterpret_cast< Simple2DVertex* >( m_vertices.data );
-	shipVertexArray[ 0] = Simple2DVertex( -DIST_FROM_CENTER_TO_ENGINE_Y	, -DIST_FROM_CENTER_TO_ENGINE_X		, SHIP_COLOR );
-	shipVertexArray[ 1] = Simple2DVertex( -DIST_FROM_CENTER_TO_WINGTIP_Y	, -DIST_FROM_CENTER_TO_WINGTIP_X	, SHIP_COLOR );
-	shipVertexArray[ 2] = Simple2DVertex(  DIST_FROM_CENTER_TO_FRONT		, 0.f								, SHIP_COLOR );
-	shipVertexArray[ 3] = Simple2DVertex( -DIST_FROM_CENTER_TO_WINGTIP_Y	,  DIST_FROM_CENTER_TO_WINGTIP_X	, SHIP_COLOR );
-	shipVertexArray[ 4] = Simple2DVertex( -DIST_FROM_CENTER_TO_ENGINE_Y	,  DIST_FROM_CENTER_TO_ENGINE_X		, SHIP_COLOR );
-
+	shipVertexArray[ 0] = Simple2DVertex(  0.f	, 0.f	, MISSILE_COLOR );
+	shipVertexArray[ 1] = Simple2DVertex( -8.f	, 0.f	, MISSILE_COLOR );
+	
 	m_vertices.data = &shipVertexArray[0];
 	m_vertices.vertexSizeBytes = sizeof( Simple2DVertex );
-	m_vertices.numberOfVertices = NUM_SHIP_VERTICES;
+	m_vertices.numberOfVertices = NUM_MISSILE_VERTICES;
 	m_vertices.attributes.push_back( VertexAttribute( Renderer::LOCATION_Vertex, 2, Renderer::TYPE_FLOAT, false, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, position.x ) ) );
 	m_vertices.attributes.push_back( VertexAttribute( Renderer::LOCATION_Color, 4, Renderer::TYPE_UNSIGNED_BYTE, true, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, color.r ) ) );
-	m_vertices.shape = Renderer::LINE_LOOP;
+	m_vertices.shape = Renderer::LINES;
 
 	Renderer* renderer = Renderer::GetRenderer();
 	renderer->GenerateBuffer( 1, &m_vertices.bufferID );
 	renderer->BufferVertexData( &m_vertices );
 }
-#pragma endregion //Private Functions

@@ -57,6 +57,7 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 	m_worldRenderingSystem->OnUpdate( deltaSeconds );
 	m_debugUIRenderingSystem->OnUpdate( deltaSeconds );
 	m_warpSystem->OnUpdate( deltaSeconds );
+	m_weaponSystem->OnUpdate( deltaSeconds );
 	m_cleanupSystem->OnUpdate( deltaSeconds );
 }
 
@@ -74,6 +75,7 @@ void MeteoroidGame::DoRender() const
 	m_worldRenderingSystem->OnRender();
 	m_debugUIRenderingSystem->OnRender();
 	m_warpSystem->OnRender();
+	m_weaponSystem->OnRender();
 	m_cleanupSystem->OnRender();
 }
 
@@ -96,6 +98,7 @@ void MeteoroidGame::DoAtEndOfFrame()
 	m_worldRenderingSystem->OnEndFrame();
 	m_debugUIRenderingSystem->OnEndFrame();
 	m_warpSystem->OnEndFrame();
+	m_weaponSystem->OnEndFrame();
 	m_cleanupSystem->OnEndFrame();
 }
 
@@ -116,6 +119,9 @@ void MeteoroidGame::DoBeforeEngineDestruction()
 
 	m_warpSystem->OnDestruction();
 	delete m_warpSystem;
+
+	m_weaponSystem->OnDestruction();
+	delete m_weaponSystem;
 
 	m_debugUIRenderingSystem->OnDestruction();
 	delete m_debugUIRenderingSystem;
@@ -232,6 +238,9 @@ void MeteoroidGame::StartupGameSystems()
 
 	m_warpSystem = new WarpSystem( FloatVector2( (float)m_windowDimensions.x, (float)m_windowDimensions.y ) );
 	m_warpSystem->OnAttachment( nullptr );
+
+	m_weaponSystem = new WeaponSystem( this );
+	m_weaponSystem->OnAttachment( nullptr );
 
 	m_worldCollisionSystem = new CollisionSystem2D();
 	m_worldCollisionSystem->OnAttachment( nullptr );

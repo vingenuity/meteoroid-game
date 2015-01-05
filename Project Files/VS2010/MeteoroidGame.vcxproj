@@ -153,11 +153,14 @@
     <ClInclude Include="..\..\Code\GameplayComponent.hpp" />
     <ClInclude Include="..\..\Code\MeteoroidBlueprint.hpp" />
     <ClInclude Include="..\..\Code\MeteoroidGame.hpp" />
+    <ClInclude Include="..\..\Code\MissileBlueprint.hpp" />
     <ClInclude Include="..\..\Code\OuterSpacePhysicsSystem.hpp" />
     <ClInclude Include="..\..\Code\ShipBlueprint.hpp" />
     <ClInclude Include="..\..\Code\VingineBuildPreferences.hpp" />
     <ClInclude Include="..\..\Code\WarpComponent.hpp" />
     <ClInclude Include="..\..\Code\WarpSystem.hpp" />
+    <ClInclude Include="..\..\Code\WeaponComponent.hpp" />
+    <ClInclude Include="..\..\Code\WeaponSystem.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\CollisionSystem2D.cpp" />
@@ -166,9 +169,11 @@
     <ClCompile Include="..\..\Code\GameplayComponent.cpp" />
     <ClCompile Include="..\..\Code\MeteoroidBlueprint.cpp" />
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp" />
+    <ClCompile Include="..\..\Code\MissileBlueprint.cpp" />
     <ClCompile Include="..\..\Code\OuterSpacePhysicsSystem.cpp" />
     <ClCompile Include="..\..\Code\ShipBlueprint.cpp" />
     <ClCompile Include="..\..\Code\WarpSystem.cpp" />
+    <ClCompile Include="..\..\Code\WeaponSystem.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
