@@ -17,7 +17,7 @@ void CleanupSystem::OnEndFrame()
 //-----------------------------------------------------------------------------------------------
 void CleanupSystem::OnDestruction()
 {
-	for( unsigned int i = 1; i < m_components.size(); ++i )
+	for( unsigned int i = 0; i < m_components.size(); ++i )
 	{
 		delete m_components[ i ];
 	}

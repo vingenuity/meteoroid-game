@@ -8,7 +8,9 @@
 
 //-----------------------------------------------------------------------------------------------
 static const EventName EVENT_Collision = HashedString( "CollisionEvent" );
+static const EventName EVENT_EngageWarp = HashedString( "EngageWarp" );
 static const EventName EVENT_EntityDestruction = HashedString( "EntityDestruction" );
+static const EventName EVENT_FireWeapon = HashedString( "FireWeapon" );
 
 
 //-----------------------------------------------------------------------------------------------
