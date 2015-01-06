@@ -44,6 +44,13 @@ void GameInputSystem::OnUpdate( float /*deltaSeconds*/ )
 			warpData.SetParameter( STRING_1stEntity, controlledEntity );
 			EventCourier::SendEvent( EVENT_EngageWarp, warpData );
 		}
+
+		if( keyboard->KeyIsPressed( Keyboard::SPACEBAR ) )
+		{
+			EventDataBundle fireData;
+			fireData.SetParameter( STRING_1stEntity, controlledEntity );
+			EventCourier::SendEvent( EVENT_FireWeapon, fireData );
+		}
 	}
 }
 
