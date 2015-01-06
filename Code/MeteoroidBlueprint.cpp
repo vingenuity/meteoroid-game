@@ -61,13 +61,13 @@ void MeteoroidBlueprint::BuildEntity( Entity& out_entity )
 
 	PhysicsComponent* meteorPhysics = new PhysicsComponent( &out_entity );
 	meteorPhysics->percentAcceleratedByGravity = 0.f;
-	m_game->m_worldPhysicsSystem->AddPhysicsComponent( meteorPhysics );
+	m_game->m_physicsSystem->AddPhysicsComponent( meteorPhysics );
 
 	//We want the collider radius to be in between the possible mins and maxes (it should feel better that way)
 	float colliderRadius = s_meteoroidMinRadiuses[ hint_meteorSize ] + ( 0.5f * s_meteoroidSizeDeltas[ hint_meteorSize ] );
 	CollisionComponent2D* meteorCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, colliderRadius );
 	meteorCollider->group = METEOROID_COLLISION_GROUP;
-	m_game->m_worldCollisionSystem->AddCollisionComponent( meteorCollider );
+	m_game->m_collisionSystem->AddCollisionComponent( meteorCollider );
 
 	FracturingComponent* meteorFracture = new FracturingComponent( &out_entity );
 	meteorFracture->fracturesRemaining = hint_meteorSize;

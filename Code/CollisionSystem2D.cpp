@@ -40,7 +40,7 @@ void CollisionSystem2D::OnUpdate( float /*deltaSeconds*/ )
 			CollisionComponent2D*& secondCollider = m_collisionComponents[j];
 			Entity*& secondEntity = secondCollider->owner;
 
-			if( secondCollider->group == firstCollider->group )
+  			if( secondCollider->group == firstCollider->group )
 				continue;
 
 			float xDistance = ( firstEntity->position.x + firstCollider->collider.circle.centerX ) - ( secondEntity->position.x + secondCollider->collider.circle.centerX );

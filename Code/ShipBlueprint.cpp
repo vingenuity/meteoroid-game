@@ -75,11 +75,11 @@ void ShipBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame
 
 	PhysicsComponent* shipPhysics = new PhysicsComponent( &out_entity );
 	shipPhysics->percentAcceleratedByGravity = 0.f;
-	game->m_worldPhysicsSystem->AddPhysicsComponent( shipPhysics );
+	game->m_physicsSystem->AddPhysicsComponent( shipPhysics );
 
 	CollisionComponent2D* shipCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, m_colliderRadius );
 	shipCollider->group = SHIP_COLLISION_GROUP;
-	game->m_worldCollisionSystem->AddCollisionComponent( shipCollider );
+	game->m_collisionSystem->AddCollisionComponent( shipCollider );
 
 	GameInputComponent* playerInput = new GameInputComponent( &out_entity );
 	playerInput->playerID = 0;

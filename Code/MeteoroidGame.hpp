@@ -17,6 +17,7 @@
 #include "CollisionSystem2D.hpp"
 #include "GameInputSystem.hpp"
 #include "OuterSpacePhysicsSystem.hpp"
+#include "TimedDestructionSystem.hpp"
 #include "WarpSystem.hpp"
 #include "WeaponSystem.hpp"
 
@@ -47,11 +48,12 @@ public:
 
 	//Game Systems
 	CleanupSystem* m_cleanupSystem;
+	CollisionSystem2D* m_collisionSystem;
 	DebugDrawingSystem2D* m_debugUIRenderingSystem;
-	CollisionSystem2D* m_worldCollisionSystem;
 	GameInputSystem* m_gameInputSystem;
-	OuterSpacePhysicsSystem* m_worldPhysicsSystem;
+	OuterSpacePhysicsSystem* m_physicsSystem;
 	RenderingSystem* m_worldRenderingSystem;
+	TimedDestructionSystem* m_timedDestructionSystem;
 	WarpSystem* m_warpSystem;
 	WeaponSystem* m_weaponSystem;
 
@@ -82,12 +84,14 @@ extern MeteoroidGame g_game;
 inline MeteoroidGame::MeteoroidGame()
 	: m_windowDimensions()
 	, m_cleanupSystem( nullptr )
+	, m_collisionSystem( nullptr )
 	, m_debugUIRenderingSystem( nullptr )
-	, m_worldCollisionSystem( nullptr )
 	, m_gameInputSystem( nullptr )
-	, m_worldPhysicsSystem( nullptr )
+	, m_physicsSystem( nullptr )
 	, m_worldRenderingSystem( nullptr )
+	, m_timedDestructionSystem( nullptr )
 	, m_weaponSystem( nullptr )
+	, m_warpSystem( nullptr )
 	, m_cameraman( nullptr )
 	, m_meteoroidBlueprint( nullptr )
 	, m_shipBlueprint( nullptr )

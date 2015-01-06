@@ -156,6 +156,8 @@
     <ClInclude Include="..\..\Code\MissileBlueprint.hpp" />
     <ClInclude Include="..\..\Code\OuterSpacePhysicsSystem.hpp" />
     <ClInclude Include="..\..\Code\ShipBlueprint.hpp" />
+    <ClInclude Include="..\..\Code\TimedDestructionComponent.hpp" />
+    <ClInclude Include="..\..\Code\TimedDestructionSystem.hpp" />
     <ClInclude Include="..\..\Code\VingineBuildPreferences.hpp" />
     <ClInclude Include="..\..\Code\WarpComponent.hpp" />
     <ClInclude Include="..\..\Code\WarpSystem.hpp" />
@@ -172,6 +174,7 @@
     <ClCompile Include="..\..\Code\MissileBlueprint.cpp" />
     <ClCompile Include="..\..\Code\OuterSpacePhysicsSystem.cpp" />
     <ClCompile Include="..\..\Code\ShipBlueprint.cpp" />
+    <ClCompile Include="..\..\Code\TimedDestructionSystem.cpp" />
     <ClCompile Include="..\..\Code\WarpSystem.cpp" />
     <ClCompile Include="..\..\Code\WeaponSystem.cpp" />
   </ItemGroup>

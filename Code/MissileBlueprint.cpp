@@ -6,6 +6,7 @@
 #include "CollisionComponent2D.hpp"
 #include "EntityTypes.h"
 #include "MeteoroidGame.hpp"
+#include "TimedDestructionComponent.hpp"
 
 
 //-----------------------------------------------------------------------------------------------
@@ -63,19 +64,22 @@ void MissileBlueprint::BuildEntity( Entity& out_entity )
 {
 	out_entity.typeID = TYPEID_Bullet;
 
-	MeshComponent* shipMesh = new MeshComponent( &out_entity );
-	shipMesh->vertexDataIsFlyweight = true;
-	shipMesh->vertexData = &m_vertices;
-	shipMesh->material = m_material;
-	m_game->m_worldRenderingSystem->AddMeshComponent( shipMesh );
+	MeshComponent* missileMesh = new MeshComponent( &out_entity );
+	missileMesh->vertexDataIsFlyweight = true;
+	missileMesh->vertexData = &m_vertices;
+	missileMesh->material = m_material;
+	m_game->m_worldRenderingSystem->AddMeshComponent( missileMesh );
 
-	PhysicsComponent* shipPhysics = new PhysicsComponent( &out_entity );
-	shipPhysics->percentAcceleratedByGravity = 0.f;
-	m_game->m_worldPhysicsSystem->AddPhysicsComponent( shipPhysics );
+	PhysicsComponent* spacePhysics = new PhysicsComponent( &out_entity );
+	spacePhysics->percentAcceleratedByGravity = 0.f;
+	m_game->m_physicsSystem->AddPhysicsComponent( spacePhysics );
 
-	CollisionComponent2D* shipCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, m_colliderRadius );
-	shipCollider->group = 1;
-	m_game->m_worldCollisionSystem->AddCollisionComponent( shipCollider );
+	CollisionComponent2D* missileCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, m_colliderRadius );
+	missileCollider->group = 1;
+	m_game->m_collisionSystem->AddCollisionComponent( missileCollider );
+
+	TimedDestructionComponent* missileFailsafe = new TimedDestructionComponent( &out_entity, 4.f );
+	m_game->m_timedDestructionSystem->AddComponent( missileFailsafe );
 }
 
 

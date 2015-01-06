@@ -34,6 +34,8 @@ void WeaponSystem::OnEndFrame()
 //-----------------------------------------------------------------------------------------------
 void WeaponSystem::OnDestruction()
 {
+	delete m_missileBlueprint;
+
 	for( unsigned int i = 0; i < m_weaponComponents.size(); ++i )
 	{
 		delete m_weaponComponents[ i ];

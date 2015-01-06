@@ -52,13 +52,16 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 void MeteoroidGame::DoUpdate( float deltaSeconds )
 {
 	m_gameInputSystem->OnUpdate( deltaSeconds );
-	m_worldPhysicsSystem->OnUpdate( deltaSeconds );
-	m_worldCollisionSystem->OnUpdate( deltaSeconds );
-	m_worldRenderingSystem->OnUpdate( deltaSeconds );
-	m_debugUIRenderingSystem->OnUpdate( deltaSeconds );
+
+	m_cleanupSystem->OnUpdate( deltaSeconds );
 	m_warpSystem->OnUpdate( deltaSeconds );
 	m_weaponSystem->OnUpdate( deltaSeconds );
-	m_cleanupSystem->OnUpdate( deltaSeconds );
+	m_timedDestructionSystem->OnUpdate( deltaSeconds );
+	m_physicsSystem->OnUpdate( deltaSeconds );
+	m_collisionSystem->OnUpdate( deltaSeconds );
+
+	m_worldRenderingSystem->OnUpdate( deltaSeconds );
+	m_debugUIRenderingSystem->OnUpdate( deltaSeconds );
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -70,13 +73,16 @@ void MeteoroidGame::DoRender() const
 	renderer->ClearDepthBuffer();
 
 	m_gameInputSystem->OnRender();
-	m_worldPhysicsSystem->OnRender();
-	m_worldCollisionSystem->OnRender();
-	m_worldRenderingSystem->OnRender();
-	m_debugUIRenderingSystem->OnRender();
+
+	m_cleanupSystem->OnRender();
 	m_warpSystem->OnRender();
 	m_weaponSystem->OnRender();
-	m_cleanupSystem->OnRender();
+	m_timedDestructionSystem->OnRender();
+	m_physicsSystem->OnRender();
+	m_collisionSystem->OnRender();
+
+	m_worldRenderingSystem->OnRender();
+	m_debugUIRenderingSystem->OnRender();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -93,13 +99,16 @@ void MeteoroidGame::DoAtEndOfFrame()
 	}
 
 	m_gameInputSystem->OnEndFrame();
-	m_worldPhysicsSystem->OnEndFrame();
-	m_worldCollisionSystem->OnEndFrame();
-	m_worldRenderingSystem->OnEndFrame();
-	m_debugUIRenderingSystem->OnEndFrame();
+
+	m_cleanupSystem->OnEndFrame();
 	m_warpSystem->OnEndFrame();
 	m_weaponSystem->OnEndFrame();
-	m_cleanupSystem->OnEndFrame();
+	m_timedDestructionSystem->OnEndFrame();
+	m_physicsSystem->OnEndFrame();
+	m_collisionSystem->OnEndFrame();
+
+	m_worldRenderingSystem->OnEndFrame();
+	m_debugUIRenderingSystem->OnEndFrame();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -117,11 +126,8 @@ void MeteoroidGame::DoBeforeEngineDestruction()
 	m_cleanupSystem->OnDestruction();
 	delete m_cleanupSystem;
 
-	m_warpSystem->OnDestruction();
-	delete m_warpSystem;
-
-	m_weaponSystem->OnDestruction();
-	delete m_weaponSystem;
+	m_collisionSystem->OnDestruction();
+	delete m_collisionSystem;
 
 	m_debugUIRenderingSystem->OnDestruction();
 	delete m_debugUIRenderingSystem;
@@ -129,14 +135,20 @@ void MeteoroidGame::DoBeforeEngineDestruction()
 	m_gameInputSystem->OnDestruction();
 	delete m_gameInputSystem;
 
-	m_worldCollisionSystem->OnDestruction();
-	delete m_worldCollisionSystem;
-
-	m_worldPhysicsSystem->OnDestruction();
-	delete m_worldPhysicsSystem;
+	m_physicsSystem->OnDestruction();
+	delete m_physicsSystem;
 
 	m_worldRenderingSystem->OnDestruction();
 	delete m_worldRenderingSystem;
+
+	m_timedDestructionSystem->OnDestruction();
+	delete m_timedDestructionSystem;
+
+	m_warpSystem->OnDestruction();
+	delete m_warpSystem;
+
+	m_weaponSystem->OnDestruction();
+	delete m_weaponSystem;
 
 	delete m_meteoroidBlueprint;
 	delete m_shipBlueprint;
@@ -229,25 +241,28 @@ void MeteoroidGame::StartupGameSystems()
 	m_cleanupSystem = new CleanupSystem();
 	m_cleanupSystem->OnAttachment( nullptr );
 
-	m_gameInputSystem = new GameInputSystem();
-	m_gameInputSystem->OnAttachment( nullptr );
+	m_collisionSystem = new CollisionSystem2D();
+	m_collisionSystem->OnAttachment( nullptr );
 
 	m_debugUIRenderingSystem = new DebugDrawingSystem2D( 0.f, static_cast<float>( m_windowDimensions.x ), 
 		0.f, static_cast<float>( m_windowDimensions.y ) );
 	m_debugUIRenderingSystem->OnAttachment( nullptr );
+
+	m_gameInputSystem = new GameInputSystem();
+	m_gameInputSystem->OnAttachment( nullptr );
+
+	m_physicsSystem = new OuterSpacePhysicsSystem();
+	m_physicsSystem->OnAttachment( nullptr );
+
+	m_worldRenderingSystem = new PerspectiveRenderingSystem( 45.0, (double)m_windowDimensions.x/m_windowDimensions.y, 0.1, 1000 );
+	m_worldRenderingSystem->OnAttachment( nullptr );
+
+	m_timedDestructionSystem = new TimedDestructionSystem();
+	m_timedDestructionSystem->OnAttachment( nullptr );
 
 	m_warpSystem = new WarpSystem( FloatVector2( (float)m_windowDimensions.x, (float)m_windowDimensions.y ) );
 	m_warpSystem->OnAttachment( nullptr );
 
 	m_weaponSystem = new WeaponSystem( this );
 	m_weaponSystem->OnAttachment( nullptr );
-
-	m_worldCollisionSystem = new CollisionSystem2D();
-	m_worldCollisionSystem->OnAttachment( nullptr );
-
-	m_worldPhysicsSystem = new OuterSpacePhysicsSystem();
-	m_worldPhysicsSystem->OnAttachment( nullptr );
-
-	m_worldRenderingSystem = new PerspectiveRenderingSystem( 45.0, (double)m_windowDimensions.x/m_windowDimensions.y, 0.1, 1000 );
-	m_worldRenderingSystem->OnAttachment( nullptr );
 }

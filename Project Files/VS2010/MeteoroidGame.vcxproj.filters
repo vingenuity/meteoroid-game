@@ -66,6 +66,12 @@
     <ClInclude Include="..\..\Code\MissileBlueprint.hpp">
       <Filter>Code</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Code\TimedDestructionComponent.hpp">
+      <Filter>Code</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\TimedDestructionSystem.hpp">
+      <Filter>Code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp">
@@ -99,6 +105,9 @@
       <Filter>Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\MissileBlueprint.cpp">
+      <Filter>Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\TimedDestructionSystem.cpp">
       <Filter>Code</Filter>
     </ClCompile>
   </ItemGroup>
