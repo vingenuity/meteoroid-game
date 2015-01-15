@@ -57,6 +57,7 @@ void WeaponSystem::OnWeaponFireEvent( EventDataBundle& eventData )
  		Entity* firedBullet = nullptr;
  
   		firedBullet = GameInterface::GetEntityManager().HireEntity();
+		firedBullet->creator = entity;
  		m_missileBlueprint->BuildEntity( *firedBullet );
 		firedBullet->position = entity->position;
 		firedBullet->orientation = entity->orientation;

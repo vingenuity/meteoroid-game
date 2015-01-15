@@ -93,6 +93,10 @@ void ShipBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame
 	WeaponComponent* missilePort = game->m_weaponSystem->AcquireComponent();
 	missilePort->minSecondsBetweenShots = 0.75f;
 	out_entity.AttachComponent( missilePort );
+
+	ScoringComponent* shipScore = game->m_scoringSystem->AcquireComponent();
+	shipScore->pointValue = 1000;
+	out_entity.AttachComponent( shipScore );
 }
 
 

@@ -42,9 +42,6 @@
     <ClInclude Include="..\..\Code\GameInputSystem.hpp">
       <Filter>Code\Component + System</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\GameplayComponent.hpp">
-      <Filter>Code\Component + System</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Code\OuterSpacePhysicsSystem.hpp">
       <Filter>Code\Component + System</Filter>
     </ClInclude>
@@ -81,6 +78,12 @@
     <ClInclude Include="..\..\Code\FracturingSystem.hpp">
       <Filter>Code\Component + System</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Code\ScoringSystem.hpp">
+      <Filter>Code\Component + System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\ScoringComponent.hpp">
+      <Filter>Code\Component + System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp">
@@ -90,9 +93,6 @@
       <Filter>Code\Component + System</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\GameInputSystem.cpp">
-      <Filter>Code\Component + System</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\GameplayComponent.cpp">
       <Filter>Code\Component + System</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\OuterSpacePhysicsSystem.cpp">
@@ -120,6 +120,9 @@
       <Filter>Code\Component + System</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\FracturingSystem.cpp">
+      <Filter>Code\Component + System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\ScoringSystem.cpp">
       <Filter>Code\Component + System</Filter>
     </ClCompile>
   </ItemGroup>
