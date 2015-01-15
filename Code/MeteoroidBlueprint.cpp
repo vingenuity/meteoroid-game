@@ -3,7 +3,7 @@
 #include <Code/Graphics/MeshComponent.hpp>
 #include <Code/PhysicsComponent.hpp>
 
-#include "CollisionComponent2D.hpp"
+#include "CollisionSystem2D.hpp"
 #include "EntityTypes.h"
 #include "FracturingComponent.hpp"
 #include "MeteoroidGame.hpp"
@@ -28,12 +28,18 @@ MeteoroidBlueprint::MeteoroidBlueprint( MeteoroidGame* const game )
 	m_material->SetModelMatrixUniform( "u_modelMatrix" );
 	m_material->SetViewMatrixUniform( "u_viewMatrix" );
 	m_material->SetProjectionMatrixUniform( "u_projectionMatrix" );
+
+	m_vertices[ 0 ] = BuildMeteoroidVertexData( 0 );
+	m_vertices[ 1 ] = BuildMeteoroidVertexData( 1 );
+	m_vertices[ 2 ] = BuildMeteoroidVertexData( 2 );
 }
 
 //-----------------------------------------------------------------------------------------------
 MeteoroidBlueprint::~MeteoroidBlueprint()
 {
-
+	delete m_vertices[ 0 ];
+	delete m_vertices[ 1 ];
+	delete m_vertices[ 2 ];
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -54,24 +60,26 @@ void MeteoroidBlueprint::BuildEntity( Entity& out_entity )
 	//The multiplication and subtraction get us on the range -1.0 to 1.0
 	out_entity.angularVelocity.yawDegreesAboutZ = ( GetRandomFloatBetweenZeroandOne() * 2.f - 1.f ) * MAX_METEOROID_ANGULAR_SPEED;
 
-	MeshComponent* meteorMesh = new MeshComponent( &out_entity );
-	meteorMesh->vertexData = BuildMeteoroidVertexData( hint_meteorSize );
+	MeshComponent* meteorMesh = m_game->m_worldRenderingSystem->AcquireMeshComponent();
+	meteorMesh->vertexDataIsFlyweight = true;
+	meteorMesh->vertexData = m_vertices[ hint_meteorSize ];
 	meteorMesh->material = m_material;
-	m_game->m_worldRenderingSystem->AddMeshComponent( meteorMesh );
+	out_entity.AttachComponent( meteorMesh );
 
-	PhysicsComponent* meteorPhysics = new PhysicsComponent( &out_entity );
+	PhysicsComponent* meteorPhysics = m_game->m_physicsSystem->AcquireComponent();
 	meteorPhysics->percentAcceleratedByGravity = 0.f;
-	m_game->m_physicsSystem->AddPhysicsComponent( meteorPhysics );
+	out_entity.AttachComponent( meteorPhysics );
 
 	//We want the collider radius to be in between the possible mins and maxes (it should feel better that way)
 	float colliderRadius = s_meteoroidMinRadiuses[ hint_meteorSize ] + ( 0.5f * s_meteoroidSizeDeltas[ hint_meteorSize ] );
-	CollisionComponent2D* meteorCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, colliderRadius );
+	CollisionComponent2D* meteorCollider = m_game->m_collisionSystem->AcquireComponent();
 	meteorCollider->group = METEOROID_COLLISION_GROUP;
-	m_game->m_collisionSystem->AddCollisionComponent( meteorCollider );
+	meteorCollider->SetColliderToCircle( m_colliderCenter, colliderRadius );
+	out_entity.AttachComponent( meteorCollider );
 
-	FracturingComponent* meteorFracture = new FracturingComponent( &out_entity );
+	FracturingComponent* meteorFracture = m_game->m_fracturingSystem->AcquireComponent();
 	meteorFracture->fracturesRemaining = hint_meteorSize;
-	m_game->m_cleanupSystem->AddComponent( meteorFracture );
+	out_entity.AttachComponent( meteorFracture );
 }
 
 

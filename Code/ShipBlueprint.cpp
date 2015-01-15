@@ -3,7 +3,7 @@
 #include <Code/Graphics/MeshComponent.hpp>
 #include <Code/PhysicsComponent.hpp>
 
-#include "CollisionComponent2D.hpp"
+#include "CollisionSystem2D.hpp"
 #include "EntityTypes.h"
 #include "GameInputComponent.hpp"
 #include "MeteoroidGame.hpp"
@@ -67,29 +67,32 @@ void ShipBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame
 	out_entity.position.x = atPosition.x;
 	out_entity.position.y = atPosition.y;
 
-	MeshComponent* shipMesh = new MeshComponent( &out_entity );
+	MeshComponent* shipMesh = game->m_worldRenderingSystem->AcquireMeshComponent();
 	shipMesh->vertexDataIsFlyweight = true;
 	shipMesh->vertexData = &m_vertices;
 	shipMesh->material = m_material;
-	game->m_worldRenderingSystem->AddMeshComponent( shipMesh );
+	out_entity.AttachComponent( shipMesh );
 
-	PhysicsComponent* shipPhysics = new PhysicsComponent( &out_entity );
+	PhysicsComponent* shipPhysics = game->m_physicsSystem->AcquireComponent();
 	shipPhysics->percentAcceleratedByGravity = 0.f;
-	game->m_physicsSystem->AddPhysicsComponent( shipPhysics );
+	out_entity.AttachComponent( shipPhysics );
 
-	CollisionComponent2D* shipCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, m_colliderRadius );
+	CollisionComponent2D* shipCollider = game->m_collisionSystem->AcquireComponent();
 	shipCollider->group = SHIP_COLLISION_GROUP;
-	game->m_collisionSystem->AddCollisionComponent( shipCollider );
+	shipCollider->SetColliderToCircle( m_colliderCenter, m_colliderRadius );
+	out_entity.AttachComponent( shipCollider );
 
-	GameInputComponent* playerInput = new GameInputComponent( &out_entity );
+	GameInputComponent* playerInput = game->m_gameInputSystem->AcquireComponent();
 	playerInput->playerID = 0;
-	game->m_gameInputSystem->AddInputComponent( playerInput );
+	out_entity.AttachComponent( playerInput );
 
-	WarpComponent* warpEngine = new WarpComponent( &out_entity, 2.f );
-	game->m_warpSystem->AddWarpComponent( warpEngine );
+	WarpComponent* warpEngine = game->m_warpSystem->AcquireComponent();
+	warpEngine->secondsSinceLastWarp = warpEngine->secondsNeededBetweenWarps = 2.f;
+	out_entity.AttachComponent( warpEngine );
 
-	WeaponComponent* missilePort = new WeaponComponent( &out_entity, 0.5f );
-	game->m_weaponSystem->AddWeaponComponent( missilePort );
+	WeaponComponent* missilePort = game->m_weaponSystem->AcquireComponent();
+	missilePort->minSecondsBetweenShots = 0.75f;
+	out_entity.AttachComponent( missilePort );
 }
 
 

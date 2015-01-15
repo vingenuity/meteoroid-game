@@ -87,10 +87,11 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ENABLE_ASSERTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>../../Libraries/Vingine Core_Debug.lib;XInput.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../../Libraries/Vingine Core_Debug.lib;XInput.lib;"C:\Program Files (x86)\Visual Leak Detector\lib\Win32\vld.lib";%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -146,7 +147,7 @@
     <ClInclude Include="..\..\Code\CollisionSystem2D.hpp" />
     <ClInclude Include="..\..\Code\EntityTypes.h" />
     <ClInclude Include="..\..\Code\FracturingComponent.hpp" />
-    <ClInclude Include="..\..\Code\CleanupSystem.hpp" />
+    <ClInclude Include="..\..\Code\FracturingSystem.hpp" />
     <ClInclude Include="..\..\Code\GameEvents.hpp" />
     <ClInclude Include="..\..\Code\GameInputComponent.hpp" />
     <ClInclude Include="..\..\Code\GameInputSystem.hpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="..\..\Code\MeteoroidGame.hpp" />
     <ClInclude Include="..\..\Code\MissileBlueprint.hpp" />
     <ClInclude Include="..\..\Code\OuterSpacePhysicsSystem.hpp" />
+    <ClInclude Include="..\..\Code\RenderingSystem2D.hpp" />
     <ClInclude Include="..\..\Code\ShipBlueprint.hpp" />
     <ClInclude Include="..\..\Code\TimedDestructionComponent.hpp" />
     <ClInclude Include="..\..\Code\TimedDestructionSystem.hpp" />
@@ -166,13 +168,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\CollisionSystem2D.cpp" />
-    <ClCompile Include="..\..\Code\CleanupSystem.cpp" />
+    <ClCompile Include="..\..\Code\FracturingSystem.cpp" />
     <ClCompile Include="..\..\Code\GameInputSystem.cpp" />
     <ClCompile Include="..\..\Code\GameplayComponent.cpp" />
     <ClCompile Include="..\..\Code\MeteoroidBlueprint.cpp" />
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp" />
     <ClCompile Include="..\..\Code\MissileBlueprint.cpp" />
     <ClCompile Include="..\..\Code\OuterSpacePhysicsSystem.cpp" />
+    <ClCompile Include="..\..\Code\RenderingSystem2D.cpp" />
     <ClCompile Include="..\..\Code\ShipBlueprint.cpp" />
     <ClCompile Include="..\..\Code\TimedDestructionSystem.cpp" />
     <ClCompile Include="..\..\Code\WarpSystem.cpp" />

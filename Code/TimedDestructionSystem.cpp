@@ -1,40 +1,38 @@
 #include "TimedDestructionSystem.hpp"
 
-#include "TimedDestructionComponent.hpp"
+#include <Code/GameInterface.hpp>
 
 
 //-----------------------------------------------------------------------------------------------
 void TimedDestructionSystem::OnEndFrame()
 {
-	for( unsigned int i = 0; i < m_components.size(); ++i )
+	for( unsigned int i = 0; i < m_numComponentsInPool; ++i )
 	{
-		if( m_components[ i ]->IsReadyForDeletion() )
-		{
-			delete m_components[ i ];
-			m_components.erase( m_components.begin() + i );
-		}
+		if( !m_componentPool[i].readyForDeletion )
+			continue;
+
+		this->RelinquishComponent( &m_componentPool[i] );
 	}
 }
 
 //-----------------------------------------------------------------------------------------------
 void TimedDestructionSystem::OnUpdate( float deltaSeconds )
 {
-	for( unsigned int i = 0; i < m_components.size(); ++i )
+	for( unsigned int i = 0; i < m_numComponentsInPool; ++i )
 	{
-		float& secondsLeftInLifeOfEntity = m_components[ i ]->secondsLeftUntilDestruction;
+		if( !m_componentPool[i].IsActive() )
+			continue;
+
+		float& secondsLeftInLifeOfEntity = m_componentPool[ i ].secondsLeftUntilDestruction;
 		secondsLeftInLifeOfEntity -= deltaSeconds;
 
 		if( secondsLeftInLifeOfEntity < 0.f )
-			m_components[ i ]->owner->markedForDeletion = true;
+			GameInterface::GetEntityManager().QueueEntityForFiring( m_componentPool[ i ].owner );
 	}
 }
 
 //-----------------------------------------------------------------------------------------------
 void TimedDestructionSystem::OnDestruction()
 {
-	for( unsigned int i = 0; i < m_components.size(); ++i )
-	{
-		delete m_components[ i ];
-	}
-	m_components.clear();
+	ComponentSystem< TimedDestructionComponent >::OnDestruction();
 }

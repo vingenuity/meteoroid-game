@@ -2,11 +2,14 @@
 
 #include <Code/Events/EventCourier.hpp>
 #include <Code/Math/ConvertAngles.hpp>
+#include <Code/GameInterface.hpp>
 
 #include "GameEvents.hpp"
 #include "MeteoroidGame.hpp"
 #include "MissileBlueprint.hpp"
 #include "WeaponComponent.hpp"
+
+#include <Code/DebuggerInterface.hpp>
 
 
 #pragma region Lifecycle
@@ -21,13 +24,12 @@ void WeaponSystem::OnAttachment( SystemManager* /*manager*/ )
 //-----------------------------------------------------------------------------------------------
 void WeaponSystem::OnEndFrame()
 {
-	for( unsigned int i = 0; i < m_weaponComponents.size(); ++i )
+	for( unsigned int i = 0; i < m_numComponentsInPool; ++i )
 	{
-		if( m_weaponComponents[ i ]->IsReadyForDeletion() )
-		{
-			delete m_weaponComponents[ i ];
-			m_weaponComponents.erase( m_weaponComponents.begin() + i );
-		}
+		if( !m_componentPool[i].readyForDeletion )
+			continue;
+
+		this->RelinquishComponent( &m_componentPool[i] );
 	}
 }
 
@@ -36,11 +38,7 @@ void WeaponSystem::OnDestruction()
 {
 	delete m_missileBlueprint;
 
-	for( unsigned int i = 0; i < m_weaponComponents.size(); ++i )
-	{
-		delete m_weaponComponents[ i ];
-	}
-	m_weaponComponents.clear();
+	ComponentSystem< WeaponComponent >::OnDestruction();
 }
 #pragma endregion //Lifecycle
 
@@ -57,15 +55,14 @@ void WeaponSystem::OnWeaponFireEvent( EventDataBundle& eventData )
  	if( weapon != nullptr )
  	{
  		Entity* firedBullet = nullptr;
- 		FloatVector2 entityPosition( entity->position.x, entity->position.y );
  
- 		firedBullet = new Entity();
+  		firedBullet = GameInterface::GetEntityManager().HireEntity();
  		m_missileBlueprint->BuildEntity( *firedBullet );
 		firedBullet->position = entity->position;
 		firedBullet->orientation = entity->orientation;
 		ConvertEulerAnglesToVector( firedBullet->orientation, firedBullet->velocity );
+		firedBullet->velocity.z = 0.f;
 		firedBullet->velocity *= 120.f;
- 		m_game->AddEntity( firedBullet );
  	}
 }
 #pragma endregion //Events

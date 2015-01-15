@@ -15,10 +15,11 @@
 struct GameInputComponent : public Component
 {
 	typedef unsigned char PlayerID;
+	static const PlayerID PLAYER_None = 0;
 	typedef NamedDataBundle InputBundle;
 
 	// Constructors
-	GameInputComponent( Entity* owningEntity, PlayerID player_ID = 0 );
+	GameInputComponent( PlayerID player_ID = PLAYER_None );
 
 	// Data Members
 	PlayerID playerID;
@@ -31,9 +32,8 @@ struct GameInputComponent : public Component
 
 
 //-----------------------------------------------------------------------------------------------
-inline GameInputComponent::GameInputComponent( Entity* owningEntity, PlayerID player_ID )
-	: Component( owningEntity )
-	, playerID( player_ID )
+inline GameInputComponent::GameInputComponent( PlayerID player_ID )
+	: playerID( player_ID )
 { }
 
 #endif //INCLUDED_GAME_INPUT_COMPONENT_HPP

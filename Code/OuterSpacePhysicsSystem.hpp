@@ -3,23 +3,18 @@
 #define INCLUDED_OUTER_SPACE_PHYSICS_SYSTEM_HPP
 
 //-----------------------------------------------------------------------------------------------
-#include <vector>
-
 #include <Code/Math/FloatVector2.hpp>
-#include <Code/System.hpp>
-
-struct PhysicsComponent;
+#include <Code/ComponentSystem.hpp>
+#include <Code/PhysicsComponent.hpp>
 
 
 //-----------------------------------------------------------------------------------------------
-class OuterSpacePhysicsSystem : public System
+class OuterSpacePhysicsSystem : public ComponentSystem< PhysicsComponent >
 {
 	static const float SPACE_DRAG_FACTOR;
 
 public:
-	OuterSpacePhysicsSystem();
-
-	void AddPhysicsComponent( PhysicsComponent* physicsComponent ) { m_physComponents.push_back( physicsComponent ); }
+	OuterSpacePhysicsSystem( size_t maxPhysicsComponents );
 
 	//Lifecycle
 	void OnAttachment( SystemManager* manager );
@@ -27,16 +22,12 @@ public:
 	void OnRender() const { }
 	void OnUpdate( float deltaSeconds );
 	void OnDestruction();
-
-
-private:
-	//Data Members
-	std::vector< PhysicsComponent* > m_physComponents;
 };
 
 
 
 //-----------------------------------------------------------------------------------------------
-inline OuterSpacePhysicsSystem::OuterSpacePhysicsSystem()
+inline OuterSpacePhysicsSystem::OuterSpacePhysicsSystem( size_t maxPhysicsComponents )
+	: ComponentSystem( maxPhysicsComponents )
 { }
 #endif //INCLUDED_OUTER_SPACE_PHYSICS_SYSTEM_HPP

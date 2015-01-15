@@ -15,24 +15,19 @@ void WarpSystem::OnAttachment( SystemManager* /*manager*/ )
 //-----------------------------------------------------------------------------------------------
 void WarpSystem::OnEndFrame()
 {
-	for( unsigned int i = 0; i < m_warpComponents.size(); ++i )
+	for( unsigned int i = 0; i < m_numComponentsInPool; ++i )
 	{
-		if( m_warpComponents[ i ]->IsReadyForDeletion() )
-		{
-			delete m_warpComponents[ i ];
-			m_warpComponents.erase( m_warpComponents.begin() + i );
-		}
+		if( !m_componentPool[i].readyForDeletion )
+			continue;
+
+		this->RelinquishComponent( &m_componentPool[i] );
 	}
 }
 
 //-----------------------------------------------------------------------------------------------
 void WarpSystem::OnDestruction()
 {
-	for( unsigned int i = 0; i < m_warpComponents.size(); ++i )
-	{
-		delete m_warpComponents[ i ];
-	}
-	m_warpComponents.clear();
+	ComponentSystem< WarpComponent >::OnDestruction();
 }
 
 //-----------------------------------------------------------------------------------------------

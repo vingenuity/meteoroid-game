@@ -10,7 +10,7 @@
 struct WeaponComponent : public Component
 {
 	//Constructors
-	WeaponComponent( Entity* owningEntity, float minSecsBetweenShots );
+	WeaponComponent( float minSecsBetweenShots = 0.f );
 
 
 	//Data Members
@@ -20,9 +20,8 @@ struct WeaponComponent : public Component
 
 
 //-----------------------------------------------------------------------------------------------
-inline WeaponComponent::WeaponComponent( Entity* owningEntity, float minSecsBetweenShots )
-	: Component( owningEntity )
-	, minSecondsBetweenShots( minSecsBetweenShots )
+inline WeaponComponent::WeaponComponent( float minSecsBetweenShots )
+	: minSecondsBetweenShots( minSecsBetweenShots )
 { }
 
 #endif INCLUDED_WEAPON_COMPONENT_HPP

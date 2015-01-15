@@ -9,7 +9,7 @@
 //-----------------------------------------------------------------------------------------------
 struct GameplayComponent : public Component
 {
-	GameplayComponent( Entity* owningEntity );
+	GameplayComponent();
 
 	//Data Members
 };
@@ -17,7 +17,6 @@ struct GameplayComponent : public Component
 
 
 //-----------------------------------------------------------------------------------------------
-inline GameplayComponent::GameplayComponent( Entity* owningEntity )
-	: Component( owningEntity )
+inline GameplayComponent::GameplayComponent()
 { }
 #endif //INCLUDED_GAMEPLAY_COMPONENT_HPP

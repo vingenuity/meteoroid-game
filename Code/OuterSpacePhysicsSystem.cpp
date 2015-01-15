@@ -1,5 +1,6 @@
 #include "OuterSpacePhysicsSystem.hpp"
 
+#include <Code/AssertionError.hpp>
 #include <Code/PhysicsComponent.hpp>
 
 
@@ -16,22 +17,27 @@ void OuterSpacePhysicsSystem::OnAttachment( SystemManager* /*manager*/ )
 //-----------------------------------------------------------------------------------------------
 void OuterSpacePhysicsSystem::OnEndFrame()
 {
-	for( unsigned int i = 0; i < m_physComponents.size(); ++i )
+	for( unsigned int i = 0; i < m_numComponentsInPool; ++i )
 	{
-		if( m_physComponents[ i ]->IsReadyForDeletion() )
-		{
-			delete m_physComponents[ i ];
-			m_physComponents.erase( m_physComponents.begin() + i );
-		}
+		if( !m_componentPool[i].readyForDeletion )
+			continue;
+
+		this->RelinquishComponent( &m_componentPool[i] );
 	}
 }
 
 //-----------------------------------------------------------------------------------------------
 void OuterSpacePhysicsSystem::OnUpdate( float deltaSeconds )
 {
-	for( unsigned int i = 0; i < m_physComponents.size(); ++i )
+	for( unsigned int i = 0; i < m_numComponentsInPool; ++i )
 	{
-		Entity*& physicsOwner = m_physComponents[i]->owner;
+		if( !m_componentPool[i].IsActive() )
+			continue;
+
+		Entity*& physicsOwner = m_componentPool[i].owner;
+		FATAL_ASSERTION( physicsOwner != nullptr, "Physics System Error",
+						 "An active physics component was found with no attached entity!" );
+
 		physicsOwner->acceleration *= SPACE_DRAG_FACTOR;
 		physicsOwner->velocity += physicsOwner->acceleration * deltaSeconds;
 		physicsOwner->position += physicsOwner->velocity * deltaSeconds;
@@ -45,10 +51,6 @@ void OuterSpacePhysicsSystem::OnUpdate( float deltaSeconds )
 //-----------------------------------------------------------------------------------------------
 void OuterSpacePhysicsSystem::OnDestruction()
 {
-	for( unsigned int i = 0; i < m_physComponents.size(); ++i )
-	{
-		delete m_physComponents[ i ];
-	}
-	m_physComponents.clear();
+	ComponentSystem< PhysicsComponent >::OnDestruction();
 }
 #pragma endregion //Lifecycle

@@ -3,10 +3,10 @@
 #include <Code/Graphics/MeshComponent.hpp>
 #include <Code/PhysicsComponent.hpp>
 
-#include "CollisionComponent2D.hpp"
+#include "CollisionSystem2D.hpp"
 #include "EntityTypes.h"
 #include "MeteoroidGame.hpp"
-#include "TimedDestructionComponent.hpp"
+#include "TimedDestructionSystem.hpp"
 
 
 //-----------------------------------------------------------------------------------------------
@@ -64,22 +64,24 @@ void MissileBlueprint::BuildEntity( Entity& out_entity )
 {
 	out_entity.typeID = TYPEID_Bullet;
 
-	MeshComponent* missileMesh = new MeshComponent( &out_entity );
-	missileMesh->vertexDataIsFlyweight = true;
-	missileMesh->vertexData = &m_vertices;
-	missileMesh->material = m_material;
-	m_game->m_worldRenderingSystem->AddMeshComponent( missileMesh );
+ 	MeshComponent* missileMesh = m_game->m_worldRenderingSystem->AcquireMeshComponent();
+ 	missileMesh->vertexDataIsFlyweight = true;
+ 	missileMesh->vertexData = &m_vertices;
+ 	missileMesh->material = m_material;
+	out_entity.AttachComponent( missileMesh );
 
-	PhysicsComponent* spacePhysics = new PhysicsComponent( &out_entity );
+	PhysicsComponent* spacePhysics = m_game->m_physicsSystem->AcquireComponent();
 	spacePhysics->percentAcceleratedByGravity = 0.f;
-	m_game->m_physicsSystem->AddPhysicsComponent( spacePhysics );
+	out_entity.AttachComponent( spacePhysics );
 
-	CollisionComponent2D* missileCollider = new CollisionComponent2D( &out_entity, m_colliderCenter, m_colliderRadius );
+	CollisionComponent2D* missileCollider = m_game->m_collisionSystem->AcquireComponent();
 	missileCollider->group = 1;
-	m_game->m_collisionSystem->AddCollisionComponent( missileCollider );
+	missileCollider->SetColliderToCircle( m_colliderCenter, m_colliderRadius );
+	out_entity.AttachComponent( missileCollider );
 
-	TimedDestructionComponent* missileFailsafe = new TimedDestructionComponent( &out_entity, 4.f );
-	m_game->m_timedDestructionSystem->AddComponent( missileFailsafe );
+	TimedDestructionComponent* missileFailsafe = m_game->m_timedDestructionSystem->AcquireComponent();
+	missileFailsafe->secondsLeftUntilDestruction = 1.f;
+	out_entity.AttachComponent( missileFailsafe );
 }
 
 

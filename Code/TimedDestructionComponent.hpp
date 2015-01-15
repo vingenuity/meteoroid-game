@@ -9,7 +9,7 @@
 //-----------------------------------------------------------------------------------------------
 struct TimedDestructionComponent : public Component
 {
-	TimedDestructionComponent( Entity* owningEntity, float lifetimeSeconds );
+	TimedDestructionComponent( float lifetimeSeconds = 1.f );
 
 
 	//Data Members
@@ -17,11 +17,10 @@ struct TimedDestructionComponent : public Component
 };
 
 
+inline TimedDestructionComponent::TimedDestructionComponent( float lifetimeSeconds )
+	: secondsLeftUntilDestruction( lifetimeSeconds )
+{
 
-//-----------------------------------------------------------------------------------------------
-inline TimedDestructionComponent::TimedDestructionComponent( Entity* owningEntity, float lifetimeSeconds )
-	: Component( owningEntity )
-	, secondsLeftUntilDestruction( lifetimeSeconds )
-{ }
+}
 
 #endif //INCLUDED_TIMED_DESTRUCTION_COMPONENT_HPP

@@ -35,6 +35,7 @@ private:
 	//Data Members
 	MeteoroidGame* m_game;
 	Material* m_material;
+	VertexData* m_vertices[3];
 
 	FloatVector2 m_colliderCenter;
 };

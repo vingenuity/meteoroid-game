@@ -8,7 +8,7 @@ void CleanupSystem::OnEndFrame()
 	{
 		if( m_components[ i ]->IsReadyForDeletion() )
 		{
-			delete m_components[ i ];
+   			delete m_components[ i ];
 			m_components.erase( m_components.begin() + i );
 		}
 	}

@@ -7,6 +7,12 @@
     <Filter Include="Data">
       <UniqueIdentifier>{9dd32cef-b664-4686-bf58-6ce71c568ad2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Component + System">
+      <UniqueIdentifier>{d240d024-fe83-4059-bea2-58ade2f8f29d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Blueprints">
+      <UniqueIdentifier>{81e1bd4a-f816-4150-8d7f-24e5886fe634}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\VingineBuildPreferences.hpp">
@@ -15,100 +21,106 @@
     <ClInclude Include="..\..\Code\MeteoroidGame.hpp">
       <Filter>Code</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\OuterSpacePhysicsSystem.hpp">
-      <Filter>Code</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\ShipBlueprint.hpp">
-      <Filter>Code</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\MeteoroidBlueprint.hpp">
-      <Filter>Code</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\CollisionComponent2D.hpp">
-      <Filter>Code</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\CollisionSystem2D.hpp">
-      <Filter>Code</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\GameplayComponent.hpp">
-      <Filter>Code</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Code\GameEvents.hpp">
       <Filter>Code</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\EntityTypes.h">
       <Filter>Code</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\FracturingComponent.hpp">
-      <Filter>Code</Filter>
+    <ClInclude Include="..\..\Code\CollisionSystem2D.hpp">
+      <Filter>Code\Component + System</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\CleanupSystem.hpp">
-      <Filter>Code</Filter>
+    <ClInclude Include="..\..\Code\CollisionComponent2D.hpp">
+      <Filter>Code\Component + System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\FracturingComponent.hpp">
+      <Filter>Code\Component + System</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\GameInputComponent.hpp">
-      <Filter>Code</Filter>
+      <Filter>Code\Component + System</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\GameInputSystem.hpp">
-      <Filter>Code</Filter>
+      <Filter>Code\Component + System</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\WarpComponent.hpp">
-      <Filter>Code</Filter>
+    <ClInclude Include="..\..\Code\GameplayComponent.hpp">
+      <Filter>Code\Component + System</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\WarpSystem.hpp">
-      <Filter>Code</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\WeaponSystem.hpp">
-      <Filter>Code</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\WeaponComponent.hpp">
-      <Filter>Code</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Code\MissileBlueprint.hpp">
-      <Filter>Code</Filter>
+    <ClInclude Include="..\..\Code\OuterSpacePhysicsSystem.hpp">
+      <Filter>Code\Component + System</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\TimedDestructionComponent.hpp">
-      <Filter>Code</Filter>
+      <Filter>Code\Component + System</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Code\TimedDestructionSystem.hpp">
-      <Filter>Code</Filter>
+      <Filter>Code\Component + System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\WarpComponent.hpp">
+      <Filter>Code\Component + System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\WarpSystem.hpp">
+      <Filter>Code\Component + System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\WeaponComponent.hpp">
+      <Filter>Code\Component + System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\WeaponSystem.hpp">
+      <Filter>Code\Component + System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\MeteoroidBlueprint.hpp">
+      <Filter>Code\Blueprints</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\MissileBlueprint.hpp">
+      <Filter>Code\Blueprints</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\ShipBlueprint.hpp">
+      <Filter>Code\Blueprints</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\RenderingSystem2D.hpp">
+      <Filter>Code\Component + System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\FracturingSystem.hpp">
+      <Filter>Code\Component + System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp">
       <Filter>Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\OuterSpacePhysicsSystem.cpp">
-      <Filter>Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\ShipBlueprint.cpp">
-      <Filter>Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\MeteoroidBlueprint.cpp">
-      <Filter>Code</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Code\CollisionSystem2D.cpp">
-      <Filter>Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\GameplayComponent.cpp">
-      <Filter>Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\CleanupSystem.cpp">
-      <Filter>Code</Filter>
+      <Filter>Code\Component + System</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\GameInputSystem.cpp">
-      <Filter>Code</Filter>
+      <Filter>Code\Component + System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\WarpSystem.cpp">
-      <Filter>Code</Filter>
+    <ClCompile Include="..\..\Code\GameplayComponent.cpp">
+      <Filter>Code\Component + System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Code\WeaponSystem.cpp">
-      <Filter>Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\MissileBlueprint.cpp">
-      <Filter>Code</Filter>
+    <ClCompile Include="..\..\Code\OuterSpacePhysicsSystem.cpp">
+      <Filter>Code\Component + System</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\TimedDestructionSystem.cpp">
-      <Filter>Code</Filter>
+      <Filter>Code\Component + System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\WarpSystem.cpp">
+      <Filter>Code\Component + System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\WeaponSystem.cpp">
+      <Filter>Code\Component + System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\MeteoroidBlueprint.cpp">
+      <Filter>Code\Blueprints</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\MissileBlueprint.cpp">
+      <Filter>Code\Blueprints</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\ShipBlueprint.cpp">
+      <Filter>Code\Blueprints</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\RenderingSystem2D.cpp">
+      <Filter>Code\Component + System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\FracturingSystem.cpp">
+      <Filter>Code\Component + System</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

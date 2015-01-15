@@ -9,7 +9,7 @@
 //-----------------------------------------------------------------------------------------------
 struct FracturingComponent : public Component
 {
-	FracturingComponent( Entity* owningEntity );
+	FracturingComponent();
 
 	//Data Members
 	unsigned int fracturesRemaining;
@@ -18,8 +18,7 @@ struct FracturingComponent : public Component
 
 
 //-----------------------------------------------------------------------------------------------
-inline FracturingComponent::FracturingComponent( Entity* owningEntity )
-	: Component( owningEntity )
-	, fracturesRemaining( 0 )
+inline FracturingComponent::FracturingComponent()
+	: fracturesRemaining( 0 )
 { }
 #endif //INCLUDED_FRACTURING_COMPONENT_HPP

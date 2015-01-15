@@ -3,24 +3,20 @@
 #define INCLUDED_WARP_SYSTEM_HPP
 
 //-----------------------------------------------------------------------------------------------
-#include <vector>
-
 #include <Code/Events/EventSubscriber.hpp>
 #include <Code/Math/FloatVector2.hpp>
-#include <Code/System.hpp>
+#include <Code/ComponentSystem.hpp>
 
-struct WarpComponent;
+#include "WarpComponent.hpp"
 
 
 //-----------------------------------------------------------------------------------------------
 /************************************************************************************************
 ************************************************************************************************/
-class WarpSystem : public System, EventSubscriber
+class WarpSystem : public ComponentSystem< WarpComponent >, EventSubscriber
 {
 public:
-	WarpSystem( const FloatVector2& worldDimensions );
-
-	void AddWarpComponent( WarpComponent* warpComponent ) { m_warpComponents.push_back( warpComponent ); }
+	WarpSystem( size_t numComponentsInPool, const FloatVector2& worldDimensions );
 
 	//Lifecycle
 	void OnAttachment( SystemManager* /*manager*/ );
@@ -34,14 +30,14 @@ public:
 
 private:
 	//Data Members
-	std::vector< WarpComponent* > m_warpComponents;
 	FloatVector2 m_warpBounds;
 };
 
 
 
-inline WarpSystem::WarpSystem( const FloatVector2& worldDimensions )
-	: m_warpBounds( worldDimensions )
+inline WarpSystem::WarpSystem( size_t numComponentsInPool, const FloatVector2& worldDimensions )
+	: ComponentSystem( numComponentsInPool )
+	, m_warpBounds( worldDimensions )
 { }
 
 #endif //INCLUDED_WARP_SYSTEM_HPP

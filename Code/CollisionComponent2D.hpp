@@ -48,11 +48,12 @@ struct CollisionComponent2D : public Component
 	static const ColliderShape COLLIDER_AABB = 2;
 
 
-	//Constructors
-	CollisionComponent2D( Entity* owningEntity );
-	CollisionComponent2D( Entity* owningEntity, const FloatVector2& center, float radius );
-	CollisionComponent2D( Entity* owningEntity, const FloatVector2& lowerLeftCorner, 
-												const FloatVector2& upperRightCorner );
+	CollisionComponent2D();
+
+
+	//Helpers
+	void SetColliderToAABB(const FloatVector2& lowerLeftCorner, const FloatVector2& upperRightCorner );
+	void SetColliderToCircle( const FloatVector2& center, float radius );
 
 
 	//Data Members
@@ -63,39 +64,36 @@ struct CollisionComponent2D : public Component
 
 
 
-#pragma region Constructors
 //-----------------------------------------------------------------------------------------------
-inline CollisionComponent2D::CollisionComponent2D( Entity* owningEntity )
-	: Component( owningEntity )
+inline CollisionComponent2D::CollisionComponent2D()
+	: Component()
 	, group( GROUP_None )
 	, colliderShape( COLLIDER_None )
 { }
 
-//-----------------------------------------------------------------------------------------------
-inline CollisionComponent2D::CollisionComponent2D( Entity* owningEntity,
-													const FloatVector2& center, float radius )
-	: Component( owningEntity )
-	, group( GROUP_None )
-	, colliderShape( COLLIDER_Circle )
-{
-	collider.circle.centerX = center.x;
-	collider.circle.centerY = center.y;
-	collider.circle.radius = radius;
-}
 
+
+#pragma region Helpers
 //-----------------------------------------------------------------------------------------------
-inline CollisionComponent2D::CollisionComponent2D( Entity* owningEntity,
-												   const FloatVector2& lowerLeftCorner,
-												   const FloatVector2& upperRightCorner )
-	: Component( owningEntity )
-	, group( GROUP_None )
-	, colliderShape( COLLIDER_AABB )
+inline void CollisionComponent2D::SetColliderToAABB(const FloatVector2& lowerLeftCorner, const FloatVector2& upperRightCorner )
 {
+	colliderShape = COLLIDER_AABB;
+
 	collider.axisAlignedBox.lowerLeftCornerX  = lowerLeftCorner.x;
 	collider.axisAlignedBox.lowerLeftCornerY  = lowerLeftCorner.y;
 	collider.axisAlignedBox.upperRightCornerX = upperRightCorner.x;
 	collider.axisAlignedBox.upperRightCornerY = upperRightCorner.y;
 }
-#pragma endregion //Constructors
+
+//-----------------------------------------------------------------------------------------------
+inline void CollisionComponent2D::SetColliderToCircle( const FloatVector2& center, float radius )
+{
+	colliderShape = COLLIDER_Circle;
+
+	collider.circle.centerX = center.x;
+	collider.circle.centerY = center.y;
+	collider.circle.radius = radius;
+}
+#pragma endregion //Helpers
 
 #endif //INCLUDED_COLLISION_COMPONENT_2D

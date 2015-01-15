@@ -29,11 +29,9 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 
 	StartupGameSystems();
 
-	m_cameraman = new Entity();
-	m_entities.push_back( m_cameraman );
-	CameraComponent* m_gameCam = new CameraComponent( m_cameraman,	0.0, m_windowDimensions.x,
-																	0.0, m_windowDimensions.y,
-																	-1.0, 1.0 );
+	m_cameraman = GetEntityManager().HireEntity();
+	CameraComponent* m_gameCam = m_worldRenderingSystem->AcquireCameraComponent();
+	m_cameraman->AttachComponent( m_gameCam );
 	m_worldRenderingSystem->SetActiveCamera( m_gameCam );
 
 	//Initialize Blueprints
@@ -41,9 +39,8 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	m_shipBlueprint = new ShipBlueprint();
 
 	//Ship Creation
-	Entity* playerShip = new Entity();
+	Entity* playerShip = GetEntityManager().HireEntity();
 	m_shipBlueprint->BuildEntityIntoGame( *playerShip, this, SHIP_SPAWN_POSITION );
-	m_entities.push_back( playerShip );
 
 	SpawnInitialMeteoroids();
 }
@@ -53,12 +50,12 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 {
 	m_gameInputSystem->OnUpdate( deltaSeconds );
 
-	m_cleanupSystem->OnUpdate( deltaSeconds );
 	m_warpSystem->OnUpdate( deltaSeconds );
 	m_weaponSystem->OnUpdate( deltaSeconds );
 	m_timedDestructionSystem->OnUpdate( deltaSeconds );
 	m_physicsSystem->OnUpdate( deltaSeconds );
 	m_collisionSystem->OnUpdate( deltaSeconds );
+	m_fracturingSystem->OnUpdate( deltaSeconds );
 
 	m_worldRenderingSystem->OnUpdate( deltaSeconds );
 	m_debugUIRenderingSystem->OnUpdate( deltaSeconds );
@@ -74,12 +71,12 @@ void MeteoroidGame::DoRender() const
 
 	m_gameInputSystem->OnRender();
 
-	m_cleanupSystem->OnRender();
 	m_warpSystem->OnRender();
 	m_weaponSystem->OnRender();
 	m_timedDestructionSystem->OnRender();
 	m_physicsSystem->OnRender();
 	m_collisionSystem->OnRender();
+	m_fracturingSystem->OnRender();
 
 	m_worldRenderingSystem->OnRender();
 	m_debugUIRenderingSystem->OnRender();
@@ -88,24 +85,16 @@ void MeteoroidGame::DoRender() const
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::DoAtEndOfFrame()
 {
-	for( unsigned int i = 0; i < m_entities.size(); ++i )
-	{
-		if( m_entities[ i ]->markedForDeletion )
-		{
-			delete m_entities[ i ];
-			m_entities.erase( m_entities.begin() + i );
-			--i;
-		}
-	}
+	GameInterface::DoAtEndOfFrame();
 
 	m_gameInputSystem->OnEndFrame();
 
-	m_cleanupSystem->OnEndFrame();
 	m_warpSystem->OnEndFrame();
 	m_weaponSystem->OnEndFrame();
 	m_timedDestructionSystem->OnEndFrame();
 	m_physicsSystem->OnEndFrame();
 	m_collisionSystem->OnEndFrame();
+	m_fracturingSystem->OnEndFrame();
 
 	m_worldRenderingSystem->OnEndFrame();
 	m_debugUIRenderingSystem->OnEndFrame();
@@ -114,23 +103,17 @@ void MeteoroidGame::DoAtEndOfFrame()
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::DoBeforeEngineDestruction()
 {
-	//Entities MUST be cleaned up first! (they want to mark components as dead for general cleanup)
-	for( unsigned int i = 0; i < m_entities.size(); ++i )
-	{
-		delete m_entities[ i ];
-	}
-	m_entities.clear();
-
+	GameInterface::DoBeforeEngineDestruction();
 
 	//Afterwards, the systems may clean up their components
-	m_cleanupSystem->OnDestruction();
-	delete m_cleanupSystem;
-
 	m_collisionSystem->OnDestruction();
 	delete m_collisionSystem;
 
 	m_debugUIRenderingSystem->OnDestruction();
 	delete m_debugUIRenderingSystem;
+
+	m_fracturingSystem->OnDestruction();
+	delete m_fracturingSystem;
 
 	m_gameInputSystem->OnDestruction();
 	delete m_gameInputSystem;
@@ -201,18 +184,17 @@ void MeteoroidGame::HandleEntityDestructionOrReuse( Entity*& entity )
 
 				for( unsigned int i = 0; i < 4; ++i )
 				{
-					spawnedMeteor = new Entity();
+					spawnedMeteor = GetEntityManager().HireEntity();
 					m_meteoroidBlueprint->hint_spawnPosition = spawnPosition;
 					m_meteoroidBlueprint->hint_meteorSize = fracture->fracturesRemaining;
 					m_meteoroidBlueprint->BuildEntity( *spawnedMeteor );
-					m_entities.push_back( spawnedMeteor );
 				}
 			}
-			entity->markedForDeletion = true;
+			GetEntityManager().QueueEntityForFiring( entity );
 		}
 		break;
 	default:
-		entity->markedForDeletion = true;
+		GetEntityManager().QueueEntityForFiring( entity );
 		break;
 	}
 }
@@ -223,46 +205,45 @@ void MeteoroidGame::SpawnInitialMeteoroids()
 	Entity* spawnedMeteor = nullptr;
 	FloatVector2 spawnPosition;
 
-	for( unsigned int i = 0; i < 15; ++i )
+	for( unsigned int i = 0; i < 5; ++i )
 	{
-		spawnedMeteor = new Entity();
+		spawnedMeteor = GetEntityManager().HireEntity();
 		spawnPosition.x = GetRandomFloatBetweenZeroandOne() * m_windowDimensions.x;
 		spawnPosition.y = GetRandomFloatBetweenZeroandOne() * m_windowDimensions.y;
 		m_meteoroidBlueprint->hint_spawnPosition = spawnPosition;
 		m_meteoroidBlueprint->hint_meteorSize = static_cast< unsigned int >( GetRandomIntBetween( 0, MeteoroidBlueprint::NUM_METEOROID_SIZES ) );
 		m_meteoroidBlueprint->BuildEntity( *spawnedMeteor );
-		m_entities.push_back( spawnedMeteor );
 	}
 }
 
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::StartupGameSystems()
 {
-	m_cleanupSystem = new CleanupSystem();
-	m_cleanupSystem->OnAttachment( nullptr );
-
-	m_collisionSystem = new CollisionSystem2D();
+	m_collisionSystem = new CollisionSystem2D( 100 );
 	m_collisionSystem->OnAttachment( nullptr );
 
 	m_debugUIRenderingSystem = new DebugDrawingSystem2D( 0.f, static_cast<float>( m_windowDimensions.x ), 
 		0.f, static_cast<float>( m_windowDimensions.y ) );
 	m_debugUIRenderingSystem->OnAttachment( nullptr );
 
-	m_gameInputSystem = new GameInputSystem();
+	m_gameInputSystem = new GameInputSystem( 1 );
 	m_gameInputSystem->OnAttachment( nullptr );
 
-	m_physicsSystem = new OuterSpacePhysicsSystem();
+	m_fracturingSystem = new FracturingSystem( 100 );
+	m_fracturingSystem->OnAttachment( nullptr );
+
+	m_physicsSystem = new OuterSpacePhysicsSystem( 100 );
 	m_physicsSystem->OnAttachment( nullptr );
 
-	m_worldRenderingSystem = new PerspectiveRenderingSystem( 45.0, (double)m_windowDimensions.x/m_windowDimensions.y, 0.1, 1000 );
+	m_worldRenderingSystem = new RenderingSystem2D( 1, 100 );
 	m_worldRenderingSystem->OnAttachment( nullptr );
 
-	m_timedDestructionSystem = new TimedDestructionSystem();
+	m_timedDestructionSystem = new TimedDestructionSystem( 100 );
 	m_timedDestructionSystem->OnAttachment( nullptr );
 
-	m_warpSystem = new WarpSystem( FloatVector2( (float)m_windowDimensions.x, (float)m_windowDimensions.y ) );
+	m_warpSystem = new WarpSystem( 1, FloatVector2( (float)m_windowDimensions.x, (float)m_windowDimensions.y ) );
 	m_warpSystem->OnAttachment( nullptr );
 
-	m_weaponSystem = new WeaponSystem( this );
+	m_weaponSystem = new WeaponSystem( 1, this );
 	m_weaponSystem->OnAttachment( nullptr );
 }

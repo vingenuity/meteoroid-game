@@ -3,14 +3,13 @@
 #define INCLUDED_WEAPON_SYSTEM_HPP
 
 //-----------------------------------------------------------------------------------------------
-#include <vector>
-
 #include <Code/Events/EventSubscriber.hpp>
-#include <Code/System.hpp>
+#include <Code/ComponentSystem.hpp>
+
+#include "WeaponComponent.hpp"
 
 class MeteoroidGame;
 class MissileBlueprint;
-struct WeaponComponent;
 
 
 //-----------------------------------------------------------------------------------------------
@@ -19,12 +18,10 @@ The weapon system is used to manage the ability of entities to shoot.
 
 Currently, only the Ship and UFO have this ability, but it might be fun to have trap asteroids...
 ************************************************************************************************/
-class WeaponSystem : public System, EventSubscriber
+class WeaponSystem : public ComponentSystem< WeaponComponent >, EventSubscriber
 {
 public:
-	WeaponSystem( MeteoroidGame* game );
-
-	void AddWeaponComponent( WeaponComponent* weapon ) { m_weaponComponents.push_back( weapon ); }
+	WeaponSystem( size_t numComponentsInPool, MeteoroidGame* game );
 
 	//Lifecycle
 	void OnAttachment( SystemManager* /*manager*/ );
@@ -39,7 +36,6 @@ public:
 
 
 private:
-	std::vector< WeaponComponent* > m_weaponComponents;
 	MeteoroidGame* m_game;
 	MissileBlueprint* m_missileBlueprint;
 };
@@ -47,8 +43,9 @@ private:
 
 
 //-----------------------------------------------------------------------------------------------
-inline WeaponSystem::WeaponSystem( MeteoroidGame* game )
-	: m_game( game )
+inline WeaponSystem::WeaponSystem( size_t numComponentsInPool, MeteoroidGame* game )
+	: ComponentSystem( numComponentsInPool )
+	, m_game( game )
 	, m_missileBlueprint( nullptr )
 { }
 

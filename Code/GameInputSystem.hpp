@@ -3,19 +3,16 @@
 #define INCLUDED_GAME_INPUT_SYSTEM_HPP
 
 //-----------------------------------------------------------------------------------------------
-#include <vector>
-#include <Code/System.hpp>
+#include <Code/ComponentSystem.hpp>
 
 #include "GameInputComponent.hpp"
 
 
 //-----------------------------------------------------------------------------------------------
-class GameInputSystem : public System
+class GameInputSystem : public ComponentSystem< GameInputComponent >
 {
 public:
-	GameInputSystem() { }
-
-	void AddInputComponent( GameInputComponent* component ) { m_inputComponents.push_back( component ); }
+	GameInputSystem( size_t maxInputComponentsInPool );
 
 	//Lifecycle
 	void OnAttachment( SystemManager* /*manager*/ ) { }
@@ -23,11 +20,13 @@ public:
 	void OnRender() const { }
 	void OnUpdate( float deltaSeconds );
 	void OnDestruction();
-
-
-private:
-	//Data Members
-	std::vector< GameInputComponent* > m_inputComponents;
 };
+
+
+
+//-----------------------------------------------------------------------------------------------
+inline GameInputSystem::GameInputSystem( size_t maxInputComponentsInPool )
+	: ComponentSystem( maxInputComponentsInPool )
+{ }
 
 #endif //INCLUDED_GAME_INPUT_SYSTEM_HPP

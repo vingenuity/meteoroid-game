@@ -10,13 +10,12 @@
 //-----------------------------------------------------------------------------------------------
 void GameInputSystem::OnEndFrame()
 {
-	for( unsigned int i = 0; i < m_inputComponents.size(); ++i )
+	for( unsigned int i = 0; i < m_numComponentsInPool; ++i )
 	{
-		if( m_inputComponents[ i ]->IsReadyForDeletion() )
-		{
-			delete m_inputComponents[ i ];
-			m_inputComponents.erase( m_inputComponents.begin() + i );
-		}
+		if( !m_componentPool[i].readyForDeletion )
+			continue;
+
+		this->RelinquishComponent( &m_componentPool[i] );
 	}
 }
 
@@ -25,9 +24,12 @@ void GameInputSystem::OnUpdate( float /*deltaSeconds*/ )
 {
 	FloatVector3 entityHeading;
 
-	for( unsigned int i = 0; i < m_inputComponents.size(); ++i )
+	for( unsigned int i = 0; i < m_numComponentsInPool; ++i )
 	{
-		Entity*& controlledEntity = m_inputComponents[i]->owner;
+		if( !m_componentPool[i].IsActive() )
+			continue;
+
+		Entity*& controlledEntity = m_componentPool[i].owner;
 		if( controlledEntity == nullptr )
 			continue;
 
@@ -57,9 +59,5 @@ void GameInputSystem::OnUpdate( float /*deltaSeconds*/ )
 //-----------------------------------------------------------------------------------------------
 void GameInputSystem::OnDestruction()
 {
-	for( unsigned int i = 0; i < m_inputComponents.size(); ++i )
-	{
-		delete m_inputComponents[ i ];
-	}
-	m_inputComponents.clear();
+	ComponentSystem< GameInputComponent >::OnDestruction();
 }

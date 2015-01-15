@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------------------------
 struct WarpComponent : public Component
 {
-	WarpComponent( Entity* owningEntity, float minSecondsBetweenWarps );
+	WarpComponent( float minSecondsBetweenWarps = 0.f );
 
 
 	//Data Members
@@ -19,9 +19,8 @@ struct WarpComponent : public Component
 
 
 //-----------------------------------------------------------------------------------------------
-inline WarpComponent::WarpComponent( Entity* owningEntity, float minSecondsBetweenWarps )
-	: Component( owningEntity )
-	, secondsNeededBetweenWarps( minSecondsBetweenWarps )
+inline WarpComponent::WarpComponent( float minSecondsBetweenWarps )
+	: secondsNeededBetweenWarps( minSecondsBetweenWarps )
 	, secondsSinceLastWarp( secondsNeededBetweenWarps )
 { }
 
