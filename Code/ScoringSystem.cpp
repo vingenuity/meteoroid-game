@@ -67,20 +67,21 @@ void ScoringSystem::OnEntityDestruction( EventDataBundle& eventData )
 	ScoringComponent* entityScoringComponent = entityBeingDestroyed->FindAttachedComponentOfType< ScoringComponent >();
 	if( entityScoringComponent != nullptr && entityScoringComponent->lastCollidedEntity != nullptr )
 	{
-		unsigned int scoreIncrease = entityScoringComponent->pointValue;
-		ScoringComponent* collidingEntityScoring = entityScoringComponent->lastCollidedEntity->FindAttachedComponentOfType< ScoringComponent >();
-		if( collidingEntityScoring != nullptr )
-		{
-			collidingEntityScoring->currentScore += scoreIncrease;
+		// The entity loses points for dying
+		entityScoringComponent->currentScore -= entityScoringComponent->pointValue;
 
-			if( entityScoringComponent->lastCollidedEntity->creator != nullptr )
-			{
-				collidingEntityScoring = entityScoringComponent->lastCollidedEntity->creator->FindAttachedComponentOfType< ScoringComponent >();
-				if( collidingEntityScoring != nullptr )
-				{
-					collidingEntityScoring->currentScore += scoreIncrease;
-				}
-			}
+
+		//Then passes points to its killer as well as anyone who created its killer
+		unsigned int scoreIncrease = entityScoringComponent->pointValue;
+
+		Entity*& opposingEntity = entityScoringComponent->lastCollidedEntity;
+		while( opposingEntity != nullptr )
+		{
+			ScoringComponent* opposingEntityScoring = opposingEntity->FindAttachedComponentOfType< ScoringComponent >();
+			if( opposingEntityScoring != nullptr )
+				opposingEntityScoring->currentScore += scoreIncrease;
+
+			opposingEntity = opposingEntity->creator;
 		}
 	}
 }

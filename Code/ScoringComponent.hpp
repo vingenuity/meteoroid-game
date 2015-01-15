@@ -14,8 +14,8 @@ struct ScoringComponent : public Component
 
 
 	//Data Members
-	unsigned int pointValue;
-	unsigned int currentScore;
+	int pointValue;
+	int currentScore;
 	Entity* lastCollidedEntity;
 };
 
