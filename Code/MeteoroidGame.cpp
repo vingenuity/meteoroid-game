@@ -58,6 +58,16 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 	m_fracturingSystem->OnUpdate( deltaSeconds );
 	m_scoringSystem->OnUpdate( deltaSeconds );
 
+	unsigned int meteoroidCount = 0;
+	ConstEntityIterator entity = m_activeEntityManager->GetPoolStart();
+	for( ; entity != m_activeEntityManager->GetPoolEnd(); ++entity )
+	{
+		if( entity->IsHired() && entity->typeID == TYPEID_Meteoroid )
+			++meteoroidCount;
+	}
+	if( meteoroidCount == 0 )
+		SpawnInitialMeteoroids();
+
 	m_worldRenderingSystem->OnUpdate( deltaSeconds );
 	m_debugUIRenderingSystem->OnUpdate( deltaSeconds );
 }
