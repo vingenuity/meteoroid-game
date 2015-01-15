@@ -42,7 +42,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	Entity* playerShip = GetEntityManager().HireEntity();
 	m_shipBlueprint->BuildEntityIntoGame( *playerShip, this, SHIP_SPAWN_POSITION );
 
-	SpawnInitialMeteoroids();
+	StartNewLevel();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -58,15 +58,8 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 	m_fracturingSystem->OnUpdate( deltaSeconds );
 	m_scoringSystem->OnUpdate( deltaSeconds );
 
-	unsigned int meteoroidCount = 0;
-	ConstEntityIterator entity = m_activeEntityManager->GetPoolStart();
-	for( ; entity != m_activeEntityManager->GetPoolEnd(); ++entity )
-	{
-		if( entity->IsHired() && entity->typeID == TYPEID_Meteoroid )
-			++meteoroidCount;
-	}
-	if( meteoroidCount == 0 )
-		SpawnInitialMeteoroids();
+	if( IsLevelComplete() )
+		StartNewLevel();
 
 	m_worldRenderingSystem->OnUpdate( deltaSeconds );
 	m_debugUIRenderingSystem->OnUpdate( deltaSeconds );
@@ -173,6 +166,7 @@ void MeteoroidGame::OnCollisionEvent( EventDataBundle& eventData )
 
 
 
+#pragma region Helpers
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::HandleEntityDestructionOrReuse( Entity*& entity )
 {
@@ -216,12 +210,25 @@ void MeteoroidGame::HandleEntityDestructionOrReuse( Entity*& entity )
 }
 
 //-----------------------------------------------------------------------------------------------
-void MeteoroidGame::SpawnInitialMeteoroids()
+bool MeteoroidGame::IsLevelComplete() const
+{
+	unsigned int meteoroidCount = 0;
+	ConstEntityIterator entity = m_activeEntityManager->GetPoolStart();
+	for( ; entity != m_activeEntityManager->GetPoolEnd(); ++entity )
+	{
+		if( entity->IsHired() && entity->typeID == TYPEID_Meteoroid )
+			++meteoroidCount;
+	}
+	return ( meteoroidCount <= 0 );
+}
+
+//-----------------------------------------------------------------------------------------------
+void MeteoroidGame::StartNewLevel()
 {
 	Entity* spawnedMeteor = nullptr;
 	FloatVector2 spawnPosition;
 
-	for( unsigned int i = 0; i < 5; ++i )
+	for( unsigned int i = 0; i < m_numStartingAsteroidsToSpawn; ++i )
 	{
 		spawnedMeteor = GetEntityManager().HireEntity();
 		spawnPosition.x = GetRandomFloatBetweenZeroandOne() * m_windowDimensions.x;
@@ -230,6 +237,11 @@ void MeteoroidGame::SpawnInitialMeteoroids()
 		m_meteoroidBlueprint->hint_meteorSize = static_cast< unsigned int >( GetRandomIntBetween( 0, MeteoroidBlueprint::NUM_METEOROID_SIZES ) );
 		m_meteoroidBlueprint->BuildEntity( *spawnedMeteor );
 	}
+
+	++m_levelNumber;
+	m_numStartingAsteroidsToSpawn += 2;
+	m_startingAsteroidsMinSpeed += 10.f;
+	m_startingAsteroidsMaxSpeed += 20.f;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -266,3 +278,4 @@ void MeteoroidGame::StartupGameSystems()
 	m_weaponSystem = new WeaponSystem( 1, this );
 	m_weaponSystem->OnAttachment( nullptr );
 }
+#pragma endregion //Helpers

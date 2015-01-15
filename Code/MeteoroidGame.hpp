@@ -61,15 +61,23 @@ private:
 	//Events
 	void OnCollisionEvent( EventDataBundle& eventData );
 
+	//Helpers
 	void HandleEntityDestructionOrReuse( Entity*& entity );
-	void SpawnInitialMeteoroids();
+	bool IsLevelComplete() const;
+	void StartNewLevel();
 	void StartupGameSystems();
-	IntVector2 m_windowDimensions;
 
 	//Game Pointers
 	Entity* m_cameraman;
 	MeteoroidBlueprint* m_meteoroidBlueprint;
 	ShipBlueprint* m_shipBlueprint;
+
+	//Gameplay data
+	IntVector2 m_windowDimensions;
+	unsigned int m_levelNumber;
+	unsigned int m_numStartingAsteroidsToSpawn;
+	float m_startingAsteroidsMinSpeed;
+	float m_startingAsteroidsMaxSpeed;
 };
 
 
@@ -80,8 +88,7 @@ extern MeteoroidGame g_game;
 
 //-----------------------------------------------------------------------------------------------
 inline MeteoroidGame::MeteoroidGame()
-	: m_windowDimensions()
-	, m_collisionSystem( nullptr )
+	: m_collisionSystem( nullptr )
 	, m_debugUIRenderingSystem( nullptr )
 	, m_fracturingSystem( nullptr )
 	, m_gameInputSystem( nullptr )
@@ -91,8 +98,15 @@ inline MeteoroidGame::MeteoroidGame()
 	, m_timedDestructionSystem( nullptr )
 	, m_weaponSystem( nullptr )
 	, m_warpSystem( nullptr )
+
 	, m_cameraman( nullptr )
 	, m_meteoroidBlueprint( nullptr )
 	, m_shipBlueprint( nullptr )
+
+	, m_windowDimensions()
+	, m_levelNumber( 0 )
+	, m_numStartingAsteroidsToSpawn( 4 )
+	, m_startingAsteroidsMinSpeed( 0.f )
+	, m_startingAsteroidsMaxSpeed( 20.f )
 { }
 #endif //INCLUDED_METEOROID_GAME_HPP
