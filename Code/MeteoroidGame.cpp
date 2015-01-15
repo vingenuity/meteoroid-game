@@ -24,10 +24,10 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 {
 	m_windowDimensions.x = windowWidth;
 	m_windowDimensions.y = windowHeight;
-	
-	EventCourier::SubscribeForEvent( EVENT_Collision, EventObserver::GenerateFromOneArgFunction< MeteoroidGame, &MeteoroidGame::OnCollisionEvent >( this ) );
 
 	StartupGameSystems();
+
+	EventCourier::SubscribeForEvent( EVENT_Collision, EventObserver::GenerateFromOneArgFunction< MeteoroidGame, &MeteoroidGame::OnCollisionEvent >( this ) );
 
 	m_cameraman = GetEntityManager().HireEntity();
 	CameraComponent* m_gameCam = m_worldRenderingSystem->AcquireCameraComponent();
@@ -56,6 +56,7 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 	m_physicsSystem->OnUpdate( deltaSeconds );
 	m_collisionSystem->OnUpdate( deltaSeconds );
 	m_fracturingSystem->OnUpdate( deltaSeconds );
+	m_scoringSystem->OnUpdate( deltaSeconds );
 
 	m_worldRenderingSystem->OnUpdate( deltaSeconds );
 	m_debugUIRenderingSystem->OnUpdate( deltaSeconds );
@@ -77,6 +78,7 @@ void MeteoroidGame::DoRender() const
 	m_physicsSystem->OnRender();
 	m_collisionSystem->OnRender();
 	m_fracturingSystem->OnRender();
+	m_scoringSystem->OnRender();
 
 	m_worldRenderingSystem->OnRender();
 	m_debugUIRenderingSystem->OnRender();
@@ -95,6 +97,7 @@ void MeteoroidGame::DoAtEndOfFrame()
 	m_physicsSystem->OnEndFrame();
 	m_collisionSystem->OnEndFrame();
 	m_fracturingSystem->OnEndFrame();
+	m_scoringSystem->OnEndFrame();
 
 	m_worldRenderingSystem->OnEndFrame();
 	m_debugUIRenderingSystem->OnEndFrame();
@@ -120,6 +123,9 @@ void MeteoroidGame::DoBeforeEngineDestruction()
 
 	m_physicsSystem->OnDestruction();
 	delete m_physicsSystem;
+
+	m_scoringSystem->OnDestruction();
+	delete m_scoringSystem;
 
 	m_worldRenderingSystem->OnDestruction();
 	delete m_worldRenderingSystem;
@@ -234,6 +240,9 @@ void MeteoroidGame::StartupGameSystems()
 
 	m_physicsSystem = new OuterSpacePhysicsSystem( 100 );
 	m_physicsSystem->OnAttachment( nullptr );
+
+	m_scoringSystem = new ScoringSystem( 100 );
+	m_scoringSystem->OnAttachment( nullptr );
 
 	m_worldRenderingSystem = new RenderingSystem2D( 1, 100 );
 	m_worldRenderingSystem->OnAttachment( nullptr );

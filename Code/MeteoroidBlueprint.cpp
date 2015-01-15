@@ -80,6 +80,10 @@ void MeteoroidBlueprint::BuildEntity( Entity& out_entity )
 	FracturingComponent* meteorFracture = m_game->m_fracturingSystem->AcquireComponent();
 	meteorFracture->fracturesRemaining = hint_meteorSize;
 	out_entity.AttachComponent( meteorFracture );
+
+	ScoringComponent* meteorScore = m_game->m_scoringSystem->AcquireComponent();
+	meteorScore->pointValue = 100;
+	out_entity.AttachComponent( meteorScore );
 }
 
 

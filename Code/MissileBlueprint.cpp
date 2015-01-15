@@ -82,6 +82,10 @@ void MissileBlueprint::BuildEntity( Entity& out_entity )
 	TimedDestructionComponent* missileFailsafe = m_game->m_timedDestructionSystem->AcquireComponent();
 	missileFailsafe->secondsLeftUntilDestruction = 1.f;
 	out_entity.AttachComponent( missileFailsafe );
+
+	ScoringComponent* missileScore = m_game->m_scoringSystem->AcquireComponent();
+	missileScore->pointValue = 1;
+	out_entity.AttachComponent( missileScore );
 }
 
 
