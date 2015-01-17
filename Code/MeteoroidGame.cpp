@@ -177,10 +177,21 @@ void MeteoroidGame::HandleEntityDestructionOrReuse( Entity*& entity )
 	switch( entity->typeID )
 	{
 	case TYPEID_Ship:
-		entity->position.x = SHIP_SPAWN_POSITION.x;
-		entity->position.y = SHIP_SPAWN_POSITION.y;
+		entity->position.x = -500.f;
+		entity->position.y = -500.f;
 		entity->velocity = FloatVector3( 0.f, 0.f, 0.f );
 		entity->acceleration = FloatVector3( 0.f, 0.f, 0.f );
+
+		--m_playerLivesRemaining;
+		if( IsGameOver() )
+		{
+			//Change our game mode
+		}
+		else
+		{
+			entity->position.x = SHIP_SPAWN_POSITION.x;
+			entity->position.y = SHIP_SPAWN_POSITION.y;
+		}
 		break;
 	case TYPEID_Meteoroid:
 		{
@@ -207,6 +218,12 @@ void MeteoroidGame::HandleEntityDestructionOrReuse( Entity*& entity )
 		GetEntityManager().QueueEntityForFiring( entity );
 		break;
 	}
+}
+
+//-----------------------------------------------------------------------------------------------
+bool MeteoroidGame::IsGameOver() const
+{
+	return ( m_playerLivesRemaining <= 0 );
 }
 
 //-----------------------------------------------------------------------------------------------

@@ -63,6 +63,7 @@ private:
 
 	//Helpers
 	void HandleEntityDestructionOrReuse( Entity*& entity );
+	bool IsGameOver() const;
 	bool IsLevelComplete() const;
 	void StartNewLevel();
 	void StartupGameSystems();
@@ -74,6 +75,7 @@ private:
 
 	//Gameplay data
 	IntVector2 m_windowDimensions;
+	unsigned int m_playerLivesRemaining;
 	unsigned int m_levelNumber;
 	unsigned int m_numStartingAsteroidsToSpawn;
 	float m_startingAsteroidsMinSpeed;
@@ -104,6 +106,7 @@ inline MeteoroidGame::MeteoroidGame()
 	, m_shipBlueprint( nullptr )
 
 	, m_windowDimensions()
+	, m_playerLivesRemaining( 3 )
 	, m_levelNumber( 0 )
 	, m_numStartingAsteroidsToSpawn( 4 )
 	, m_startingAsteroidsMinSpeed( 0.f )
