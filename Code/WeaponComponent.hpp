@@ -24,4 +24,4 @@ inline WeaponComponent::WeaponComponent( float minSecsBetweenShots )
 	: minSecondsBetweenShots( minSecsBetweenShots )
 { }
 
-#endif INCLUDED_WEAPON_COMPONENT_HPP
+#endif //INCLUDED_WEAPON_COMPONENT_HPP

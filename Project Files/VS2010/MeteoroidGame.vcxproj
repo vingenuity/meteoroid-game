@@ -113,7 +113,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\..\vingine-core</AdditionalIncludeDirectories>
-      <AdditionalOptions>-Wno-invalid-offsetof %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Wno-invalid-offsetof -s ALLOW_MEMORY_GROWTH=1 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EmbedFile>
@@ -151,6 +151,8 @@
     <ClInclude Include="..\..\Code\GameEvents.hpp" />
     <ClInclude Include="..\..\Code\GameInputComponent.hpp" />
     <ClInclude Include="..\..\Code\GameInputSystem.hpp" />
+    <ClInclude Include="..\..\Code\NumberDisplayElement.hpp" />
+    <ClInclude Include="..\..\Code\UISystem.hpp" />
     <ClInclude Include="..\..\Code\MeteoroidBlueprint.hpp" />
     <ClInclude Include="..\..\Code\MeteoroidGame.hpp" />
     <ClInclude Include="..\..\Code\MissileBlueprint.hpp" />
@@ -161,6 +163,7 @@
     <ClInclude Include="..\..\Code\ShipBlueprint.hpp" />
     <ClInclude Include="..\..\Code\TimedDestructionComponent.hpp" />
     <ClInclude Include="..\..\Code\TimedDestructionSystem.hpp" />
+    <ClInclude Include="..\..\Code\UIElement.hpp" />
     <ClInclude Include="..\..\Code\VingineBuildPreferences.hpp" />
     <ClInclude Include="..\..\Code\WarpComponent.hpp" />
     <ClInclude Include="..\..\Code\WarpSystem.hpp" />
@@ -171,6 +174,8 @@
     <ClCompile Include="..\..\Code\CollisionSystem2D.cpp" />
     <ClCompile Include="..\..\Code\FracturingSystem.cpp" />
     <ClCompile Include="..\..\Code\GameInputSystem.cpp" />
+    <ClCompile Include="..\..\Code\NumberDisplayElement.cpp" />
+    <ClCompile Include="..\..\Code\UISystem.cpp" />
     <ClCompile Include="..\..\Code\MeteoroidBlueprint.cpp" />
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp" />
     <ClCompile Include="..\..\Code\MissileBlueprint.cpp" />

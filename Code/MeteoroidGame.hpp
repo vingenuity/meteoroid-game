@@ -19,6 +19,7 @@
 #include "RenderingSystem2D.hpp"
 #include "ScoringSystem.hpp"
 #include "TimedDestructionSystem.hpp"
+#include "UISystem.hpp"
 #include "WarpSystem.hpp"
 #include "WeaponSystem.hpp"
 
@@ -53,6 +54,7 @@ public:
 	RenderingSystem2D* m_worldRenderingSystem;
 	ScoringSystem* m_scoringSystem;
 	TimedDestructionSystem* m_timedDestructionSystem;
+	UISystem* m_UISystem;
 	WarpSystem* m_warpSystem;
 	WeaponSystem* m_weaponSystem;
 
@@ -98,6 +100,7 @@ inline MeteoroidGame::MeteoroidGame()
 	, m_scoringSystem( nullptr )
 	, m_worldRenderingSystem( nullptr )
 	, m_timedDestructionSystem( nullptr )
+	, m_UISystem( nullptr )
 	, m_weaponSystem( nullptr )
 	, m_warpSystem( nullptr )
 
