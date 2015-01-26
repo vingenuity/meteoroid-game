@@ -53,6 +53,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
     <IncludePath>..\..\..\vingine-core\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\..\Build\Win\</OutDir>
@@ -91,7 +92,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>../../Libraries/Vingine Core_Debug.lib;XInput.lib;"C:\Program Files (x86)\Visual Leak Detector\lib\Win32\vld.lib";%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../../Libraries/Vingine Core_Debug.lib;../../Libraries/fmod_vc.lib;../../Libraries/OpenAL32.lib;XInput.lib;"C:\Program Files (x86)\Visual Leak Detector\lib\Win32\vld.lib";%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -113,7 +114,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\..\vingine-core</AdditionalIncludeDirectories>
-      <AdditionalOptions>-Wno-invalid-offsetof -s ALLOW_MEMORY_GROWTH=1 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Wno-invalid-offsetof %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EmbedFile>
@@ -124,6 +125,7 @@
     </Link>
     <Link>
       <AdditionalDependencies>..\..\Libraries\Vingine Core_$(Configuration).bc</AdditionalDependencies>
+      <AdditionalOptions>-s TOTAL_MEMORY=90000000 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Emscripten'">

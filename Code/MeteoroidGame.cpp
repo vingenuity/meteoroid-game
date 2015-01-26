@@ -7,7 +7,6 @@
 #include <Code/CameraComponent.hpp>
 #include <Code/Entity.hpp>
 
-
 #include "EntityTypes.h"
 #include "FracturingComponent.hpp"
 #include "GameEvents.hpp"
@@ -64,6 +63,8 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	m_UISystem->ConnectUIElement( scoreDisplay );
 
 	StartNewLevel();
+
+	m_explosionSound = AudioInterface::GetOrLoadSound( "Data/Audio/boom.wav" );
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -245,6 +246,7 @@ void MeteoroidGame::HandleEntityDestructionOrReuse( Entity*& entity )
 		GetEntityManager().QueueEntityForFiring( entity );
 		break;
 	}
+	AudioInterface::PlaySoundThroughEmitter( m_explosionSound );
 }
 
 //-----------------------------------------------------------------------------------------------

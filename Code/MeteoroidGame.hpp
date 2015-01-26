@@ -5,11 +5,10 @@
 //-----------------------------------------------------------------------------------------------
 #include <vector>
 
+#include <Code/Audio/AudioInterface.hpp>
 #include <Code/Graphics/DebugDrawingSystem2D.hpp>
-
 #include <Code/Math/FloatVector3.hpp>
 #include <Code/Math/IntVector2.hpp>
-
 #include <Code/GameInterface.hpp>
 
 #include "CollisionSystem2D.hpp"
@@ -82,6 +81,7 @@ private:
 	unsigned int m_numStartingAsteroidsToSpawn;
 	float m_startingAsteroidsMinSpeed;
 	float m_startingAsteroidsMaxSpeed;
+	AudioInterface::SoundID m_explosionSound;
 };
 
 

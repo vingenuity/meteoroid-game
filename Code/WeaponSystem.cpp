@@ -54,6 +54,7 @@ void WeaponSystem::OnWeaponFireEvent( EventDataBundle& eventData )
  	WeaponComponent* weapon = entity->FindAttachedComponentOfType< WeaponComponent >();
  	if( weapon != nullptr )
  	{
+		AudioInterface::PlaySoundThroughEmitter( weapon->firingSound );
  		Entity* firedBullet = nullptr;
  
   		firedBullet = GameInterface::GetEntityManager().HireEntity();
