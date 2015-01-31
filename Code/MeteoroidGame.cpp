@@ -48,13 +48,13 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 
 	Renderer* renderer = Renderer::GetRenderer();
 	Material* uiTextMaterial = renderer->CreateOrGetNewMaterial( L"GameUITextMaterial" );
-	uiTextMaterial->SetShaderProgram( ShaderProgram::CreateOrGetShaderProgram( "Data/Shaders/Basic.110.vertex.glsl", "Data/Shaders/Basic.110.fragment.glsl" ) );
+	uiTextMaterial->SetShaderProgram( ShaderProgram::CreateOrGetShaderProgram( "Shaders/Basic.110.vertex.glsl", "Shaders/Basic.110.fragment.glsl" ) );
 	uiTextMaterial->SetModelMatrixUniform( "u_modelMatrix" );
 	uiTextMaterial->SetViewMatrixUniform( "u_viewMatrix" );
 	uiTextMaterial->SetProjectionMatrixUniform( "u_projectionMatrix" );
 
-	std::string fontTextureLocation( "Data/Font/MainFont_EN_00.png" );
-	BitmapFont* uiFont = new BitmapFont( "Data/Font/MainFont_EN.FontDef.xml", &fontTextureLocation, 1 );
+	std::string fontTextureLocation( "Font/MainFont_EN_00.png" );
+	BitmapFont* uiFont = new BitmapFont( "Font/MainFont_EN.FontDef.xml", &fontTextureLocation, 1 );
 
 	//UI Creation
 	NumberDisplayElement* scoreDisplay = new NumberDisplayElement( &playerScoring->currentScore, 6, uiFont, uiTextMaterial, false );
@@ -62,9 +62,14 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	scoreDisplay->position.y = 1030.f;
 	m_UISystem->ConnectUIElement( scoreDisplay );
 
+	NumberDisplayElement* lifeDisplay = new NumberDisplayElement( &m_playerLivesRemaining, 6, uiFont, uiTextMaterial );
+	lifeDisplay->position.x = 100.f;
+	lifeDisplay->position.y = 980.f;
+	m_UISystem->ConnectUIElement( lifeDisplay );
+
 	StartNewLevel();
 
-	m_explosionSound = AudioInterface::GetOrLoadSound( "Data/Audio/boom.wav" );
+	m_explosionSound = AudioInterface::GetOrLoadSound( "Audio/boom.wav" );
 }
 
 //-----------------------------------------------------------------------------------------------

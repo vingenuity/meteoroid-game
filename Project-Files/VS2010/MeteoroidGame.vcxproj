@@ -1,9 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="NsightTegraProject">
+    <NsightTegraProjectRevisionNumber>9</NsightTegraProjectRevisionNumber>
+  </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Emscripten">
       <Configuration>Debug</Configuration>
       <Platform>Emscripten</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Tegra-Android">
+      <Configuration>Debug</Configuration>
+      <Platform>Tegra-Android</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -12,6 +19,10 @@
     <ProjectConfiguration Include="Release|Emscripten">
       <Configuration>Release</Configuration>
       <Platform>Emscripten</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Tegra-Android">
+      <Configuration>Release</Configuration>
+      <Platform>Tegra-Android</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
@@ -33,6 +44,13 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <AndroidTargetAPI>android-21</AndroidTargetAPI>
+    <AndroidStlType>gnustl_static</AndroidStlType>
+    <AndroidMinAPI>android-21</AndroidMinAPI>
+    <AndroidStripLibrary>true</AndroidStripLibrary>
+    <AndroidArch>armv7-a</AndroidArch>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -82,6 +100,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Emscripten'">
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <OutDir>$(SolutionDir)..\..\Build\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\Temp-Files\$(Platform)_$(Configuration)\</IntDir>
+    <TargetName>libAndroidTest</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -144,6 +167,24 @@
       <AdditionalDependencies>..\..\Libraries\Vingine Core_$(Configuration).bc</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <Link>
+      <AdditionalDependencies>../../Libraries/Vingine Core_Debug.a;../../Libraries/fmod_vc.lib;../../Libraries/OpenAL32.lib;android;EGL;GLESv1_CM;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>-lGLESv2 %(AdditionalOptions)</AdditionalOptions>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <ReportUndefinedSymbols>true</ReportUndefinedSymbols>
+      <UseLinker>bfd</UseLinker>
+    </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\vingine-core\</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <GccExceptionHandling>true</GccExceptionHandling>
+      <StackProtector>true</StackProtector>
+      <PreprocessorDefinitions>
+      </PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\CollisionComponent2D.hpp" />
     <ClInclude Include="..\..\Code\CollisionSystem2D.hpp" />
@@ -171,6 +212,7 @@
     <ClInclude Include="..\..\Code\WarpSystem.hpp" />
     <ClInclude Include="..\..\Code\WeaponComponent.hpp" />
     <ClInclude Include="..\..\Code\WeaponSystem.hpp" />
+    <ClInclude Include="..\..\native_app_glue\android_native_app_glue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\CollisionSystem2D.cpp" />
@@ -188,6 +230,7 @@
     <ClCompile Include="..\..\Code\TimedDestructionSystem.cpp" />
     <ClCompile Include="..\..\Code\WarpSystem.cpp" />
     <ClCompile Include="..\..\Code\WeaponSystem.cpp" />
+    <ClCompile Include="..\..\native_app_glue\android_native_app_glue.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

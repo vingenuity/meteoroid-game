@@ -76,8 +76,8 @@ private:
 
 	//Gameplay data
 	IntVector2 m_windowDimensions;
-	unsigned int m_playerLivesRemaining;
-	unsigned int m_levelNumber;
+	int m_playerLivesRemaining;
+	int m_levelNumber;
 	unsigned int m_numStartingAsteroidsToSpawn;
 	float m_startingAsteroidsMinSpeed;
 	float m_startingAsteroidsMaxSpeed;

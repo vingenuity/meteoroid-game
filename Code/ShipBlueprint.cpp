@@ -48,7 +48,7 @@ ShipBlueprint::ShipBlueprint()
 
 	Renderer* renderer = Renderer::GetRenderer();
 	m_material = renderer->CreateOrGetNewMaterial( L"ShipMaterial" );
-	m_material->SetShaderProgram( ShaderProgram::CreateOrGetShaderProgram( "Data/Shaders/BasicNoTexture.110.vertex.glsl", "Data/Shaders/BasicNoTexture.110.fragment.glsl" ) );
+	m_material->SetShaderProgram( ShaderProgram::CreateOrGetShaderProgram( "Shaders/BasicNoTexture.110.vertex.glsl", "Shaders/BasicNoTexture.110.fragment.glsl" ) );
 	m_material->SetModelMatrixUniform( "u_modelMatrix" );
 	m_material->SetViewMatrixUniform( "u_viewMatrix" );
 	m_material->SetProjectionMatrixUniform( "u_projectionMatrix" );

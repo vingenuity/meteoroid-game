@@ -3,6 +3,7 @@
 #include <Code/Font/BitmapFont.hpp>
 #include <Code/Graphics/MeshGenerationText.hpp>
 #include <Code/Graphics/Renderer.hpp>
+#include <Code/StringConversion.hpp>
 
 
 //-----------------------------------------------------------------------------------------------
@@ -57,7 +58,7 @@ void NumberDisplayElement::Update( float /*deltaSeconds*/ )
 //-----------------------------------------------------------------------------------------------
 void NumberDisplayElement::PreDestruction()
 {
-	delete m_font;
+	//delete m_font;
 	delete m_displayedVertices;
 }
 #pragma endregion //Lifecycle
@@ -68,7 +69,7 @@ void NumberDisplayElement::PreDestruction()
 void NumberDisplayElement::UpdateDisplayedVertices( VertexData& displayedVertices, 
 	const unsigned int& numberToDisplay )
 {
-	std::string numberAsString = std::to_string( static_cast< long long >( numberToDisplay ) );
+	std::string numberAsString = ConvertIntegerToString( numberToDisplay );
 
 	//If we're too big, cut off the most significant digits
 	if( numberAsString.length() > m_numDigitsToDisplay )
