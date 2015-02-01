@@ -35,6 +35,7 @@
 
 # Temp Files generated during compilation/linking
 Temp Files/
+Temp-Files/
 
 # Compiled Build Files
 Build/

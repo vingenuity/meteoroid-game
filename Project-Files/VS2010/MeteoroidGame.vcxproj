@@ -1,9 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="NsightTegraProject">
+    <NsightTegraProjectRevisionNumber>9</NsightTegraProjectRevisionNumber>
+  </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Emscripten">
       <Configuration>Debug</Configuration>
       <Platform>Emscripten</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Tegra-Android">
+      <Configuration>Debug</Configuration>
+      <Platform>Tegra-Android</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -12,6 +19,10 @@
     <ProjectConfiguration Include="Release|Emscripten">
       <Configuration>Release</Configuration>
       <Platform>Emscripten</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Tegra-Android">
+      <Configuration>Release</Configuration>
+      <Platform>Tegra-Android</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
@@ -34,6 +45,13 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <AndroidTargetAPI>android-21</AndroidTargetAPI>
+    <AndroidStlType>gnustl_static</AndroidStlType>
+    <AndroidMinAPI>android-21</AndroidMinAPI>
+    <AndroidStripLibrary>true</AndroidStripLibrary>
+    <AndroidArch>armv7-a</AndroidArch>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -53,6 +71,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
     <IncludePath>..\..\..\vingine-core\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\..\Build\Win\</OutDir>
@@ -82,6 +101,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Emscripten'">
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <OutDir>$(SolutionDir)..\..\Build\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\Temp-Files\$(Platform)_$(Configuration)\</IntDir>
+    <TargetName>libMeteoroids</TargetName>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
@@ -91,7 +115,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>../../Libraries/Vingine Core_Debug.lib;XInput.lib;"C:\Program Files (x86)\Visual Leak Detector\lib\Win32\vld.lib";%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../../Libraries/Vingine Core_Debug.lib;../../Libraries/fmod_vc.lib;../../Libraries/OpenAL32.lib;XInput.lib;"C:\Program Files (x86)\Visual Leak Detector\lib\Win32\vld.lib";%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -124,6 +148,7 @@
     </Link>
     <Link>
       <AdditionalDependencies>..\..\Libraries\Vingine Core_$(Configuration).bc</AdditionalDependencies>
+      <AdditionalOptions>-s TOTAL_MEMORY=90000000 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Emscripten'">
@@ -142,6 +167,24 @@
       <AdditionalDependencies>..\..\Libraries\Vingine Core_$(Configuration).bc</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <Link>
+      <AdditionalDependencies>../../Libraries/Vingine Core_Debug.a;../../Libraries/fmod_vc.lib;../../Libraries/OpenAL32.lib;android;EGL;GLESv1_CM;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>-lGLESv2 %(AdditionalOptions)</AdditionalOptions>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <ReportUndefinedSymbols>true</ReportUndefinedSymbols>
+      <UseLinker>bfd</UseLinker>
+    </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\vingine-core\</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <GccExceptionHandling>true</GccExceptionHandling>
+      <StackProtector>true</StackProtector>
+      <PreprocessorDefinitions>
+      </PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\CollisionComponent2D.hpp" />
     <ClInclude Include="..\..\Code\CollisionSystem2D.hpp" />
@@ -151,6 +194,8 @@
     <ClInclude Include="..\..\Code\GameEvents.hpp" />
     <ClInclude Include="..\..\Code\GameInputComponent.hpp" />
     <ClInclude Include="..\..\Code\GameInputSystem.hpp" />
+    <ClInclude Include="..\..\Code\NumberDisplayElement.hpp" />
+    <ClInclude Include="..\..\Code\UISystem.hpp" />
     <ClInclude Include="..\..\Code\MeteoroidBlueprint.hpp" />
     <ClInclude Include="..\..\Code\MeteoroidGame.hpp" />
     <ClInclude Include="..\..\Code\MissileBlueprint.hpp" />
@@ -161,16 +206,20 @@
     <ClInclude Include="..\..\Code\ShipBlueprint.hpp" />
     <ClInclude Include="..\..\Code\TimedDestructionComponent.hpp" />
     <ClInclude Include="..\..\Code\TimedDestructionSystem.hpp" />
+    <ClInclude Include="..\..\Code\UIElement.hpp" />
     <ClInclude Include="..\..\Code\VingineBuildPreferences.hpp" />
     <ClInclude Include="..\..\Code\WarpComponent.hpp" />
     <ClInclude Include="..\..\Code\WarpSystem.hpp" />
     <ClInclude Include="..\..\Code\WeaponComponent.hpp" />
     <ClInclude Include="..\..\Code\WeaponSystem.hpp" />
+    <ClInclude Include="..\..\native_app_glue\android_native_app_glue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\CollisionSystem2D.cpp" />
     <ClCompile Include="..\..\Code\FracturingSystem.cpp" />
     <ClCompile Include="..\..\Code\GameInputSystem.cpp" />
+    <ClCompile Include="..\..\Code\NumberDisplayElement.cpp" />
+    <ClCompile Include="..\..\Code\UISystem.cpp" />
     <ClCompile Include="..\..\Code\MeteoroidBlueprint.cpp" />
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp" />
     <ClCompile Include="..\..\Code\MissileBlueprint.cpp" />
@@ -181,6 +230,7 @@
     <ClCompile Include="..\..\Code\TimedDestructionSystem.cpp" />
     <ClCompile Include="..\..\Code\WarpSystem.cpp" />
     <ClCompile Include="..\..\Code\WeaponSystem.cpp" />
+    <ClCompile Include="..\..\native_app_glue\android_native_app_glue.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

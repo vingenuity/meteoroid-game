@@ -84,6 +84,18 @@
     <ClInclude Include="..\..\Code\ScoringComponent.hpp">
       <Filter>Code\Component + System</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Code\UIElement.hpp">
+      <Filter>Code\Component + System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UISystem.hpp">
+      <Filter>Code\Component + System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\NumberDisplayElement.hpp">
+      <Filter>Code\Component + System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\native_app_glue\android_native_app_glue.h">
+      <Filter>Code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp">
@@ -124,6 +136,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Code\ScoringSystem.cpp">
       <Filter>Code\Component + System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UISystem.cpp">
+      <Filter>Code\Component + System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\NumberDisplayElement.cpp">
+      <Filter>Code\Component + System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\native_app_glue\android_native_app_glue.c">
+      <Filter>Code</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

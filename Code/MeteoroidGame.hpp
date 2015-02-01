@@ -5,11 +5,10 @@
 //-----------------------------------------------------------------------------------------------
 #include <vector>
 
+#include <Code/Audio/AudioInterface.hpp>
 #include <Code/Graphics/DebugDrawingSystem2D.hpp>
-
 #include <Code/Math/FloatVector3.hpp>
 #include <Code/Math/IntVector2.hpp>
-
 #include <Code/GameInterface.hpp>
 
 #include "CollisionSystem2D.hpp"
@@ -19,6 +18,7 @@
 #include "RenderingSystem2D.hpp"
 #include "ScoringSystem.hpp"
 #include "TimedDestructionSystem.hpp"
+#include "UISystem.hpp"
 #include "WarpSystem.hpp"
 #include "WeaponSystem.hpp"
 
@@ -53,6 +53,7 @@ public:
 	RenderingSystem2D* m_worldRenderingSystem;
 	ScoringSystem* m_scoringSystem;
 	TimedDestructionSystem* m_timedDestructionSystem;
+	UISystem* m_UISystem;
 	WarpSystem* m_warpSystem;
 	WeaponSystem* m_weaponSystem;
 
@@ -75,11 +76,12 @@ private:
 
 	//Gameplay data
 	IntVector2 m_windowDimensions;
-	unsigned int m_playerLivesRemaining;
-	unsigned int m_levelNumber;
+	int m_playerLivesRemaining;
+	int m_levelNumber;
 	unsigned int m_numStartingAsteroidsToSpawn;
 	float m_startingAsteroidsMinSpeed;
 	float m_startingAsteroidsMaxSpeed;
+	AudioInterface::SoundID m_explosionSound;
 };
 
 
@@ -98,6 +100,7 @@ inline MeteoroidGame::MeteoroidGame()
 	, m_scoringSystem( nullptr )
 	, m_worldRenderingSystem( nullptr )
 	, m_timedDestructionSystem( nullptr )
+	, m_UISystem( nullptr )
 	, m_weaponSystem( nullptr )
 	, m_warpSystem( nullptr )
 

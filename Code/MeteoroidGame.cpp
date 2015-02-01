@@ -1,5 +1,7 @@
 #include "MeteoroidGame.hpp"
 
+#include <Code/Font/BitmapFont.hpp>
+#include <Code/Graphics/Material.hpp>
 #include <Code/Graphics/Renderer.hpp>
 #include <Code/AssertionError.hpp>
 #include <Code/CameraComponent.hpp>
@@ -9,6 +11,7 @@
 #include "FracturingComponent.hpp"
 #include "GameEvents.hpp"
 #include "MeteoroidBlueprint.hpp"
+#include "NumberDisplayElement.hpp"
 #include "ShipBlueprint.hpp"
 
 
@@ -41,8 +44,32 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	//Ship Creation
 	Entity* playerShip = GetEntityManager().HireEntity();
 	m_shipBlueprint->BuildEntityIntoGame( *playerShip, this, SHIP_SPAWN_POSITION );
+	ScoringComponent* playerScoring = playerShip->FindAttachedComponentOfType< ScoringComponent >();
+
+	Renderer* renderer = Renderer::GetRenderer();
+	Material* uiTextMaterial = renderer->CreateOrGetNewMaterial( L"GameUITextMaterial" );
+	uiTextMaterial->SetShaderProgram( ShaderProgram::CreateOrGetShaderProgram( "Shaders/Basic.110.vertex.glsl", "Shaders/Basic.110.fragment.glsl" ) );
+	uiTextMaterial->SetModelMatrixUniform( "u_modelMatrix" );
+	uiTextMaterial->SetViewMatrixUniform( "u_viewMatrix" );
+	uiTextMaterial->SetProjectionMatrixUniform( "u_projectionMatrix" );
+
+	std::string fontTextureLocation( "Font/MainFont_EN_00.png" );
+	BitmapFont* uiFont = new BitmapFont( "Font/MainFont_EN.FontDef.xml", &fontTextureLocation, 1 );
+
+	//UI Creation
+	NumberDisplayElement* scoreDisplay = new NumberDisplayElement( &playerScoring->currentScore, 6, uiFont, uiTextMaterial, false );
+	scoreDisplay->position.x = 50.f;
+	scoreDisplay->position.y = 1030.f;
+	m_UISystem->ConnectUIElement( scoreDisplay );
+
+	NumberDisplayElement* lifeDisplay = new NumberDisplayElement( &m_playerLivesRemaining, 6, uiFont, uiTextMaterial );
+	lifeDisplay->position.x = 100.f;
+	lifeDisplay->position.y = 980.f;
+	m_UISystem->ConnectUIElement( lifeDisplay );
 
 	StartNewLevel();
+
+	m_explosionSound = AudioInterface::GetOrLoadSound( "Audio/boom.wav" );
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -62,6 +89,7 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 		StartNewLevel();
 
 	m_worldRenderingSystem->OnUpdate( deltaSeconds );
+	m_UISystem->OnUpdate( deltaSeconds );
 	m_debugUIRenderingSystem->OnUpdate( deltaSeconds );
 }
 
@@ -84,6 +112,7 @@ void MeteoroidGame::DoRender() const
 	m_scoringSystem->OnRender();
 
 	m_worldRenderingSystem->OnRender();
+	m_UISystem->OnRender();
 	m_debugUIRenderingSystem->OnRender();
 }
 
@@ -103,6 +132,7 @@ void MeteoroidGame::DoAtEndOfFrame()
 	m_scoringSystem->OnEndFrame();
 
 	m_worldRenderingSystem->OnEndFrame();
+	m_UISystem->OnEndFrame();
 	m_debugUIRenderingSystem->OnEndFrame();
 }
 
@@ -135,6 +165,9 @@ void MeteoroidGame::DoBeforeEngineDestruction()
 
 	m_timedDestructionSystem->OnDestruction();
 	delete m_timedDestructionSystem;
+
+	m_UISystem->OnDestruction();
+	delete m_UISystem;
 
 	m_warpSystem->OnDestruction();
 	delete m_warpSystem;
@@ -218,6 +251,7 @@ void MeteoroidGame::HandleEntityDestructionOrReuse( Entity*& entity )
 		GetEntityManager().QueueEntityForFiring( entity );
 		break;
 	}
+	AudioInterface::PlaySoundThroughEmitter( m_explosionSound );
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -288,6 +322,9 @@ void MeteoroidGame::StartupGameSystems()
 
 	m_timedDestructionSystem = new TimedDestructionSystem( 100 );
 	m_timedDestructionSystem->OnAttachment( nullptr );
+
+	m_UISystem = new UISystem();
+	m_UISystem->OnAttachment( nullptr );
 
 	m_warpSystem = new WarpSystem( 1, FloatVector2( (float)m_windowDimensions.x, (float)m_windowDimensions.y ) );
 	m_warpSystem->OnAttachment( nullptr );

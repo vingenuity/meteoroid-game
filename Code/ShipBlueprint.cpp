@@ -1,5 +1,6 @@
 #include "ShipBlueprint.hpp"
 
+#include <Code/Audio/AudioInterface.hpp>
 #include <Code/Graphics/MeshComponent.hpp>
 #include <Code/PhysicsComponent.hpp>
 
@@ -47,7 +48,7 @@ ShipBlueprint::ShipBlueprint()
 
 	Renderer* renderer = Renderer::GetRenderer();
 	m_material = renderer->CreateOrGetNewMaterial( L"ShipMaterial" );
-	m_material->SetShaderProgram( ShaderProgram::CreateOrGetShaderProgram( "Data/Shaders/BasicNoTexture.110.vertex.glsl", "Data/Shaders/BasicNoTexture.110.fragment.glsl" ) );
+	m_material->SetShaderProgram( ShaderProgram::CreateOrGetShaderProgram( "Shaders/BasicNoTexture.110.vertex.glsl", "Shaders/BasicNoTexture.110.fragment.glsl" ) );
 	m_material->SetModelMatrixUniform( "u_modelMatrix" );
 	m_material->SetViewMatrixUniform( "u_viewMatrix" );
 	m_material->SetProjectionMatrixUniform( "u_projectionMatrix" );
@@ -91,6 +92,7 @@ void ShipBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame
 	out_entity.AttachComponent( warpEngine );
 
 	WeaponComponent* missilePort = game->m_weaponSystem->AcquireComponent();
+	missilePort->firingSound = AudioInterface::GetOrLoadSound( "Data/Audio/laser.wav" );
 	missilePort->minSecondsBetweenShots = 0.75f;
 	out_entity.AttachComponent( missilePort );
 

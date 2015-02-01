@@ -3,6 +3,7 @@
 #define INCLUDED_WEAPON_COMPONENT_HPP
 
 //-----------------------------------------------------------------------------------------------
+#include <Code/Audio/AudioInterface.hpp>
 #include <Code/Component.hpp>
 
 
@@ -15,6 +16,7 @@ struct WeaponComponent : public Component
 
 	//Data Members
 	float minSecondsBetweenShots;
+	AudioInterface::SoundID firingSound;
 };
 
 
@@ -24,4 +26,4 @@ inline WeaponComponent::WeaponComponent( float minSecsBetweenShots )
 	: minSecondsBetweenShots( minSecsBetweenShots )
 { }
 
-#endif INCLUDED_WEAPON_COMPONENT_HPP
+#endif //INCLUDED_WEAPON_COMPONENT_HPP
