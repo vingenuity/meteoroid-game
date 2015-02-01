@@ -22,8 +22,7 @@ MeteoroidBlueprint::MeteoroidBlueprint( MeteoroidGame* const game )
 	: m_game( game )
 	, m_colliderCenter( 0.f, 0.f )
 {
-	Renderer* renderer = Renderer::GetRenderer();
-	m_material = renderer->CreateOrGetNewMaterial( L"MeteoroidMaterial" );
+	m_material = RendererInterface::CreateOrGetNewMaterial( L"MeteoroidMaterial" );
 	m_material->SetShaderProgram( ShaderProgram::CreateOrGetShaderProgram( "Shaders/BasicNoTexture.110.vertex.glsl", "Shaders/BasicNoTexture.110.fragment.glsl" ) );
 	m_material->SetModelMatrixUniform( "u_modelMatrix" );
 	m_material->SetViewMatrixUniform( "u_viewMatrix" );
@@ -136,13 +135,12 @@ VertexData* MeteoroidBlueprint::BuildMeteoroidVertexData( unsigned int meteorSiz
 
 	out_vertData->vertexSizeBytes = sizeof( Simple2DVertex );
 	out_vertData->numberOfVertices = NUM_METEOR_VERTICES;
-	out_vertData->attributes.push_back( VertexAttribute( Renderer::LOCATION_Vertex, 2, Renderer::TYPE_FLOAT, false, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, position.x ) ) );
-	out_vertData->attributes.push_back( VertexAttribute( Renderer::LOCATION_Color,	4, Renderer::TYPE_UNSIGNED_BYTE, true, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, color.r ) ) );
-	out_vertData->shape = Renderer::LINE_LOOP;
+	out_vertData->attributes.push_back( VertexAttribute( RendererInterface::LOCATION_Vertex, 2, RendererInterface::TYPE_FLOAT, false, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, position.x ) ) );
+	out_vertData->attributes.push_back( VertexAttribute( RendererInterface::LOCATION_Color,	4, RendererInterface::TYPE_UNSIGNED_BYTE, true, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, color.r ) ) );
+	out_vertData->shape = RendererInterface::LINE_LOOP;
 
-	Renderer* renderer = Renderer::GetRenderer();
-	renderer->GenerateBuffer( 1, &out_vertData->bufferID );
-	renderer->BufferVertexData( out_vertData );
+	RendererInterface::GenerateBuffer( 1, &out_vertData->bufferID );
+	RendererInterface::BufferVertexData( out_vertData );
 
 	return out_vertData;
 }

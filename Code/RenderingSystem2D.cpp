@@ -36,28 +36,28 @@ void RenderingSystem2D::OnRender() const
 	static const FloatVector3 X_AXIS( 1.f, 0.f, 0.f );
 	static const FloatVector3 Y_AXIS( 0.f, 1.f, 0.f );
 	static const FloatVector3 Z_AXIS( 0.f, 0.f, 1.f );
-	Renderer* renderer = Renderer::GetRenderer();
+
 	for( unsigned int i = 0; i < ComponentSystem< MeshComponent >::m_numComponentsInPool; ++i )
 	{
 		MeshComponent& mesh = ComponentSystem< MeshComponent >::m_componentPool[i];
 		if( !mesh.IsActive() )
 			continue;
 
-		renderer->PushMatrix();
-		renderer->TranslateWorld( mesh.owner->position );
-		renderer->RotateWorldAboutAxisDegrees( Z_AXIS, mesh.owner->orientation.yawDegreesAboutZ );
-		renderer->RotateWorldAboutAxisDegrees( Y_AXIS, mesh.owner->orientation.pitchDegreesAboutY );
-		renderer->RotateWorldAboutAxisDegrees( X_AXIS, mesh.owner->orientation.rollDegreesAboutX );
+		RendererInterface::PushMatrix();
+		RendererInterface::TranslateWorld( mesh.owner->position );
+		RendererInterface::RotateWorldAboutAxisDegrees( Z_AXIS, mesh.owner->orientation.yawDegreesAboutZ );
+		RendererInterface::RotateWorldAboutAxisDegrees( Y_AXIS, mesh.owner->orientation.pitchDegreesAboutY );
+		RendererInterface::RotateWorldAboutAxisDegrees( X_AXIS, mesh.owner->orientation.rollDegreesAboutX );
 
-		renderer->BindVertexData( mesh.vertexData );
-		renderer->ApplyMaterial( mesh.material );
+		RendererInterface::BindVertexData( mesh.vertexData );
+		RendererInterface::ApplyMaterial( mesh.material );
 
-		renderer->RenderVertexArray( mesh.vertexData->shape, 0, mesh.vertexData->numberOfVertices );
+		RendererInterface::RenderVertexArray( mesh.vertexData->shape, 0, mesh.vertexData->numberOfVertices );
 
-		renderer->RemoveMaterial( mesh.material );
-		renderer->UnbindVertexData( mesh.vertexData );
+		RendererInterface::RemoveMaterial( mesh.material );
+		RendererInterface::UnbindVertexData( mesh.vertexData );
 
-		renderer->PopMatrix();
+		RendererInterface::PopMatrix();
 	}
 }
 
@@ -81,21 +81,19 @@ void RenderingSystem2D::OnDestruction()
 //-----------------------------------------------------------------------------------------------
 void RenderingSystem2D::ViewWorldThroughCamera( const CameraComponent* camera ) const
 {
-	Renderer* renderer = Renderer::GetRenderer();
-
 	switch( camera->projectionType )
 	{
 	case CameraComponent::PROJECTION_PERSPECTIVE:
 		{
 			const PerspectiveProjection& perspective = camera->projection.perspective;
-			renderer->SetPerpectiveProjection( perspective.horizontalFOVDegrees, perspective.aspectRatio,
+			RendererInterface::SetPerpectiveProjection( perspective.horizontalFOVDegrees, perspective.aspectRatio,
 				perspective.nearClippingPlane, perspective.farClippingPlane );
 			break;
 		}
 	case CameraComponent::PROJECTION_ORTHOGRAPHIC:
 		{
 			const OrthographicProjection& projection = camera->projection.orthographic;
-			renderer->SetOrthographicProjection( projection.leftEdgeX, projection.rightEdgeX,
+			RendererInterface::SetOrthographicProjection( projection.leftEdgeX, projection.rightEdgeX,
 				projection.bottomEdgeY, projection.topEdgeY,
 				projection.nearClippingPlane, projection.farClippingPlane );
 			break;
@@ -121,5 +119,5 @@ void RenderingSystem2D::ViewWorldThroughCamera( const CameraComponent* camera ) 
 	translationMatrix[ 14 ] = -cameraPosition.z;
 	translationMatrix[ 15 ] = 1.f;
 
-	renderer->SetViewMatrix( translationMatrix * rotationMatrix );
+	RendererInterface::SetViewMatrix( translationMatrix * rotationMatrix );
 }

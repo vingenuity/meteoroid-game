@@ -2,7 +2,7 @@
 
 #include <Code/Font/BitmapFont.hpp>
 #include <Code/Graphics/MeshGenerationText.hpp>
-#include <Code/Graphics/Renderer.hpp>
+#include <Code/Graphics/RendererInterface.hpp>
 #include <Code/StringConversion.hpp>
 
 
@@ -17,8 +17,7 @@ NumberDisplayElement::NumberDisplayElement( const int* numberToDisplay,
 	, m_font( font )
 	, m_material( material )
 {
-	Renderer* renderer = Renderer::GetRenderer();
-	renderer->GenerateBuffer( 1, &m_displayedVertices->bufferID );
+	RendererInterface::GenerateBuffer( 1, &m_displayedVertices->bufferID );
 	UpdateDisplayedVertices( *m_displayedVertices, *m_numberToDisplay );
 }
 
@@ -30,19 +29,18 @@ void NumberDisplayElement::Render() const
 	static const FloatVector3 Y_AXIS( 0.f, 1.f, 0.f );
 	static const FloatVector3 Z_AXIS( 0.f, 0.f, 1.f );
 
-	Renderer* renderer = Renderer::GetRenderer();
-	renderer->PushMatrix();
-	renderer->TranslateWorld( position );
+	RendererInterface::PushMatrix();
+	RendererInterface::TranslateWorld( position );
 
-	renderer->BindVertexData( m_displayedVertices );
-	renderer->ApplyMaterial( m_material );
+	RendererInterface::BindVertexData( m_displayedVertices );
+	RendererInterface::ApplyMaterial( m_material );
 
-	renderer->RenderVertexArray( m_displayedVertices->shape, 0, m_displayedVertices->numberOfVertices );
+	RendererInterface::RenderVertexArray( m_displayedVertices->shape, 0, m_displayedVertices->numberOfVertices );
 
-	renderer->RemoveMaterial( m_material );
-	renderer->UnbindVertexData( m_displayedVertices );
+	RendererInterface::RemoveMaterial( m_material );
+	RendererInterface::UnbindVertexData( m_displayedVertices );
 
-	renderer->PopMatrix();
+	RendererInterface::PopMatrix();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -79,6 +77,5 @@ void NumberDisplayElement::UpdateDisplayedVertices( VertexData& displayedVertice
 		numberAsString.insert( 0, m_numDigitsToDisplay - numberAsString.length(), '0' );
 
 	GenerateTextMesh( displayedVertices, numberAsString, FloatVector2( 0.f, 0.f ), Color( 255, 255, 255 ), m_font, 50 );
-	Renderer* renderer = Renderer::GetRenderer();
-	renderer->BufferVertexData( m_displayedVertices );
+	RendererInterface::BufferVertexData( m_displayedVertices );
 }

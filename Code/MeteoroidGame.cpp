@@ -2,7 +2,7 @@
 
 #include <Code/Font/BitmapFont.hpp>
 #include <Code/Graphics/Material.hpp>
-#include <Code/Graphics/Renderer.hpp>
+#include <Code/Graphics/RendererInterface.hpp>
 #include <Code/AssertionError.hpp>
 #include <Code/CameraComponent.hpp>
 #include <Code/Entity.hpp>
@@ -46,8 +46,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	m_shipBlueprint->BuildEntityIntoGame( *playerShip, this, SHIP_SPAWN_POSITION );
 	ScoringComponent* playerScoring = playerShip->FindAttachedComponentOfType< ScoringComponent >();
 
-	Renderer* renderer = Renderer::GetRenderer();
-	Material* uiTextMaterial = renderer->CreateOrGetNewMaterial( L"GameUITextMaterial" );
+	Material* uiTextMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUITextMaterial" );
 	uiTextMaterial->SetShaderProgram( ShaderProgram::CreateOrGetShaderProgram( "Shaders/Basic.110.vertex.glsl", "Shaders/Basic.110.fragment.glsl" ) );
 	uiTextMaterial->SetModelMatrixUniform( "u_modelMatrix" );
 	uiTextMaterial->SetViewMatrixUniform( "u_viewMatrix" );
@@ -96,10 +95,8 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::DoRender() const
 {
-	Renderer* renderer = Renderer::GetRenderer();
-
-	renderer->ClearColorBuffer();
-	renderer->ClearDepthBuffer();
+	RendererInterface::ClearColorBuffer();
+	RendererInterface::ClearDepthBuffer();
 
 	m_gameInputSystem->OnRender();
 

@@ -46,8 +46,7 @@ ShipBlueprint::ShipBlueprint()
 {
 	BuildShipVertexData();
 
-	Renderer* renderer = Renderer::GetRenderer();
-	m_material = renderer->CreateOrGetNewMaterial( L"ShipMaterial" );
+	m_material = RendererInterface::CreateOrGetNewMaterial( L"ShipMaterial" );
 	m_material->SetShaderProgram( ShaderProgram::CreateOrGetShaderProgram( "Shaders/BasicNoTexture.110.vertex.glsl", "Shaders/BasicNoTexture.110.fragment.glsl" ) );
 	m_material->SetModelMatrixUniform( "u_modelMatrix" );
 	m_material->SetViewMatrixUniform( "u_viewMatrix" );
@@ -126,12 +125,11 @@ void ShipBlueprint::BuildShipVertexData()
 	m_vertices.data = &shipVertexArray[0];
 	m_vertices.vertexSizeBytes = sizeof( Simple2DVertex );
 	m_vertices.numberOfVertices = NUM_SHIP_VERTICES;
-	m_vertices.attributes.push_back( VertexAttribute( Renderer::LOCATION_Vertex, 2, Renderer::TYPE_FLOAT, false, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, position.x ) ) );
-	m_vertices.attributes.push_back( VertexAttribute( Renderer::LOCATION_Color, 4, Renderer::TYPE_UNSIGNED_BYTE, true, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, color.r ) ) );
-	m_vertices.shape = Renderer::LINE_LOOP;
+	m_vertices.attributes.push_back( VertexAttribute( RendererInterface::LOCATION_Vertex, 2, RendererInterface::TYPE_FLOAT, false, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, position.x ) ) );
+	m_vertices.attributes.push_back( VertexAttribute( RendererInterface::LOCATION_Color, 4, RendererInterface::TYPE_UNSIGNED_BYTE, true, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, color.r ) ) );
+	m_vertices.shape = RendererInterface::LINE_LOOP;
 
-	Renderer* renderer = Renderer::GetRenderer();
-	renderer->GenerateBuffer( 1, &m_vertices.bufferID );
-	renderer->BufferVertexData( &m_vertices );
+	RendererInterface::GenerateBuffer( 1, &m_vertices.bufferID );
+	RendererInterface::BufferVertexData( &m_vertices );
 }
 #pragma endregion //Private Functions
