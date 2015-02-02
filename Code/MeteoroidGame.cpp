@@ -16,9 +16,12 @@
 
 
 //-----------------------------------------------------------------------------------------------
+STATIC const IntVector2 MeteoroidGame::WORLD_DIMENSIONS( 1000, 1000 );
+STATIC const FloatVector2 MeteoroidGame::SHIP_SPAWN_POSITION( WORLD_DIMENSIONS.x * 0.5f, WORLD_DIMENSIONS.y * 0.5f );
+
+//-----------------------------------------------------------------------------------------------
 MeteoroidGame g_game; //This initializes the game and the game interface for the engine simultaneously.
 
-static const FloatVector2 SHIP_SPAWN_POSITION( 640.f, 360.f );
 
 
 #pragma region Lifecycle
@@ -27,6 +30,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 {
 	m_windowDimensions.x = windowWidth;
 	m_windowDimensions.y = windowHeight;
+	SetPillarboxIfNeeded( m_windowDimensions, WORLD_DIMENSIONS );
 
 	StartupGameSystems();
 
@@ -58,12 +62,12 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	//UI Creation
 	NumberDisplayElement* scoreDisplay = new NumberDisplayElement( &playerScoring->currentScore, 6, uiFont, uiTextMaterial, false );
 	scoreDisplay->position.x = 50.f;
-	scoreDisplay->position.y = 1030.f;
+	scoreDisplay->position.y = 50.f;
 	m_UISystem->ConnectUIElement( scoreDisplay );
 
 	NumberDisplayElement* lifeDisplay = new NumberDisplayElement( &m_playerLivesRemaining, 6, uiFont, uiTextMaterial );
 	lifeDisplay->position.x = 100.f;
-	lifeDisplay->position.y = 980.f;
+	lifeDisplay->position.y = 100.f;
 	m_UISystem->ConnectUIElement( lifeDisplay );
 
 	StartNewLevel();
@@ -98,6 +102,11 @@ void MeteoroidGame::DoRender() const
 	RendererInterface::ClearColorBuffer();
 	RendererInterface::ClearDepthBuffer();
 
+	RendererInterface::PushMatrix();
+	float xScale = static_cast< float >( m_windowDimensions.x ) / WORLD_DIMENSIONS.x;
+	float yScale = static_cast< float >( m_windowDimensions.y ) / WORLD_DIMENSIONS.y;
+	RendererInterface::ScaleWorld( xScale, yScale, 1.f );
+
 	m_gameInputSystem->OnRender();
 
 	m_warpSystem->OnRender();
@@ -111,6 +120,7 @@ void MeteoroidGame::DoRender() const
 	m_worldRenderingSystem->OnRender();
 	m_UISystem->OnRender();
 	m_debugUIRenderingSystem->OnRender();
+	RendererInterface::PopMatrix();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -271,6 +281,30 @@ bool MeteoroidGame::IsLevelComplete() const
 }
 
 //-----------------------------------------------------------------------------------------------
+STATIC void MeteoroidGame::SetPillarboxIfNeeded( const IntVector2& windowDimensions, const IntVector2& gameDimensions )
+{
+	// This is your target virtual resolution for the game, the size you built your game to
+	float targetAspectRatio = static_cast< float >( gameDimensions.x / gameDimensions.y );
+
+	// figure out the largest area that fits in this resolution at the desired aspect ratio
+	int viewportWidth = gameDimensions.x;
+	int viewportHeight = static_cast< int >( viewportWidth / targetAspectRatio + 0.5f );
+
+	if ( viewportHeight > windowDimensions.y )
+	{
+		//It doesn't fit our height, we must switch to pillarbox then
+		viewportHeight = windowDimensions.y;
+		viewportWidth = static_cast< int >( viewportHeight * targetAspectRatio + 0.5f );
+	}
+
+	// set up the new viewport centered in the backbuffer
+	int viewportStartX = ( windowDimensions.x / 2 ) - ( viewportWidth / 2 );
+	int viewportStartY = ( windowDimensions.y / 2 ) - ( viewportHeight / 2 );
+
+	RendererInterface::SetViewport( viewportStartX, viewportStartY, viewportWidth, viewportHeight );
+}
+
+//-----------------------------------------------------------------------------------------------
 void MeteoroidGame::StartNewLevel()
 {
 	Entity* spawnedMeteor = nullptr;
@@ -295,7 +329,9 @@ void MeteoroidGame::StartNewLevel()
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::StartupGameSystems()
 {
-	m_collisionSystem = new CollisionSystem2D( 100 );
+	FloatVector2 worldDimensionsAsFloat = FloatVector2( (const float)WORLD_DIMENSIONS.x, (const float)WORLD_DIMENSIONS.y );
+
+	m_collisionSystem = new CollisionSystem2D( 100, worldDimensionsAsFloat );
 	m_collisionSystem->OnAttachment( nullptr );
 
 	m_debugUIRenderingSystem = new DebugDrawingSystem2D( 0.f, static_cast<float>( m_windowDimensions.x ), 
@@ -323,7 +359,7 @@ void MeteoroidGame::StartupGameSystems()
 	m_UISystem = new UISystem();
 	m_UISystem->OnAttachment( nullptr );
 
-	m_warpSystem = new WarpSystem( 1, FloatVector2( (float)m_windowDimensions.x, (float)m_windowDimensions.y ) );
+	m_warpSystem = new WarpSystem( 1, worldDimensionsAsFloat );
 	m_warpSystem->OnAttachment( nullptr );
 
 	m_weaponSystem = new WeaponSystem( 1, this );

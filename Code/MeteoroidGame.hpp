@@ -66,6 +66,7 @@ private:
 	void HandleEntityDestructionOrReuse( Entity*& entity );
 	bool IsGameOver() const;
 	bool IsLevelComplete() const;
+	static void SetPillarboxIfNeeded( const IntVector2& windowDimensions, const IntVector2& gameDimensions );
 	void StartNewLevel();
 	void StartupGameSystems();
 
@@ -75,6 +76,8 @@ private:
 	ShipBlueprint* m_shipBlueprint;
 
 	//Gameplay data
+	static const FloatVector2 SHIP_SPAWN_POSITION;
+	static const IntVector2 WORLD_DIMENSIONS;
 	IntVector2 m_windowDimensions;
 	int m_playerLivesRemaining;
 	int m_levelNumber;

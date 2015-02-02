@@ -48,7 +48,7 @@
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
     <AndroidTargetAPI>android-21</AndroidTargetAPI>
     <AndroidStlType>gnustl_static</AndroidStlType>
-    <AndroidMinAPI>android-21</AndroidMinAPI>
+    <AndroidMinAPI>android-19</AndroidMinAPI>
     <AndroidStripLibrary>true</AndroidStripLibrary>
     <AndroidArch>armv7-a</AndroidArch>
   </PropertyGroup>

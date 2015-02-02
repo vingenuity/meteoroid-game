@@ -35,15 +35,15 @@ void CollisionSystem2D::OnUpdate( float /*deltaSeconds*/ )
 		Entity*& firstEntity = firstCollider.owner;
 
 		//Wrap the entity if they are offscreen
-		if( ( firstEntity->position.x - firstCollider.collider.circle.radius ) > 1280.f )
+		if( ( firstEntity->position.x - firstCollider.collider.circle.radius ) > m_worldDimensions.x )
 			firstEntity->position.x = 0.f - firstCollider.collider.circle.radius;
 		else if( ( firstEntity->position.x + firstCollider.collider.circle.radius ) < 0.f )
-			firstEntity->position.x = 1280.f + firstCollider.collider.circle.radius;
+			firstEntity->position.x = m_worldDimensions.x + firstCollider.collider.circle.radius;
 
-		if( ( firstEntity->position.y - firstCollider.collider.circle.radius ) > 720.f )
+		if( ( firstEntity->position.y - firstCollider.collider.circle.radius ) > m_worldDimensions.y )
 			firstEntity->position.y = 0.f - firstCollider.collider.circle.radius;
 		else if( ( firstEntity->position.y + firstCollider.collider.circle.radius ) < 0.f )
-			firstEntity->position.y = 720.f + firstCollider.collider.circle.radius;
+			firstEntity->position.y = m_worldDimensions.y + firstCollider.collider.circle.radius;
 
 		//TODO: show debug information using the debug renderer
 
