@@ -91,7 +91,7 @@ void ShipBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame
 	out_entity.AttachComponent( warpEngine );
 
 	WeaponComponent* missilePort = game->m_weaponSystem->AcquireComponent();
-	missilePort->firingSound = AudioInterface::GetOrLoadSound( "Data/Audio/laser.wav" );
+	missilePort->firingSound = AudioInterface::GetOrLoadSound( "Audio/laser.wav" );
 	missilePort->minSecondsBetweenShots = 0.75f;
 	out_entity.AttachComponent( missilePort );
 

@@ -170,7 +170,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
     <Link>
       <AdditionalDependencies>../../Libraries/Vingine Core_Debug.a;../../Libraries/fmod_vc.lib;../../Libraries/OpenAL32.lib;android;EGL;GLESv1_CM;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>-lGLESv2 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-lGLESv2 -lOpenSLES %(AdditionalOptions)</AdditionalOptions>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <ReportUndefinedSymbols>true</ReportUndefinedSymbols>
       <UseLinker>bfd</UseLinker>
