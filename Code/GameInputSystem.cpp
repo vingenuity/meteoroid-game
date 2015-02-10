@@ -47,17 +47,28 @@ void GameInputSystem::OnUpdate( float /*deltaSeconds*/ )
 
 		ConvertEulerAnglesToVector( controlledEntity->orientation, entityHeading );
 
-		controlledEntity->angularVelocity.yawDegreesAboutZ = ( keyboard->KeyIsPressedOrHeld( Keyboard::A ) - keyboard->KeyIsPressedOrHeld( Keyboard::D ) ) * 160.f;
-		controlledEntity->acceleration += entityHeading * ( ( keyboard->KeyIsPressedOrHeld( Keyboard::W ) + numScreenTouches ) * 20.f );
+		if( keyboard->KeyIsPressedOrHeld( Keyboard::A ) - keyboard->KeyIsPressedOrHeld( Keyboard::D ) )
+			controlledEntity->angularVelocity.yawDegreesAboutZ = ( keyboard->KeyIsPressedOrHeld( Keyboard::A ) - keyboard->KeyIsPressedOrHeld( Keyboard::D ) ) * 160.f;
 
-		if( keyboard->KeyIsPressed( Keyboard::S ) || ( numScreenTouches == 2 ) )
+		if( keyboard->KeyIsPressedOrHeld( Keyboard::W ) )
+			controlledEntity->acceleration += entityHeading * ( ( keyboard->KeyIsPressedOrHeld( Keyboard::W ) + numScreenTouches ) * 20.f );
+
+		Gamepad* gamepad = PeripheralInterface::GetGamepadAtIndex( 0 );
+		if( ( gamepad != nullptr ) && ( gamepad->IsAxisPressedOrHeld( 0 ) || gamepad->IsAxisPressedOrHeld( 1 ) ) )
+		{
+			FloatVector2 gamepad2DAxis = FloatVector2( gamepad->GetRawAxisValue( 0 ), gamepad->GetRawAxisValue( 1 ) );
+			controlledEntity->orientation.yawDegreesAboutZ = ConvertRadiansToDegrees( ConvertVectorToAngleRadians( gamepad2DAxis ) );
+			controlledEntity->acceleration = entityHeading * FloatVector3( gamepad2DAxis ).CalculateNorm() * 20.f;
+		}
+
+		if( keyboard->KeyIsPressed( Keyboard::S ) || ( numScreenTouches == 2 ) || ( ( gamepad != nullptr ) &&  gamepad->IsButtonPressed( 0 ) ) )
 		{
 			EventDataBundle warpData;
 			warpData.SetParameter( STRING_1stEntity, controlledEntity );
 			EventCourier::SendEvent( EVENT_EngageWarp, warpData );
 		}
 
-		if( keyboard->KeyIsPressed( Keyboard::SPACEBAR ) || ( touchscreen->FindNumberOfStartedTouches() == 1 ) )
+		if( keyboard->KeyIsPressed( Keyboard::SPACEBAR ) || ( touchscreen->FindNumberOfStartedTouches() == 1 ) || ( ( gamepad != nullptr ) && gamepad->IsButtonPressed( 1 ) ) )
 		{
 			EventDataBundle fireData;
 			fireData.SetParameter( STRING_1stEntity, controlledEntity );

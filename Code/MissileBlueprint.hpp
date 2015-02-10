@@ -16,7 +16,7 @@ class MissileBlueprint : public EntityBlueprint
 
 public:
 	MissileBlueprint( MeteoroidGame* const game );
-	~MissileBlueprint();
+	virtual ~MissileBlueprint();
 
 	void BuildEntity( Entity& out_entity );
 

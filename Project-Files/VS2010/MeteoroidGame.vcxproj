@@ -8,6 +8,10 @@
       <Configuration>Debug</Configuration>
       <Platform>Emscripten</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|PS3">
+      <Configuration>Debug</Configuration>
+      <Platform>PS3</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Tegra-Android">
       <Configuration>Debug</Configuration>
       <Platform>Tegra-Android</Platform>
@@ -19,6 +23,10 @@
     <ProjectConfiguration Include="Release|Emscripten">
       <Configuration>Release</Configuration>
       <Platform>Emscripten</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|PS3">
+      <Configuration>Release</Configuration>
+      <Platform>PS3</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Tegra-Android">
       <Configuration>Release</Configuration>
@@ -51,6 +59,12 @@
     <AndroidMinAPI>android-19</AndroidMinAPI>
     <AndroidStripLibrary>true</AndroidStripLibrary>
     <AndroidArch>armv7-a</AndroidArch>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|PS3'">
+    <ExceptionsAndRtti>WithExceptsWithRtti</ExceptionsAndRtti>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|PS3'">
+    <ExceptionsAndRtti>WithExceptsWithRtti</ExceptionsAndRtti>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -105,6 +119,16 @@
     <OutDir>$(SolutionDir)..\..\Build\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)..\..\Temp-Files\$(Platform)_$(Configuration)\</IntDir>
     <TargetName>libMeteoroids</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|PS3'">
+    <OutDir>$(SolutionDir)..\..\Build\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\Temp Files\$(Platform)_$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|PS3'">
+    <OutDir>$(SolutionDir)..\..\Build\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\Temp Files\$(Platform)_$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -176,13 +200,39 @@
       <UseLinker>bfd</UseLinker>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\..\vingine-core\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\vingine-core\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <CppLanguageStandard>gnu++11</CppLanguageStandard>
       <GccExceptionHandling>true</GccExceptionHandling>
       <StackProtector>true</StackProtector>
       <PreprocessorDefinitions>
       </PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|PS3'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\vingine-core\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|PS3'">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>-lio_stub;-lsysmodule_stub;-lsysutil_stub;../../Libraries/Vingine Core_$(Configuration).a;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|PS3'">
+    <Link>
+      <AdditionalDependencies>-lio_stub;-lsysmodule_stub;-lsysutil_stub;../../Libraries/Vingine Core_$(Configuration).a;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\vingine-core\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\vingine-core\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
