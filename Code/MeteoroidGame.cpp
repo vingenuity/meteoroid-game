@@ -16,7 +16,7 @@
 
 
 //-----------------------------------------------------------------------------------------------
-STATIC const IntVector2 MeteoroidGame::WORLD_DIMENSIONS( 1000, 1000 );
+STATIC const IntVector2 MeteoroidGame::WORLD_DIMENSIONS( 750, 730 );
 STATIC const FloatVector2 MeteoroidGame::SHIP_SPAWN_POSITION( WORLD_DIMENSIONS.x * 0.5f, WORLD_DIMENSIONS.y * 0.5f );
 
 //-----------------------------------------------------------------------------------------------
@@ -209,7 +209,7 @@ void MeteoroidGame::OnCollisionEvent( EventDataBundle& eventData )
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::CreateFramebuffer()
 {
-	Texture* colorTexture = RendererInterface::GetTextureManager()->CreateFramebufferColorTexture( WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y );
+	Texture* colorTexture = RendererInterface::GetTextureManager()->CreateFramebufferColorTexture( WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y, RendererInterface::ARGB );
 	Texture* depthTexture = RendererInterface::GetTextureManager()->CreateFramebufferDepthTexture( WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y );
 
 	m_effectsFramebuffer = new Framebuffer( RendererInterface::CreateFramebufferObject( Framebuffer::TARGET_FOR_READING_AND_WRITING ) );
@@ -256,12 +256,15 @@ void MeteoroidGame::HandleEntityDestructionOrReuse( Entity*& entity )
 				Entity* spawnedMeteor = nullptr;
 				FloatVector2 spawnPosition( entity->position.x, entity->position.y );
 
-				for( unsigned int i = 0; i < 4; ++i )
+				for( unsigned int i = 0; i < 2; ++i )
 				{
 					spawnedMeteor = GetEntityManager().HireEntity();
 					m_meteoroidBlueprint->hint_spawnPosition = spawnPosition;
 					m_meteoroidBlueprint->hint_meteorSize = fracture->fracturesRemaining;
 					m_meteoroidBlueprint->BuildEntity( *spawnedMeteor );
+					spawnedMeteor->velocity.x = ( GetRandomFloatBetweenZeroandOne() - 0.5f ) * 120.f;
+					spawnedMeteor->velocity.y = ( GetRandomFloatBetweenZeroandOne() - 0.5f ) * 120.f;
+					spawnedMeteor->angularVelocity.yawDegreesAboutZ = ( GetRandomFloatBetweenZeroandOne() - 0.5f ) * 240.f;
 				}
 			}
 			GetEntityManager().QueueEntityForFiring( entity );
@@ -303,7 +306,7 @@ STATIC void MeteoroidGame::SetPillarboxIfNeeded( const IntVector2& windowDimensi
 	int viewportWidth = gameDimensions.x;
 	int viewportHeight = static_cast< int >( viewportWidth / targetAspectRatio + 0.5f );
 
-	if ( viewportHeight > windowDimensions.y )
+	if ( viewportHeight != windowDimensions.y )
 	{
 		//It doesn't fit our height, we must switch to pillarbox then
 		viewportHeight = windowDimensions.y;
