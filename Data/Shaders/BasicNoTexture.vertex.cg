@@ -17,6 +17,6 @@ void main (	float3				i_vertexWorldPosition	: ATTR0,
 
 	screenPosition = mul( vertexWorldPosition4, mul( mul( u_modelMatrix, u_viewMatrix ), u_projectionMatrix ) );
 
-	surfaceColor = i_vertexColor;
+	surfaceColor = i_vertexColor * float4( 0.0039215, 0.0039215, 0.0039215, 0.0039215 );
 	textureCoordinates = i_textureCoordinates;
 }

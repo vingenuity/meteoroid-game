@@ -96,7 +96,7 @@ void MissileBlueprint::BuildEntity( Entity& out_entity )
 //-----------------------------------------------------------------------------------------------
 void MissileBlueprint::BuildMissileVertexData()
 {
-	static const Color MISSILE_COLOR( 255, 255, 255, 255 );
+	static const Color MISSILE_COLOR( 242, 126, 126, 255 );
 
 	Simple2DVertex* shipVertexArray = reinterpret_cast< Simple2DVertex* >( m_vertices.data );
 	shipVertexArray[ 0] = Simple2DVertex(  0.f	, 0.f	, MISSILE_COLOR );

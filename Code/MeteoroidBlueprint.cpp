@@ -124,7 +124,7 @@ struct Simple2DVertex
 VertexData* MeteoroidBlueprint::BuildMeteoroidVertexData( unsigned int meteorSize )
 {
 	static const unsigned int NUM_METEOR_VERTICES = 12;
-	static const Color METEOROID_COLOR( 255, 255, 255, 255 );
+	static const Color METEOROID_COLOR( 230, 230, 135, 255 );
 
 	VertexData* out_vertData = new VertexData( NUM_METEOR_VERTICES, sizeof( Simple2DVertex ) );
 	Simple2DVertex* meteoroidVertexArray = reinterpret_cast< Simple2DVertex* >( out_vertData->data );

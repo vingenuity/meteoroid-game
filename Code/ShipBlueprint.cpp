@@ -117,7 +117,7 @@ void ShipBlueprint::BuildShipVertexData()
 	static const float DIST_FROM_CENTER_TO_WINGTIP_X = 7.5f;
 	static const float DIST_FROM_CENTER_TO_WINGTIP_Y = 7.5f;
 
-	static const Color SHIP_COLOR( 255, 255, 255, 255 );
+	static const Color SHIP_COLOR( 154, 196, 237, 255 );
 
 
 	Simple2DVertex* shipVertexArray = reinterpret_cast< Simple2DVertex* >( m_vertices.data );
