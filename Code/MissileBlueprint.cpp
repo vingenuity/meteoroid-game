@@ -1,5 +1,7 @@
 #include "MissileBlueprint.hpp"
 
+#include <Code/Graphics/CachingShaderLoader.hpp>
+#include <Code/Graphics/Material.hpp>
 #include <Code/Graphics/MeshComponent.hpp>
 #include <Code/PhysicsComponent.hpp>
 
@@ -45,11 +47,14 @@ MissileBlueprint::MissileBlueprint( MeteoroidGame* const game )
 {
 	BuildMissileVertexData();
 
-	m_material = RendererInterface::CreateOrGetNewMaterial( L"ShipMaterial" );
-	m_material->SetShaderProgram( ShaderProgram::CreateOrGetShaderProgram( "Shaders/BasicNoTexture.110.vertex.glsl", "Shaders/BasicNoTexture.110.fragment.glsl" ) );
-	m_material->SetModelMatrixUniform( "u_modelMatrix" );
-	m_material->SetViewMatrixUniform( "u_viewMatrix" );
-	m_material->SetProjectionMatrixUniform( "u_projectionMatrix" );
+	m_material = RendererInterface::CreateOrGetNewMaterial( L"MissileMaterial" );
+	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
+	ShaderPipeline* basicPipeline = nullptr;
+	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
+		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/BasicNoTexture.110.vertex.glsl", "Shaders/BasicNoTexture.110.fragment.glsl" );
+	else
+		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/BasicNoTexture.vertex.cg", "Shaders/BasicNoTexture.fragment.cg" );
+	m_material->SetShaderPipeline( basicPipeline );
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -100,8 +105,8 @@ void MissileBlueprint::BuildMissileVertexData()
 	m_vertices.data = &shipVertexArray[0];
 	m_vertices.vertexSizeBytes = sizeof( Simple2DVertex );
 	m_vertices.numberOfVertices = NUM_MISSILE_VERTICES;
-	m_vertices.attributes.push_back( VertexAttribute( RendererInterface::LOCATION_Vertex, 2, RendererInterface::TYPE_FLOAT, false, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, position.x ) ) );
-	m_vertices.attributes.push_back( VertexAttribute( RendererInterface::LOCATION_Color, 4, RendererInterface::TYPE_UNSIGNED_BYTE, true, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, color.r ) ) );
+	m_vertices.attributes.push_back( VertexAttribute( RendererInterface::DEFAULT_NAME_Vertex, 2, RendererInterface::TYPE_FLOAT, false, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, position.x ) ) );
+	m_vertices.attributes.push_back( VertexAttribute( RendererInterface::DEFAULT_NAME_Color, 4, RendererInterface::TYPE_UNSIGNED_BYTE, true, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, color.r ) ) );
 	m_vertices.shape = RendererInterface::LINES;
 
 	RendererInterface::GenerateBuffer( 1, &m_vertices.bufferID );

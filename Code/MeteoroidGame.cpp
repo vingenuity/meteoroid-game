@@ -22,8 +22,6 @@ STATIC const FloatVector2 MeteoroidGame::SHIP_SPAWN_POSITION( WORLD_DIMENSIONS.x
 //-----------------------------------------------------------------------------------------------
 MeteoroidGame g_game; //This initializes the game and the game interface for the engine simultaneously.
 
-
-
 #pragma region Lifecycle
 //-----------------------------------------------------------------------------------------------
 VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsigned int windowHeight )
@@ -38,6 +36,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 
 	m_cameraman = GetEntityManager().HireEntity();
 	CameraComponent* m_gameCam = m_worldRenderingSystem->AcquireCameraComponent();
+	m_gameCam->SetOrthographicProjection( 0.0, WORLD_DIMENSIONS.x, 0.0, WORLD_DIMENSIONS.y, 0.0, 1.0 );
 	m_cameraman->AttachComponent( m_gameCam );
 	m_worldRenderingSystem->SetActiveCamera( m_gameCam );
 
@@ -51,23 +50,26 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	ScoringComponent* playerScoring = playerShip->FindAttachedComponentOfType< ScoringComponent >();
 
 	Material* uiTextMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUITextMaterial" );
-	uiTextMaterial->SetShaderProgram( ShaderProgram::CreateOrGetShaderProgram( "Shaders/Basic.110.vertex.glsl", "Shaders/Basic.110.fragment.glsl" ) );
-	uiTextMaterial->SetModelMatrixUniform( "u_modelMatrix" );
-	uiTextMaterial->SetViewMatrixUniform( "u_viewMatrix" );
-	uiTextMaterial->SetProjectionMatrixUniform( "u_projectionMatrix" );
+	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
+	ShaderPipeline* basicPipeline = nullptr;
+	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
+		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.110.vertex.glsl", "Shaders/Basic.110.fragment.glsl" );
+	else
+		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Basic.fragment.cg" );
+	uiTextMaterial->SetShaderPipeline( basicPipeline );
 
 	std::string fontTextureLocation( "Font/MainFont_EN_00.png" );
 	BitmapFont* uiFont = new BitmapFont( "Font/MainFont_EN.FontDef.xml", &fontTextureLocation, 1 );
 
 	//UI Creation
 	NumberDisplayElement* scoreDisplay = new NumberDisplayElement( &playerScoring->currentScore, 6, uiFont, uiTextMaterial, false );
-	scoreDisplay->position.x = 50.f;
-	scoreDisplay->position.y = 50.f;
+	scoreDisplay->position.x = 0.f;
+	scoreDisplay->position.y = 670.f;
 	m_UISystem->ConnectUIElement( scoreDisplay );
 
 	NumberDisplayElement* lifeDisplay = new NumberDisplayElement( &m_playerLivesRemaining, 6, uiFont, uiTextMaterial );
-	lifeDisplay->position.x = 100.f;
-	lifeDisplay->position.y = 100.f;
+	lifeDisplay->position.x = 0.f;
+	lifeDisplay->position.y = 620.f;
 	m_UISystem->ConnectUIElement( lifeDisplay );
 
 	StartNewLevel();
@@ -93,7 +95,6 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 
 	m_worldRenderingSystem->OnUpdate( deltaSeconds );
 	m_UISystem->OnUpdate( deltaSeconds );
-	m_debugUIRenderingSystem->OnUpdate( deltaSeconds );
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -102,10 +103,11 @@ void MeteoroidGame::DoRender() const
 	RendererInterface::ClearColorBuffer();
 	RendererInterface::ClearDepthBuffer();
 
-	RendererInterface::PushMatrix();
-	float xScale = static_cast< float >( m_windowDimensions.x ) / WORLD_DIMENSIONS.x;
-	float yScale = static_cast< float >( m_windowDimensions.y ) / WORLD_DIMENSIONS.y;
-	RendererInterface::ScaleWorld( xScale, yScale, 1.f );
+	//This was used to change the scale to match the pillarboxing...honestly not sure this is needed.
+	//RendererInterface::PushMatrix();
+	//float xScale = static_cast< float >( m_windowDimensions.x ) / WORLD_DIMENSIONS.x;
+	//float yScale = static_cast< float >( m_windowDimensions.y ) / WORLD_DIMENSIONS.y;
+	//RendererInterface::ScaleWorld( xScale, yScale, 1.f );
 
 	m_gameInputSystem->OnRender();
 
@@ -119,8 +121,7 @@ void MeteoroidGame::DoRender() const
 
 	m_worldRenderingSystem->OnRender();
 	m_UISystem->OnRender();
-	m_debugUIRenderingSystem->OnRender();
-	RendererInterface::PopMatrix();
+	//RendererInterface::PopMatrix();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -140,7 +141,6 @@ void MeteoroidGame::DoAtEndOfFrame()
 
 	m_worldRenderingSystem->OnEndFrame();
 	m_UISystem->OnEndFrame();
-	m_debugUIRenderingSystem->OnEndFrame();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -151,9 +151,6 @@ void MeteoroidGame::DoBeforeEngineDestruction()
 	//Afterwards, the systems may clean up their components
 	m_collisionSystem->OnDestruction();
 	delete m_collisionSystem;
-
-	m_debugUIRenderingSystem->OnDestruction();
-	delete m_debugUIRenderingSystem;
 
 	m_fracturingSystem->OnDestruction();
 	delete m_fracturingSystem;
@@ -334,10 +331,6 @@ void MeteoroidGame::StartupGameSystems()
 	m_collisionSystem = new CollisionSystem2D( 100, worldDimensionsAsFloat );
 	m_collisionSystem->OnAttachment( nullptr );
 
-	m_debugUIRenderingSystem = new DebugDrawingSystem2D( 0.f, static_cast<float>( m_windowDimensions.x ), 
-		0.f, static_cast<float>( m_windowDimensions.y ) );
-	m_debugUIRenderingSystem->OnAttachment( nullptr );
-
 	m_gameInputSystem = new GameInputSystem( 1 );
 	m_gameInputSystem->OnAttachment( nullptr );
 
@@ -356,7 +349,7 @@ void MeteoroidGame::StartupGameSystems()
 	m_timedDestructionSystem = new TimedDestructionSystem( 100 );
 	m_timedDestructionSystem->OnAttachment( nullptr );
 
-	m_UISystem = new UISystem();
+	m_UISystem = new UISystem( m_windowDimensions );
 	m_UISystem->OnAttachment( nullptr );
 
 	m_warpSystem = new WarpSystem( 1, worldDimensionsAsFloat );

@@ -1,6 +1,7 @@
 #include "NumberDisplayElement.hpp"
 
 #include <Code/Font/BitmapFont.hpp>
+#include <Code/Graphics/Material.hpp>
 #include <Code/Graphics/MeshGenerationText.hpp>
 #include <Code/Graphics/RendererInterface.hpp>
 #include <Code/StringConversion.hpp>
@@ -32,13 +33,13 @@ void NumberDisplayElement::Render() const
 	RendererInterface::PushMatrix();
 	RendererInterface::TranslateWorld( position );
 
-	RendererInterface::BindVertexData( m_displayedVertices );
 	RendererInterface::ApplyMaterial( m_material );
+	RendererInterface::BindVertexDataToShader( m_displayedVertices, m_material->pipeline );
 
 	RendererInterface::RenderVertexArray( m_displayedVertices->shape, 0, m_displayedVertices->numberOfVertices );
 
+	RendererInterface::UnbindVertexDataFromShader( m_displayedVertices, m_material->pipeline );
 	RendererInterface::RemoveMaterial( m_material );
-	RendererInterface::UnbindVertexData( m_displayedVertices );
 
 	RendererInterface::PopMatrix();
 }

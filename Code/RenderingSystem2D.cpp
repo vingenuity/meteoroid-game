@@ -1,5 +1,6 @@
 #include "RenderingSystem2D.hpp"
 
+#include <Code/Graphics/Material.hpp>
 #include "GameEvents.hpp"
 
 
@@ -49,13 +50,13 @@ void RenderingSystem2D::OnRender() const
 		RendererInterface::RotateWorldAboutAxisDegrees( Y_AXIS, mesh.owner->orientation.pitchDegreesAboutY );
 		RendererInterface::RotateWorldAboutAxisDegrees( X_AXIS, mesh.owner->orientation.rollDegreesAboutX );
 
-		RendererInterface::BindVertexData( mesh.vertexData );
 		RendererInterface::ApplyMaterial( mesh.material );
+		RendererInterface::BindVertexDataToShader( mesh.vertexData, mesh.material->pipeline );
 
 		RendererInterface::RenderVertexArray( mesh.vertexData->shape, 0, mesh.vertexData->numberOfVertices );
 
+		RendererInterface::UnbindVertexDataFromShader( mesh.vertexData, mesh.material->pipeline );
 		RendererInterface::RemoveMaterial( mesh.material );
-		RendererInterface::UnbindVertexData( mesh.vertexData );
 
 		RendererInterface::PopMatrix();
 	}
@@ -103,14 +104,6 @@ void RenderingSystem2D::ViewWorldThroughCamera( const CameraComponent* camera ) 
 		break;
 	}
 	Float4x4Matrix rotationMatrix = F4X4_IDENTITY_MATRIX;
-	//const EulerAngles& cameraOrientation = camera->owner->orientation;
-	//Float4x4Matrix xRotation, yRotation, zRotation, x2, z2; 
-	//GetRotationMatrixForAxisAndAngleDegrees( xRotation, FloatVector3( 1.f, 0.f, 0.f ), -cameraOrientation.rollDegreesAboutX );
-	//GetRotationMatrixForAxisAndAngleDegrees( yRotation, FloatVector3( 0.f, 1.f, 0.f ), -cameraOrientation.pitchDegreesAboutY );
-	//GetRotationMatrixForAxisAndAngleDegrees( zRotation, FloatVector3( 0.f, 0.f, 1.f ), -cameraOrientation.yawDegreesAboutZ );
-	//GetRotationMatrixForAxisAndAngleDegrees( x2, FloatVector3( 1.f, 0.f, 0.f ), -90.f );
-	//GetRotationMatrixForAxisAndAngleDegrees( z2, FloatVector3( 0.f, 0.f, 1.f ),  90.f );
-	//rotationMatrix = zRotation * yRotation * xRotation * z2 * x2;
 
 	Float4x4Matrix translationMatrix = F4X4_IDENTITY_MATRIX;
 	const FloatVector3& cameraPosition = camera->owner->position;

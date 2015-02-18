@@ -46,7 +46,6 @@ public:
 
 	//Game Systems
 	CollisionSystem2D* m_collisionSystem;
-	DebugDrawingSystem2D* m_debugUIRenderingSystem;
 	FracturingSystem* m_fracturingSystem;
 	GameInputSystem* m_gameInputSystem;
 	OuterSpacePhysicsSystem* m_physicsSystem;
@@ -96,7 +95,6 @@ extern MeteoroidGame g_game;
 //-----------------------------------------------------------------------------------------------
 inline MeteoroidGame::MeteoroidGame()
 	: m_collisionSystem( nullptr )
-	, m_debugUIRenderingSystem( nullptr )
 	, m_fracturingSystem( nullptr )
 	, m_gameInputSystem( nullptr )
 	, m_physicsSystem( nullptr )
