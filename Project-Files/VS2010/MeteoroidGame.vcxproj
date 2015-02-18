@@ -84,8 +84,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
-    <IncludePath>..\..\..\vingine-core\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\..\vingine-core\;$(CG_INC_PATH);$(IncludePath)</IncludePath>
+    <LibraryPath>$(CG_LIB_PATH);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\..\Build\Win\</OutDir>
@@ -193,7 +193,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
     <Link>
-      <AdditionalDependencies>../../Libraries/Vingine Core_Debug.a;../../Libraries/fmod_vc.lib;../../Libraries/OpenAL32.lib;android;EGL;GLESv1_CM;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../../Libraries/Vingine Core_Debug.a;../../Libraries/fmod_vc.lib;../../Libraries/OpenAL32.lib;android;EGL;GLESv2;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>-lGLESv2 -lOpenSLES %(AdditionalOptions)</AdditionalOptions>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <ReportUndefinedSymbols>true</ReportUndefinedSymbols>
@@ -219,7 +219,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>-lio_stub;-lsysmodule_stub;-lsysutil_stub;../../Libraries/Vingine Core_$(Configuration).a;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../../Libraries/Vingine Core_$(Configuration).a;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|PS3'">
@@ -262,7 +262,6 @@
     <ClInclude Include="..\..\Code\WarpSystem.hpp" />
     <ClInclude Include="..\..\Code\WeaponComponent.hpp" />
     <ClInclude Include="..\..\Code\WeaponSystem.hpp" />
-    <ClInclude Include="..\..\native_app_glue\android_native_app_glue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\CollisionSystem2D.cpp" />
@@ -280,7 +279,6 @@
     <ClCompile Include="..\..\Code\TimedDestructionSystem.cpp" />
     <ClCompile Include="..\..\Code\WarpSystem.cpp" />
     <ClCompile Include="..\..\Code\WeaponSystem.cpp" />
-    <ClCompile Include="..\..\native_app_glue\android_native_app_glue.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
