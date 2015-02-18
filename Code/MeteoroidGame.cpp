@@ -32,6 +32,8 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 
 	StartupGameSystems();
 
+	CreateFramebuffer();
+
 	EventCourier::SubscribeForEvent( EVENT_Collision, EventObserver::GenerateFromOneArgFunction< MeteoroidGame, &MeteoroidGame::OnCollisionEvent >( this ) );
 
 	m_cameraman = GetEntityManager().HireEntity();
@@ -100,14 +102,10 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::DoRender() const
 {
+	//World pass
+	//RendererInterface::UseFrameBuffer( *m_effectsFramebuffer );
 	RendererInterface::ClearColorBuffer();
 	RendererInterface::ClearDepthBuffer();
-
-	//This was used to change the scale to match the pillarboxing...honestly not sure this is needed.
-	//RendererInterface::PushMatrix();
-	//float xScale = static_cast< float >( m_windowDimensions.x ) / WORLD_DIMENSIONS.x;
-	//float yScale = static_cast< float >( m_windowDimensions.y ) / WORLD_DIMENSIONS.y;
-	//RendererInterface::ScaleWorld( xScale, yScale, 1.f );
 
 	m_gameInputSystem->OnRender();
 
@@ -121,7 +119,10 @@ void MeteoroidGame::DoRender() const
 
 	m_worldRenderingSystem->OnRender();
 	m_UISystem->OnRender();
-	//RendererInterface::PopMatrix();
+
+	//RendererInterface::UseDefaultFramebuffer();
+	//RendererInterface::ClearColorBuffer();
+	//RendererInterface::ClearDepthBuffer();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -147,6 +148,7 @@ void MeteoroidGame::DoAtEndOfFrame()
 void MeteoroidGame::DoBeforeEngineDestruction()
 {
 	GameInterface::DoBeforeEngineDestruction();
+	delete m_effectsFramebuffer;
 
 	//Afterwards, the systems may clean up their components
 	m_collisionSystem->OnDestruction();
@@ -204,6 +206,20 @@ void MeteoroidGame::OnCollisionEvent( EventDataBundle& eventData )
 
 
 #pragma region Helpers
+//-----------------------------------------------------------------------------------------------
+void MeteoroidGame::CreateFramebuffer()
+{
+	Texture* colorTexture = RendererInterface::GetTextureManager()->CreateFramebufferColorTexture( WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y );
+	Texture* depthTexture = RendererInterface::GetTextureManager()->CreateFramebufferDepthTexture( WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y );
+
+	m_effectsFramebuffer = new Framebuffer( RendererInterface::CreateFramebufferObject( Framebuffer::TARGET_FOR_READING_AND_WRITING ) );
+	RendererInterface::AttachTextureToFramebufferColorOutputSlot( colorTexture, *m_effectsFramebuffer, 0 );
+	RendererInterface::AttachTextureToFramebufferDepthOutput( depthTexture, *m_effectsFramebuffer );
+
+	RendererInterface::CheckIfFramebufferIsReady( *m_effectsFramebuffer );
+	RendererInterface::UseDefaultFramebuffer();
+}
+
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::HandleEntityDestructionOrReuse( Entity*& entity )
 {

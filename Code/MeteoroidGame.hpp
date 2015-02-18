@@ -22,6 +22,7 @@
 #include "WarpSystem.hpp"
 #include "WeaponSystem.hpp"
 
+class Framebuffer;
 class MeteoroidBlueprint;
 class ShipBlueprint;
 
@@ -62,6 +63,7 @@ private:
 	void OnCollisionEvent( EventDataBundle& eventData );
 
 	//Helpers
+	void CreateFramebuffer();
 	void HandleEntityDestructionOrReuse( Entity*& entity );
 	bool IsGameOver() const;
 	bool IsLevelComplete() const;
@@ -71,6 +73,7 @@ private:
 
 	//Game Pointers
 	Entity* m_cameraman;
+	Framebuffer* m_effectsFramebuffer;
 	MeteoroidBlueprint* m_meteoroidBlueprint;
 	ShipBlueprint* m_shipBlueprint;
 
@@ -106,6 +109,7 @@ inline MeteoroidGame::MeteoroidGame()
 	, m_warpSystem( nullptr )
 
 	, m_cameraman( nullptr )
+	, m_effectsFramebuffer( nullptr )
 	, m_meteoroidBlueprint( nullptr )
 	, m_shipBlueprint( nullptr )
 
