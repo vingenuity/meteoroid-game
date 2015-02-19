@@ -17,7 +17,7 @@
 
 
 //-----------------------------------------------------------------------------------------------
-STATIC const IntVector2 MeteoroidGame::WORLD_DIMENSIONS( 750, 750 );
+STATIC const IntVector2 MeteoroidGame::WORLD_DIMENSIONS( 700, 700 );
 STATIC const FloatVector2 MeteoroidGame::SHIP_SPAWN_POSITION( WORLD_DIMENSIONS.x * 0.5f, WORLD_DIMENSIONS.y * 0.5f );
 
 //-----------------------------------------------------------------------------------------------
@@ -42,6 +42,8 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	GenerateTexturedPlane( *m_framebufferVertices, FloatVector3( 375.f, 375.f, 0.f ),
 		FloatVector3( 0.f, 0.f, 1.f ), (float)WORLD_DIMENSIONS.x, (float)WORLD_DIMENSIONS.y,
 		FloatVector2( 0.f, 0.f ), FloatVector2( 1.f, 1.f ) );
+	RendererInterface::GenerateBuffer( 1, &m_framebufferVertices->bufferID );
+	RendererInterface::BufferVertexData( m_framebufferVertices );
 
 	m_framebufferMaterial = RendererInterface::CreateOrGetNewMaterial( L"FramebufferMaterial" );
 	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
@@ -49,7 +51,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
 		framebufferPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.110.vertex.glsl", "Shaders/Glow.110.fragment.glsl" );
 	else
-		framebufferPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Basic.fragment.cg" );
+		framebufferPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Glow.fragment.cg" );
 	m_framebufferMaterial->SetShaderPipeline( framebufferPipeline );
 	m_framebufferMaterial->SetTextureUniform( "u_diffuseMap", 0, m_framebuffer->GetAttachedColorTexture( 0 ) );
 

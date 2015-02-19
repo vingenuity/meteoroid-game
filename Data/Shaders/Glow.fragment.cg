@@ -1,4 +1,3 @@
-precision mediump float;
 
 //-----------------------------------------------------------------------------------------------
 //	BLOOM CALCULATION
@@ -24,9 +23,9 @@ const float BLOOM_DENOMINATOR = 24.0;
 const int MAX_TEXEL_STEP = 2;
 const float TEXTURE_COORD_STEP_SIZE = 0.003;
 
-vec4 CalculateBloomedTexelColorAt( vec2 textureCoordinate, sampler2D textureMap )
+float4 CalculateBloomedTexelColorAt( float2 textureCoordinate, sampler2D textureMap )
 {
-	vec4 additiveTexelColor = vec4( 0.0, 0.0, 0.0, 0.0 );
+	float4 additiveTexelColor = float4( 0.0, 0.0, 0.0, 0.0 );
 
 	for( int xStep = -MAX_TEXEL_STEP; xStep <= MAX_TEXEL_STEP; ++xStep )
 	{
@@ -34,32 +33,25 @@ vec4 CalculateBloomedTexelColorAt( vec2 textureCoordinate, sampler2D textureMap 
 		for( int yStep = -MAX_TEXEL_STEP; yStep <= MAX_TEXEL_STEP; ++yStep )
 		{
 			float bloomMultiplier = ( xBloomNumerator * CalculatePascalNumberOnRow( yStep + MAX_TEXEL_STEP, 4 ) ) / BLOOM_DENOMINATOR;
-			vec2 offsetTextureCoordinate = textureCoordinate + ( vec2( xStep , yStep ) * TEXTURE_COORD_STEP_SIZE );
+			float2 offsetTextureCoordinate = textureCoordinate + ( float2( xStep , yStep ) * TEXTURE_COORD_STEP_SIZE );
 
-			additiveTexelColor += bloomMultiplier * texture2D( textureMap, offsetTextureCoordinate );
+			additiveTexelColor += bloomMultiplier * tex2D( textureMap, offsetTextureCoordinate );
 		}
 	}
 	return additiveTexelColor;
 }
 
-
-
 //-----------------------------------------------------------------------------------------------
 //	MAIN
 //-----------------------------------------------------------------------------------------------
-//INPUTS:
-varying vec4 screenPosition;
-varying vec4 worldPosition;
-varying vec4 surfaceColor;
-varying vec2 textureCoordinates;
+void main(	float4				screenPosition		: POSITION0,
+			float4				surfaceColor		: COLOR0,
+			float2				textureCoordinates	: TEXCOORD0,
 
-//UNIFORMS:
-uniform sampler2D u_diffuseMap;
+			uniform	sampler2D	u_diffuseMap,
 
-//OUTPUTS:
-//vec4 gl_FragColor;
-
-void main()
+			out float4			out_color			: COLOR
+		 )
 {
-	gl_FragColor = surfaceColor * ( texture2D( u_diffuseMap, textureCoordinates ) + CalculateBloomedTexelColorAt( textureCoordinates, u_diffuseMap ) );
+	out_color = surfaceColor * ( tex2D( u_diffuseMap, textureCoordinates ) + CalculateBloomedTexelColorAt( textureCoordinates, u_diffuseMap ) );
 }
