@@ -55,6 +55,7 @@ MissileBlueprint::MissileBlueprint( MeteoroidGame* const game )
 	else
 		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/BasicNoTexture.vertex.cg", "Shaders/BasicNoTexture.fragment.cg" );
 	m_material->SetShaderPipeline( basicPipeline );
+	m_material->SetLineWidth( 2.f );
 }
 
 //-----------------------------------------------------------------------------------------------

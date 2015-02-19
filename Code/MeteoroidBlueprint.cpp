@@ -32,6 +32,7 @@ MeteoroidBlueprint::MeteoroidBlueprint( MeteoroidGame* const game )
 	else
 		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/BasicNoTexture.vertex.cg", "Shaders/BasicNoTexture.fragment.cg" );
 	m_material->SetShaderPipeline( basicPipeline );
+	m_material->SetLineWidth( 2.f );
 
 	m_vertices[ 0 ] = BuildMeteoroidVertexData( 0 );
 	m_vertices[ 1 ] = BuildMeteoroidVertexData( 1 );
