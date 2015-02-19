@@ -2,6 +2,7 @@
 
 #include <Code/Font/BitmapFont.hpp>
 #include <Code/Graphics/Material.hpp>
+#include <Code/Graphics/MeshGeneration3D.hpp>
 #include <Code/Graphics/RendererInterface.hpp>
 #include <Code/AssertionError.hpp>
 #include <Code/CameraComponent.hpp>
@@ -16,7 +17,7 @@
 
 
 //-----------------------------------------------------------------------------------------------
-STATIC const IntVector2 MeteoroidGame::WORLD_DIMENSIONS( 750, 730 );
+STATIC const IntVector2 MeteoroidGame::WORLD_DIMENSIONS( 750, 750 );
 STATIC const FloatVector2 MeteoroidGame::SHIP_SPAWN_POSITION( WORLD_DIMENSIONS.x * 0.5f, WORLD_DIMENSIONS.y * 0.5f );
 
 //-----------------------------------------------------------------------------------------------
@@ -36,6 +37,22 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 
 	EventCourier::SubscribeForEvent( EVENT_Collision, EventObserver::GenerateFromOneArgFunction< MeteoroidGame, &MeteoroidGame::OnCollisionEvent >( this ) );
 
+	//Framebuffer Creation
+	m_framebufferVertices = new VertexData();
+	GenerateTexturedPlane( *m_framebufferVertices, FloatVector3( 375.f, 375.f, 0.f ),
+		FloatVector3( 0.f, 0.f, 1.f ), (float)WORLD_DIMENSIONS.x, (float)WORLD_DIMENSIONS.y,
+		FloatVector2( 0.f, 0.f ), FloatVector2( 1.f, 1.f ) );
+
+	m_framebufferMaterial = RendererInterface::CreateOrGetNewMaterial( L"FramebufferMaterial" );
+	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
+	ShaderPipeline* framebufferPipeline = nullptr;
+	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
+		framebufferPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.110.vertex.glsl", "Shaders/Glow.110.fragment.glsl" );
+	else
+		framebufferPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Basic.fragment.cg" );
+	m_framebufferMaterial->SetShaderPipeline( framebufferPipeline );
+	m_framebufferMaterial->SetTextureUniform( "u_diffuseMap", 0, m_framebuffer->GetAttachedColorTexture( 0 ) );
+
 	m_cameraman = GetEntityManager().HireEntity();
 	CameraComponent* m_gameCam = m_worldRenderingSystem->AcquireCameraComponent();
 	m_gameCam->SetOrthographicProjection( 0.0, WORLD_DIMENSIONS.x, 0.0, WORLD_DIMENSIONS.y, 0.0, 1.0 );
@@ -52,7 +69,6 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	ScoringComponent* playerScoring = playerShip->FindAttachedComponentOfType< ScoringComponent >();
 
 	Material* uiTextMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUITextMaterial" );
-	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
 	ShaderPipeline* basicPipeline = nullptr;
 	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
 		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.110.vertex.glsl", "Shaders/Basic.110.fragment.glsl" );
@@ -61,15 +77,15 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	uiTextMaterial->SetShaderPipeline( basicPipeline );
 
 	std::string fontTextureLocation( "Font/MainFont_EN_00.png" );
-	BitmapFont* uiFont = new BitmapFont( "Font/MainFont_EN.FontDef.xml", &fontTextureLocation, 1 );
+	m_uiFont = new BitmapFont( "Font/MainFont_EN.FontDef.xml", &fontTextureLocation, 1 );
 
 	//UI Creation
-	NumberDisplayElement* scoreDisplay = new NumberDisplayElement( &playerScoring->currentScore, 6, uiFont, uiTextMaterial, false );
+	NumberDisplayElement* scoreDisplay = new NumberDisplayElement( &playerScoring->currentScore, 6, m_uiFont, uiTextMaterial, false );
 	scoreDisplay->position.x = 0.f;
 	scoreDisplay->position.y = 670.f;
 	m_UISystem->ConnectUIElement( scoreDisplay );
 
-	NumberDisplayElement* lifeDisplay = new NumberDisplayElement( &m_playerLivesRemaining, 6, uiFont, uiTextMaterial );
+	NumberDisplayElement* lifeDisplay = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, uiTextMaterial );
 	lifeDisplay->position.x = 0.f;
 	lifeDisplay->position.y = 620.f;
 	m_UISystem->ConnectUIElement( lifeDisplay );
@@ -103,9 +119,10 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 void MeteoroidGame::DoRender() const
 {
 	//World pass
-	//RendererInterface::UseFrameBuffer( *m_effectsFramebuffer );
+	RendererInterface::UseFrameBuffer( *m_framebuffer );
 	RendererInterface::ClearColorBuffer();
 	RendererInterface::ClearDepthBuffer();
+	RendererInterface::SetViewport( 0, 0, WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y );
 
 	m_gameInputSystem->OnRender();
 
@@ -118,11 +135,23 @@ void MeteoroidGame::DoRender() const
 	m_scoringSystem->OnRender();
 
 	m_worldRenderingSystem->OnRender();
+
+	RendererInterface::UseDefaultFramebuffer();
+	RendererInterface::ClearColorBuffer();
+	RendererInterface::ClearDepthBuffer();
+	SetPillarboxIfNeeded( m_windowDimensions, WORLD_DIMENSIONS );
+	RendererInterface::SetOrthographicProjection( 0.0, (double)WORLD_DIMENSIONS.x, 0.0, (double)WORLD_DIMENSIONS.y, -1.0, 1.0 );
+
+	RendererInterface::ApplyMaterial( m_framebufferMaterial );
+	RendererInterface::BindVertexDataToShader( m_framebufferVertices, m_framebufferMaterial->pipeline );
+
+	RendererInterface::RenderVertexArray( m_framebufferVertices->shape, 0, m_framebufferVertices->numberOfVertices );
+
+	RendererInterface::UnbindVertexDataFromShader( m_framebufferVertices, m_framebufferMaterial->pipeline );
+	RendererInterface::RemoveMaterial( m_framebufferMaterial );
+
 	m_UISystem->OnRender();
 
-	//RendererInterface::UseDefaultFramebuffer();
-	//RendererInterface::ClearColorBuffer();
-	//RendererInterface::ClearDepthBuffer();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -148,7 +177,9 @@ void MeteoroidGame::DoAtEndOfFrame()
 void MeteoroidGame::DoBeforeEngineDestruction()
 {
 	GameInterface::DoBeforeEngineDestruction();
-	delete m_effectsFramebuffer;
+	delete m_framebuffer;
+	delete m_framebufferVertices;
+	delete m_uiFont;
 
 	//Afterwards, the systems may clean up their components
 	m_collisionSystem->OnDestruction();
@@ -212,11 +243,11 @@ void MeteoroidGame::CreateFramebuffer()
 	Texture* colorTexture = RendererInterface::GetTextureManager()->CreateFramebufferColorTexture( WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y, RendererInterface::ARGB );
 	Texture* depthTexture = RendererInterface::GetTextureManager()->CreateFramebufferDepthTexture( WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y );
 
-	m_effectsFramebuffer = new Framebuffer( RendererInterface::CreateFramebufferObject( Framebuffer::TARGET_FOR_READING_AND_WRITING ) );
-	RendererInterface::AttachTextureToFramebufferColorOutputSlot( colorTexture, *m_effectsFramebuffer, 0 );
-	RendererInterface::AttachTextureToFramebufferDepthOutput( depthTexture, *m_effectsFramebuffer );
+	m_framebuffer = new Framebuffer( RendererInterface::CreateFramebufferObject( Framebuffer::TARGET_FOR_READING_AND_WRITING ) );
+	RendererInterface::AttachTextureToFramebufferColorOutputSlot( colorTexture, *m_framebuffer, 0 );
+	RendererInterface::AttachTextureToFramebufferDepthOutput( depthTexture, *m_framebuffer );
 
-	RendererInterface::CheckIfFramebufferIsReady( *m_effectsFramebuffer );
+	RendererInterface::CheckIfFramebufferIsReady( *m_framebuffer );
 	RendererInterface::UseDefaultFramebuffer();
 }
 

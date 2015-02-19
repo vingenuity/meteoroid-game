@@ -73,9 +73,12 @@ private:
 
 	//Game Pointers
 	Entity* m_cameraman;
-	Framebuffer* m_effectsFramebuffer;
+	Framebuffer* m_framebuffer;
+	Material* m_framebufferMaterial;
+	VertexData* m_framebufferVertices;
 	MeteoroidBlueprint* m_meteoroidBlueprint;
 	ShipBlueprint* m_shipBlueprint;
+	BitmapFont* m_uiFont;
 
 	//Gameplay data
 	static const FloatVector2 SHIP_SPAWN_POSITION;
@@ -109,9 +112,12 @@ inline MeteoroidGame::MeteoroidGame()
 	, m_warpSystem( nullptr )
 
 	, m_cameraman( nullptr )
-	, m_effectsFramebuffer( nullptr )
+	, m_framebuffer( nullptr )
+	, m_framebufferMaterial( nullptr )
+	, m_framebufferVertices( nullptr )
 	, m_meteoroidBlueprint( nullptr )
 	, m_shipBlueprint( nullptr )
+	, m_uiFont( nullptr )
 
 	, m_windowDimensions()
 	, m_playerLivesRemaining( 3 )
