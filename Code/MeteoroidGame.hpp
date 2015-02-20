@@ -72,6 +72,7 @@ private:
 	void StartupGameSystems();
 
 	//Game Pointers
+	AudioInterface::SoundID m_backgroundMusic;
 	Entity* m_cameraman;
 	Framebuffer* m_framebuffer;
 	Material* m_framebufferMaterial;
@@ -111,6 +112,7 @@ inline MeteoroidGame::MeteoroidGame()
 	, m_weaponSystem( nullptr )
 	, m_warpSystem( nullptr )
 
+	, m_backgroundMusic( 0 )
 	, m_cameraman( nullptr )
 	, m_framebuffer( nullptr )
 	, m_framebufferMaterial( nullptr )

@@ -173,7 +173,7 @@
     </Link>
     <Link>
       <AdditionalDependencies>..\..\Libraries\Vingine Core_$(Configuration).bc</AdditionalDependencies>
-      <AdditionalOptions>-s TOTAL_MEMORY=90000000 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-s TOTAL_MEMORY=150000000 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Emscripten'">

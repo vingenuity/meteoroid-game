@@ -3,6 +3,7 @@
 #define INCLUDED_WARP_SYSTEM_HPP
 
 //-----------------------------------------------------------------------------------------------
+#include <Code/Audio/AudioInterface.hpp>
 #include <Code/Events/EventSubscriber.hpp>
 #include <Code/Math/FloatVector2.hpp>
 #include <Code/ComponentSystem.hpp>
@@ -31,6 +32,7 @@ public:
 private:
 	//Data Members
 	FloatVector2 m_warpBounds;
+	AudioInterface::SoundID m_warpSound;
 };
 
 
@@ -38,6 +40,7 @@ private:
 inline WarpSystem::WarpSystem( size_t numComponentsInPool, const FloatVector2& worldDimensions )
 	: ComponentSystem( numComponentsInPool )
 	, m_warpBounds( worldDimensions )
+	, m_warpSound( 0 )
 { }
 
 #endif //INCLUDED_WARP_SYSTEM_HPP

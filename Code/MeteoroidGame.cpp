@@ -37,6 +37,9 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 
 	EventCourier::SubscribeForEvent( EVENT_Collision, EventObserver::GenerateFromOneArgFunction< MeteoroidGame, &MeteoroidGame::OnCollisionEvent >( this ) );
 
+	m_backgroundMusic = AudioInterface::GetOrLoadSound( "Audio/music-theme.wav" );
+	AudioInterface::PlaySoundThroughEmitter( m_backgroundMusic, AudioInterface::ANY_EMITTER, true );
+
 	//Framebuffer Creation
 	m_framebufferVertices = new VertexData();
 	GenerateTexturedPlane( *m_framebufferVertices, FloatVector3( 375.f, 375.f, 0.f ),

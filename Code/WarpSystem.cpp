@@ -10,6 +10,7 @@
 void WarpSystem::OnAttachment( SystemManager* /*manager*/ )
 {
 	EventCourier::SubscribeForEvent( EVENT_EngageWarp, EventObserver::GenerateFromOneArgFunction< WarpSystem, &WarpSystem::OnWarpEngaged >( this ) );
+	m_warpSound = AudioInterface::GetOrLoadSound( "Audio/warp.wav" );
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -39,6 +40,7 @@ void WarpSystem::OnWarpEngaged( EventDataBundle& eventData )
 	WarpComponent* entityWarpComponent = entityAttemptingToWarp->FindAttachedComponentOfType< WarpComponent >();
 	if( entityWarpComponent != nullptr )
 	{
+		AudioInterface::PlaySoundThroughEmitter( m_warpSound );
 		entityAttemptingToWarp->position.x = GetRandomFloatBetweenZeroandOne() * m_warpBounds.x;
 		entityAttemptingToWarp->position.y = GetRandomFloatBetweenZeroandOne() * m_warpBounds.y;
 	}
