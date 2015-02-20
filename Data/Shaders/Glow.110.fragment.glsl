@@ -7,14 +7,14 @@ precision mediump float;
  * Thus, we are going to calculate Pascal's numbers every time we need them. Ick.
  * This code uses the identity: C(n,k+1) = C(n,k) * (n-k) / (k+1).
  * Thanks, http://stackoverflow.com/questions/15580291/how-to-efficiently-calculate-a-row-in-pascals-triangle! */
-float CalculatePascalNumberOnRow( int zeroIndexInRow, int zeroIndexedRowNumber )
+float CalculatePascalNumberOnRow4( int zeroIndexInRow )
 {
 	//assert( zeroIndexInRow < rowNumber );
 
 	int pascalNumber = 1;
-	for( int index = 0; index < zeroIndexedRowNumber; ++index )
+	for( int index = 0; index < 4; ++index )
 	{
-		pascalNumber = pascalNumber * ( zeroIndexedRowNumber - index ) / ( index + 1 );
+		pascalNumber = pascalNumber * ( 4 - index ) / ( index + 1 );
 	}
 	return float( pascalNumber );
 }
@@ -30,10 +30,10 @@ vec4 CalculateBloomedTexelColorAt( vec2 textureCoordinate, sampler2D textureMap 
 
 	for( int xStep = -MAX_TEXEL_STEP; xStep <= MAX_TEXEL_STEP; ++xStep )
 	{
-		float xBloomNumerator = CalculatePascalNumberOnRow( xStep + MAX_TEXEL_STEP, 4 );
+		float xBloomNumerator = CalculatePascalNumberOnRow4( xStep + MAX_TEXEL_STEP );
 		for( int yStep = -MAX_TEXEL_STEP; yStep <= MAX_TEXEL_STEP; ++yStep )
 		{
-			float bloomMultiplier = ( xBloomNumerator * CalculatePascalNumberOnRow( yStep + MAX_TEXEL_STEP, 4 ) ) / BLOOM_DENOMINATOR;
+			float bloomMultiplier = ( xBloomNumerator * CalculatePascalNumberOnRow4( yStep + MAX_TEXEL_STEP ) ) / BLOOM_DENOMINATOR;
 			vec2 offsetTextureCoordinate = textureCoordinate + ( vec2( xStep , yStep ) * TEXTURE_COORD_STEP_SIZE );
 
 			additiveTexelColor += bloomMultiplier * texture2D( textureMap, offsetTextureCoordinate );

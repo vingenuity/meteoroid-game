@@ -124,6 +124,7 @@
     <OutDir>$(SolutionDir)..\..\Build\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)..\..\Temp Files\$(Platform)_$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+    <LibraryPath>../../../vingine-core/Libraries</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|PS3'">
     <OutDir>$(SolutionDir)..\..\Build\$(Platform)\</OutDir>
