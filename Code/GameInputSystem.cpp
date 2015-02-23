@@ -59,9 +59,9 @@ void GameInputSystem::OnUpdate( float /*deltaSeconds*/ )
 		Gamepad* gamepad = PeripheralInterface::GetGamepadAtIndex( 0 );
 		if( ( gamepad != nullptr ) && ( gamepad->IsAxisPressedOrHeld( 0 ) || gamepad->IsAxisPressedOrHeld( 1 ) ) )
 		{
-			FloatVector2 gamepad2DAxis = FloatVector2( gamepad->GetRawAxisValue( 0 ), gamepad->GetRawAxisValue( 1 ) );
+			FloatVector2 gamepad2DAxis( gamepad->GetRawAxisValue( 0 ), gamepad->GetRawAxisValue( 1 ) );
 			controlledEntity->orientation.yawDegreesAboutZ = ConvertRadiansToDegrees( ConvertVectorToAngleRadians( gamepad2DAxis ) );
-			controlledEntity->acceleration = entityHeading * FloatVector3( gamepad2DAxis ).CalculateNorm() * 20.f;
+			controlledEntity->acceleration = entityHeading * FloatVector3( gamepad2DAxis ).CalculateNorm() * 100.f;
 		}
 
 		if( keyboard->KeyIsPressed( Keyboard::S ) || ( numScreenTouches == 2 ) || ( ( gamepad != nullptr ) && gamepad->IsButtonPressed( 1 ) ) )

@@ -6,6 +6,7 @@
 #include <Code/Graphics/RendererInterface.hpp>
 #include <Code/AssertionError.hpp>
 #include <Code/CameraComponent.hpp>
+#include <Code/EngineMacros.hpp>
 #include <Code/Entity.hpp>
 
 #include "EntityTypes.h"
@@ -245,12 +246,15 @@ void MeteoroidGame::OnCollisionEvent( EventDataBundle& eventData )
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::CreateFramebuffer()
 {
-	Texture* colorTexture = RendererInterface::GetTextureManager()->CreateFramebufferColorTexture( WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y, RendererInterface::ARGB );
-	Texture* depthTexture = RendererInterface::GetTextureManager()->CreateFramebufferDepthTexture( WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y );
-
 	m_framebuffer = new Framebuffer( RendererInterface::CreateFramebufferObject( Framebuffer::TARGET_FOR_READING_AND_WRITING ) );
+
+	Texture* colorTexture = RendererInterface::GetTextureManager()->CreateFramebufferColorTexture( WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y, RendererInterface::ARGB );
 	RendererInterface::AttachTextureToFramebufferColorOutputSlot( colorTexture, *m_framebuffer, 0 );
+
+#if !defined( PLATFORM_ANDROID ) //Something about framebuffers isn't meshing with the lower version Android devices
+	Texture* depthTexture = RendererInterface::GetTextureManager()->CreateFramebufferDepthTexture( WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y );
 	RendererInterface::AttachTextureToFramebufferDepthOutput( depthTexture, *m_framebuffer );
+#endif
 
 	RendererInterface::CheckIfFramebufferIsReady( *m_framebuffer );
 	RendererInterface::UseDefaultFramebuffer();
