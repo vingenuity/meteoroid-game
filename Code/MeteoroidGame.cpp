@@ -12,6 +12,7 @@
 #include "EntityTypes.h"
 #include "FracturingComponent.hpp"
 #include "GameEvents.hpp"
+#include "FrameElement.hpp"
 #include "LabelElement.hpp"
 #include "MeteoroidBlueprint.hpp"
 #include "NumberDisplayElement.hpp"
@@ -42,7 +43,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	EventCourier::SubscribeForEvent( EVENT_Collision, EventObserver::GenerateFromOneArgFunction< MeteoroidGame, &MeteoroidGame::OnCollisionEvent >( this ) );
 
 	m_backgroundMusic = AudioInterface::GetOrLoadSound( "Audio/music-theme.wav" );
-	AudioInterface::PlaySoundThroughEmitter( m_backgroundMusic, AudioInterface::ANY_EMITTER, true );
+//	AudioInterface::PlaySoundThroughEmitter( m_backgroundMusic, AudioInterface::ANY_EMITTER, true );
 
 	//Framebuffer Creation
 	m_framebufferVertices = new VertexData();
@@ -248,17 +249,31 @@ void MeteoroidGame::CreateUI( ScoringComponent* playerScoreComponent )
 {
 	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
 
-	Material* uiTextMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUITextMaterial" );
-	ShaderPipeline* basicPipeline = nullptr;
+	Material* uiMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUIFlatMaterial" );
+	ShaderPipeline* flatPipeline = nullptr;
 	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
-		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.110.vertex.glsl", "Shaders/Basic.110.fragment.glsl" );
+		flatPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/BasicNoTexture.110.vertex.glsl", "Shaders/BasicNoTexture.110.fragment.glsl" );
 	else
-		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Basic.fragment.cg" );
-	uiTextMaterial->SetShaderPipeline( basicPipeline );
+		flatPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/BasicNoTexture.vertex.cg", "Shaders/BasicNoTexture.fragment.cg" );
+	uiMaterial->SetShaderPipeline( flatPipeline );
+	uiMaterial->SetLineWidth( 2.f );
+
+	Material* uiTextMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUITextMaterial" );
+	ShaderPipeline* textPipeline = nullptr;
+	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
+		textPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.110.vertex.glsl", "Shaders/Basic.110.fragment.glsl" );
+	else
+		textPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Basic.fragment.cg" );
+	uiTextMaterial->SetShaderPipeline( textPipeline );
 
 	std::string fontTextureLocation( "Font/MainFont_EN_00.png" );
 	m_uiFont = new BitmapFont( "Font/MainFont_EN.FontDef.xml", &fontTextureLocation, 1 );
 	uiTextMaterial->SetTextureUniform( "u_diffuseMap", 0, m_uiFont->GetTextureSheet( 0 ) );
+
+	FrameElement* player1StatFrame = new FrameElement( uiMaterial, true );
+	player1StatFrame->position.x = 500.f;
+	player1StatFrame->position.y = 500.f;
+	m_UISystem->ConnectUIElement( player1StatFrame );
 
 	LabelElement* playerLabel1 = new LabelElement( "P1", m_uiFont, 80, uiTextMaterial );
 	playerLabel1->position.x = 0.f;
