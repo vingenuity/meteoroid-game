@@ -20,7 +20,10 @@ void UISystem::OnRender() const
 
 	for( unsigned int i = 0; i < m_connectedUIElements.size(); ++i )
 	{
-		m_connectedUIElements[ i ]->Render();
+		UIElement* const& uiElement = m_connectedUIElements[ i ];
+
+		if( uiElement->isVisible )
+			uiElement->Render();
 	}
 	RendererInterface::PopMatrix();
 

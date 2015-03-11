@@ -64,6 +64,7 @@ private:
 
 	//Helpers
 	void CreateFramebuffer();
+	void CreateUI( ScoringComponent* playerScoreComponent );
 	void HandleEntityDestructionOrReuse( Entity*& entity );
 	bool IsGameOver() const;
 	bool IsLevelComplete() const;

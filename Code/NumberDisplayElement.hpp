@@ -29,7 +29,7 @@ private:
 	//...I am just not sure how to write it with the const reference.
 	NumberDisplayElement& operator=( const NumberDisplayElement& other );
 
-	void UpdateDisplayedVertices( VertexData& displayedVertices, const unsigned int& numberToDisplay, unsigned int fontHeightPixels );
+	void UpdateDisplayedVertices( VertexData& displayedVertices, const int& numberToDisplay, unsigned int fontHeightPixels );
 
 	//Data Members
 	const int*		m_numberToDisplay;

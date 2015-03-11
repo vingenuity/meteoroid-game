@@ -9,7 +9,7 @@
 //-----------------------------------------------------------------------------------------------
 struct UIElement
 {
-	UIElement( bool visible = false );
+	UIElement( bool visible = true );
 	virtual ~UIElement() { }
 
 	virtual void Render() const = 0;

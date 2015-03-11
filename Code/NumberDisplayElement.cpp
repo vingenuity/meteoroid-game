@@ -67,7 +67,7 @@ void NumberDisplayElement::PreDestruction()
 
 //-----------------------------------------------------------------------------------------------
 void NumberDisplayElement::UpdateDisplayedVertices( VertexData& displayedVertices, 
-	const unsigned int& numberToDisplay, unsigned int fontHeightPixels )
+	const int& numberToDisplay, unsigned int fontHeightPixels )
 {
 	std::string numberAsString = ConvertIntegerToString( numberToDisplay );
 
@@ -76,7 +76,9 @@ void NumberDisplayElement::UpdateDisplayedVertices( VertexData& displayedVertice
 		numberAsString.erase( 0, numberAsString.length() - m_numDigitsToDisplay );
 
 	if( !m_hidePrefixZeroes )
-		numberAsString.insert( 0, m_numDigitsToDisplay - numberAsString.length(), '0' );
+	{
+		numberAsString.insert( ( numberToDisplay < 0 ), m_numDigitsToDisplay - numberAsString.length(), '0' );
+	}
 
 	GenerateTextMesh( displayedVertices, numberAsString, FloatVector2( 0.f, 0.f ), Color( 255, 255, 255 ), m_font, (float)fontHeightPixels );
 	RendererInterface::BufferVertexData( m_displayedVertices );

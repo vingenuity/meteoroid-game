@@ -77,33 +77,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	m_shipBlueprint->BuildEntityIntoGame( *playerShip, this, SHIP_SPAWN_POSITION );
 	ScoringComponent* playerScoring = playerShip->FindAttachedComponentOfType< ScoringComponent >();
 
-	Material* uiTextMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUITextMaterial" );
-	ShaderPipeline* basicPipeline = nullptr;
-	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
-		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.110.vertex.glsl", "Shaders/Basic.110.fragment.glsl" );
-	else
-		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Basic.fragment.cg" );
-	uiTextMaterial->SetShaderPipeline( basicPipeline );
-
-	std::string fontTextureLocation( "Font/MainFont_EN_00.png" );
-	m_uiFont = new BitmapFont( "Font/MainFont_EN.FontDef.xml", &fontTextureLocation, 1 );
-	uiTextMaterial->SetTextureUniform( "u_diffuseMap", 0, m_uiFont->GetTextureSheet( 0 ) );
-
-	//UI Creation
-	LabelElement* player1Label = new LabelElement( "P1", m_uiFont, 80, uiTextMaterial );
-	player1Label->position.x = 0.f;
-	player1Label->position.y = 650.f;
-	m_UISystem->ConnectUIElement( player1Label );
-
-	NumberDisplayElement* scoreDisplay = new NumberDisplayElement( &playerScoring->currentScore, 6, m_uiFont, 36, uiTextMaterial, false );
-	scoreDisplay->position.x = 80.f;
-	scoreDisplay->position.y = 685.f;
-	m_UISystem->ConnectUIElement( scoreDisplay );
-
-	NumberDisplayElement* lifeDisplay = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, 36, uiTextMaterial );
-	lifeDisplay->position.x = 80.f;
-	lifeDisplay->position.y = 660.f;
-	m_UISystem->ConnectUIElement( lifeDisplay );
+	CreateUI( playerScoring );
 
 	StartNewLevel();
 
@@ -267,6 +241,54 @@ void MeteoroidGame::CreateFramebuffer()
 
 	RendererInterface::CheckIfFramebufferIsReady( *m_framebuffer );
 	RendererInterface::UseDefaultFramebuffer();
+}
+
+//-----------------------------------------------------------------------------------------------
+void MeteoroidGame::CreateUI( ScoringComponent* playerScoreComponent )
+{
+	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
+
+	Material* uiTextMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUITextMaterial" );
+	ShaderPipeline* basicPipeline = nullptr;
+	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
+		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.110.vertex.glsl", "Shaders/Basic.110.fragment.glsl" );
+	else
+		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Basic.fragment.cg" );
+	uiTextMaterial->SetShaderPipeline( basicPipeline );
+
+	std::string fontTextureLocation( "Font/MainFont_EN_00.png" );
+	m_uiFont = new BitmapFont( "Font/MainFont_EN.FontDef.xml", &fontTextureLocation, 1 );
+	uiTextMaterial->SetTextureUniform( "u_diffuseMap", 0, m_uiFont->GetTextureSheet( 0 ) );
+
+	LabelElement* playerLabel1 = new LabelElement( "P1", m_uiFont, 80, uiTextMaterial );
+	playerLabel1->position.x = 0.f;
+	playerLabel1->position.y = 650.f;
+	m_UISystem->ConnectUIElement( playerLabel1 );
+
+	NumberDisplayElement* scoreDisplay1 = new NumberDisplayElement( &playerScoreComponent->currentScore, 6, m_uiFont, 36, uiTextMaterial, true );
+	scoreDisplay1->position.x = 80.f;
+	scoreDisplay1->position.y = 685.f;
+	m_UISystem->ConnectUIElement( scoreDisplay1 );
+
+	NumberDisplayElement* lifeDisplay1 = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, 36, uiTextMaterial );
+	lifeDisplay1->position.x = 80.f;
+	lifeDisplay1->position.y = 660.f;
+	m_UISystem->ConnectUIElement( lifeDisplay1 );
+
+	LabelElement* playerLabel2 = new LabelElement( "P2", m_uiFont, 80, uiTextMaterial );
+	playerLabel2->position.x = 1080.f;
+	playerLabel2->position.y = 650.f;
+	m_UISystem->ConnectUIElement( playerLabel2 );
+
+	NumberDisplayElement* scoreDisplay2 = new NumberDisplayElement( &playerScoreComponent->currentScore, 6, m_uiFont, 36, uiTextMaterial, false );
+	scoreDisplay2->position.x = 1160.f;
+	scoreDisplay2->position.y = 685.f;
+	m_UISystem->ConnectUIElement( scoreDisplay2 );
+
+	NumberDisplayElement* lifeDisplay2 = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, 36, uiTextMaterial );
+	lifeDisplay2->position.x = 1160.f;
+	lifeDisplay2->position.y = 660.f;
+	m_UISystem->ConnectUIElement( lifeDisplay2 );
 }
 
 //-----------------------------------------------------------------------------------------------
