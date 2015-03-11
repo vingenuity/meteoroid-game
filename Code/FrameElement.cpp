@@ -69,6 +69,12 @@ void FrameElement::Update( float deltaSeconds )
 void FrameElement::PreDestruction()
 {
 	//delete m_font;
+	for( unsigned int i = 0; i < m_containedUIElements.size(); ++i )
+	{
+		m_containedUIElements[ i ]->PreDestruction();
+		delete m_containedUIElements[ i ];
+	}
+
 	delete m_frameVertices;
 	delete m_paneVertices;
 }

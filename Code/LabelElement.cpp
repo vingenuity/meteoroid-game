@@ -63,5 +63,5 @@ void LabelElement::UpdateDisplayedVertices( VertexData& displayedVertices,
 	height = (float)fontHeightPixels;
 
 	GenerateTextMesh( displayedVertices, stringToDisplay, FloatVector2( 0.f, 0.f ), Color( 255, 255, 255 ), m_font, (float)fontHeightPixels );
-	RendererInterface::BufferVertexData( m_displayedVertices );
+	RendererInterface::BufferVertexData( &displayedVertices );
 }

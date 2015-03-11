@@ -292,7 +292,7 @@ void MeteoroidGame::CreateUI( ScoringComponent* playerScoreComponent )
 	player1StatFrame->InsertUIElement( lifeDisplay1 );
 
 	player1StatFrame->position.x = 0.f;
-	player1StatFrame->position.y = 720.f - player1StatFrame->height;
+	player1StatFrame->position.y = UISystem::UI_LAYOUT_DIMENSIONS.y - player1StatFrame->height;
 
 
 	// Player 2 Stats
@@ -314,8 +314,8 @@ void MeteoroidGame::CreateUI( ScoringComponent* playerScoreComponent )
 	lifeDisplay2->position.y = 10.f;
 	player2StatFrame->InsertUIElement( lifeDisplay2 );
 
-	player2StatFrame->position.x = 1280.f - player2StatFrame->width;
-	player2StatFrame->position.y = 720.f - player2StatFrame->height;
+	player2StatFrame->position.x = UISystem::UI_LAYOUT_DIMENSIONS.x - player2StatFrame->width;
+	player2StatFrame->position.y = UISystem::UI_LAYOUT_DIMENSIONS.y - player2StatFrame->height;
 	player2StatFrame->isVisible = false;
 }
 
