@@ -15,20 +15,26 @@ struct Material;
 //-----------------------------------------------------------------------------------------------
 struct FrameElement : public UIElement
 {
-	FrameElement( Material* material, bool drawFrame = false );
+	static const FloatVector2 FrameElement::FRAME_PADDING;
+
+	FrameElement( Material* material, const Color& frameColor = Color( 0, 0, 0, 0 ), const Color& paneColor = Color( 0, 0, 0, 0 ) );
 
 	void Render() const;
-	void Update( float /*deltaSeconds*/ ) { }
+	void Update( float /*deltaSeconds*/ );
 	void PreDestruction();
 
 	void InsertUIElement( UIElement* element );
 
 private:
-	void UpdateDisplayedVertices( VertexData& frameVertices, VertexData& paneVertices, bool drawFrame, float frameWidth, float frameHeight );
+	void UpdateDisplayedVertices( VertexData& frameVertices, VertexData& paneVertices,
+		std::vector< UIElement* >& containedUIElements,
+		const Color& frameColor = Color( 0, 0, 0, 0 ), const Color& paneColor = Color( 0, 0, 0, 0 ) );
 
 	//Data Members
 	std::vector< UIElement* >	m_containedUIElements;
+	Color						m_frameColor;
 	VertexData*					m_frameVertices;
+	Color						m_paneColor;
 	VertexData*					m_paneVertices;
 	Material*					m_material;
 };

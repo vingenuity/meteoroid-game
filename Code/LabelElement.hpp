@@ -20,7 +20,6 @@ struct LabelElement : public UIElement
 	void Update( float deltaSeconds );
 	void PreDestruction();
 
-
 private:
 	void UpdateDisplayedVertices( VertexData& displayedVertices, const char* stringToDisplay, unsigned int fontHeightPixels );
 

@@ -266,6 +266,10 @@
     <Link>
       <AdditionalDependencies>../../Libraries/Vingine Core_$(Configuration).a;</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|PSVita'">
     <ClCompile>
@@ -284,9 +288,11 @@
     <ClInclude Include="..\..\Code\EntityTypes.h" />
     <ClInclude Include="..\..\Code\FracturingComponent.hpp" />
     <ClInclude Include="..\..\Code\FracturingSystem.hpp" />
+    <ClInclude Include="..\..\Code\FrameElement.hpp" />
     <ClInclude Include="..\..\Code\GameEvents.hpp" />
     <ClInclude Include="..\..\Code\GameInputComponent.hpp" />
     <ClInclude Include="..\..\Code\GameInputSystem.hpp" />
+    <ClInclude Include="..\..\Code\LabelElement.hpp" />
     <ClInclude Include="..\..\Code\NumberDisplayElement.hpp" />
     <ClInclude Include="..\..\Code\UISystem.hpp" />
     <ClInclude Include="..\..\Code\MeteoroidBlueprint.hpp" />
@@ -309,7 +315,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\Code\CollisionSystem2D.cpp" />
     <ClCompile Include="..\..\Code\FracturingSystem.cpp" />
+    <ClCompile Include="..\..\Code\FrameElement.cpp" />
     <ClCompile Include="..\..\Code\GameInputSystem.cpp" />
+    <ClCompile Include="..\..\Code\LabelElement.cpp" />
     <ClCompile Include="..\..\Code\NumberDisplayElement.cpp" />
     <ClCompile Include="..\..\Code\UISystem.cpp" />
     <ClCompile Include="..\..\Code\MeteoroidBlueprint.cpp" />

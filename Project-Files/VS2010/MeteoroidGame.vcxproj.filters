@@ -93,6 +93,12 @@
     <ClInclude Include="..\..\Code\NumberDisplayElement.hpp">
       <Filter>Code\Component + System</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Code\LabelElement.hpp">
+      <Filter>Code\Component + System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\FrameElement.hpp">
+      <Filter>Code\Component + System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\MeteoroidGame.cpp">
@@ -138,6 +144,12 @@
       <Filter>Code\Component + System</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Code\NumberDisplayElement.cpp">
+      <Filter>Code\Component + System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\LabelElement.cpp">
+      <Filter>Code\Component + System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\FrameElement.cpp">
       <Filter>Code\Component + System</Filter>
     </ClCompile>
   </ItemGroup>

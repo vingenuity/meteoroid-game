@@ -20,6 +20,8 @@ struct UIElement
 	//Data Members
 	bool isVisible;
 	FloatVector2 position;
+	float width;
+	float height;
 };
 
 //-----------------------------------------------------------------------------------------------
