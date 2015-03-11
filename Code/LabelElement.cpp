@@ -1,31 +1,26 @@
-#include "NumberDisplayElement.hpp"
+#include "LabelElement.hpp"
 
 #include <Code/Font/BitmapFont.hpp>
 #include <Code/Graphics/Material.hpp>
 #include <Code/Graphics/MeshGenerationText.hpp>
 #include <Code/Graphics/RendererInterface.hpp>
-#include <Code/StringConversion.hpp>
 
 
 //-----------------------------------------------------------------------------------------------
-NumberDisplayElement::NumberDisplayElement( const int* numberToDisplay, 
-	unsigned int maxDigitsToDisplay, BitmapFont* font, unsigned int fontHeightPixels, Material* material, bool hidePrefixZeroes )
-	: m_numberToDisplay( numberToDisplay )
-	, m_lastValueOfNumber( *m_numberToDisplay )
-	, m_numDigitsToDisplay( maxDigitsToDisplay )
-	, m_hidePrefixZeroes( hidePrefixZeroes )
+LabelElement::LabelElement( const char* displayedString, BitmapFont* font, unsigned int fontHeightPixels, Material* material )
+	: m_displayedString( displayedString )
 	, m_displayedVertices( new VertexData() )
 	, m_font( font )
 	, m_fontHeightPixels( fontHeightPixels )
 	, m_material( material )
 {
 	RendererInterface::GenerateBuffer( 1, &m_displayedVertices->bufferID );
-	UpdateDisplayedVertices( *m_displayedVertices, *m_numberToDisplay, m_fontHeightPixels );
+	UpdateDisplayedVertices( *m_displayedVertices, m_displayedString, m_fontHeightPixels );
 }
 
 #pragma region Lifecycle
 //-----------------------------------------------------------------------------------------------
-void NumberDisplayElement::Render() const
+void LabelElement::Render() const
 {
 	static const FloatVector3 X_AXIS( 1.f, 0.f, 0.f );
 	static const FloatVector3 Y_AXIS( 0.f, 1.f, 0.f );
@@ -46,17 +41,12 @@ void NumberDisplayElement::Render() const
 }
 
 //-----------------------------------------------------------------------------------------------
-void NumberDisplayElement::Update( float /*deltaSeconds*/ )
+void LabelElement::Update( float /*deltaSeconds*/ )
 {
-	if( m_lastValueOfNumber == *m_numberToDisplay )
-		return;
-
-	UpdateDisplayedVertices( *m_displayedVertices, *m_numberToDisplay, m_fontHeightPixels );
-	m_lastValueOfNumber = *m_numberToDisplay;
 }
 
 //-----------------------------------------------------------------------------------------------
-void NumberDisplayElement::PreDestruction()
+void LabelElement::PreDestruction()
 {
 	//delete m_font;
 	delete m_displayedVertices;
@@ -66,18 +56,9 @@ void NumberDisplayElement::PreDestruction()
 
 
 //-----------------------------------------------------------------------------------------------
-void NumberDisplayElement::UpdateDisplayedVertices( VertexData& displayedVertices, 
-	const unsigned int& numberToDisplay, unsigned int fontHeightPixels )
+void LabelElement::UpdateDisplayedVertices( VertexData& displayedVertices,
+	const char* stringToDisplay, unsigned int fontHeightPixels )
 {
-	std::string numberAsString = ConvertIntegerToString( numberToDisplay );
-
-	//If we're too big, cut off the most significant digits
-	if( numberAsString.length() > m_numDigitsToDisplay )
-		numberAsString.erase( 0, numberAsString.length() - m_numDigitsToDisplay );
-
-	if( !m_hidePrefixZeroes )
-		numberAsString.insert( 0, m_numDigitsToDisplay - numberAsString.length(), '0' );
-
-	GenerateTextMesh( displayedVertices, numberAsString, FloatVector2( 0.f, 0.f ), Color( 255, 255, 255 ), m_font, (float)fontHeightPixels );
+	GenerateTextMesh( displayedVertices, stringToDisplay, FloatVector2( 0.f, 0.f ), Color( 255, 255, 255 ), m_font, (float)fontHeightPixels );
 	RendererInterface::BufferVertexData( m_displayedVertices );
 }

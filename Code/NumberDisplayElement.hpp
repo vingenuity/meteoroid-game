@@ -15,7 +15,7 @@ struct Material;
 struct NumberDisplayElement : public UIElement
 {
 	NumberDisplayElement( const int* numberToDisplay, unsigned int maxDigitsToDisplay, 
-		BitmapFont* font, Material* material, bool hidePrefixZeroes = true );
+		BitmapFont* font, unsigned int fontHeightPixels, Material* material, bool hidePrefixZeroes = true );
 
 	NumberDisplayElement( const NumberDisplayElement& other );
 
@@ -29,16 +29,17 @@ private:
 	//...I am just not sure how to write it with the const reference.
 	NumberDisplayElement& operator=( const NumberDisplayElement& other );
 
-	void UpdateDisplayedVertices( VertexData& displayedVertices, const unsigned int& numberToDisplay );
+	void UpdateDisplayedVertices( VertexData& displayedVertices, const unsigned int& numberToDisplay, unsigned int fontHeightPixels );
 
 	//Data Members
-	const int*	m_numberToDisplay;
-	int		m_lastValueOfNumber;
-	unsigned int		m_numDigitsToDisplay;
-	bool				m_hidePrefixZeroes;
-	VertexData*			m_displayedVertices;
-	BitmapFont*			m_font;
-	Material*			m_material;
+	const int*		m_numberToDisplay;
+	int				m_lastValueOfNumber;
+	unsigned int	m_numDigitsToDisplay;
+	bool			m_hidePrefixZeroes;
+	VertexData*		m_displayedVertices;
+	BitmapFont*		m_font;
+	unsigned int	m_fontHeightPixels;
+	Material*		m_material;
 };
 
 
@@ -50,8 +51,9 @@ inline NumberDisplayElement::NumberDisplayElement( const NumberDisplayElement& o
 	, m_numDigitsToDisplay( other.m_numDigitsToDisplay )
 	, m_hidePrefixZeroes( other.m_hidePrefixZeroes )
 	, m_font( other.m_font )
+	, m_fontHeightPixels( other.m_fontHeightPixels )
 	, m_material( other.m_material )
 {
-	UpdateDisplayedVertices( *m_displayedVertices, *m_numberToDisplay );
+	UpdateDisplayedVertices( *m_displayedVertices, *m_numberToDisplay, m_fontHeightPixels );
 }
 #endif //INCLUDED_NUMBER_DISPLAY_ELEMENT_HPP

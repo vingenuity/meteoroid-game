@@ -12,6 +12,7 @@
 #include "EntityTypes.h"
 #include "FracturingComponent.hpp"
 #include "GameEvents.hpp"
+#include "LabelElement.hpp"
 #include "MeteoroidBlueprint.hpp"
 #include "NumberDisplayElement.hpp"
 #include "ShipBlueprint.hpp"
@@ -31,6 +32,8 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	m_windowDimensions.x = windowWidth;
 	m_windowDimensions.y = windowHeight;
 	SetPillarboxIfNeeded( m_windowDimensions, WORLD_DIMENSIONS );
+	RendererInterface::EnableFeature( RendererInterface::COLOR_BLENDING );
+	RendererInterface::SetAlphaBlendingFunction( RendererInterface::SOURCE_ALPHA, RendererInterface::ONE_MINUS_SOURCE_ALPHA );
 
 	StartupGameSystems();
 
@@ -87,14 +90,19 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	uiTextMaterial->SetTextureUniform( "u_diffuseMap", 0, m_uiFont->GetTextureSheet( 0 ) );
 
 	//UI Creation
-	NumberDisplayElement* scoreDisplay = new NumberDisplayElement( &playerScoring->currentScore, 6, m_uiFont, uiTextMaterial, false );
-	scoreDisplay->position.x = 0.f;
-	scoreDisplay->position.y = 670.f;
+	LabelElement* player1Label = new LabelElement( "P1", m_uiFont, 80, uiTextMaterial );
+	player1Label->position.x = 0.f;
+	player1Label->position.y = 650.f;
+	m_UISystem->ConnectUIElement( player1Label );
+
+	NumberDisplayElement* scoreDisplay = new NumberDisplayElement( &playerScoring->currentScore, 6, m_uiFont, 36, uiTextMaterial, false );
+	scoreDisplay->position.x = 80.f;
+	scoreDisplay->position.y = 685.f;
 	m_UISystem->ConnectUIElement( scoreDisplay );
 
-	NumberDisplayElement* lifeDisplay = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, uiTextMaterial );
-	lifeDisplay->position.x = 0.f;
-	lifeDisplay->position.y = 620.f;
+	NumberDisplayElement* lifeDisplay = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, 36, uiTextMaterial );
+	lifeDisplay->position.x = 80.f;
+	lifeDisplay->position.y = 660.f;
 	m_UISystem->ConnectUIElement( lifeDisplay );
 
 	StartNewLevel();
