@@ -267,8 +267,8 @@ void MeteoroidGame::CreateUI( ScoringComponent* playerScoreComponent )
 		textPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Basic.fragment.cg" );
 	uiTextMaterial->SetShaderPipeline( textPipeline );
 
-	std::string fontTextureLocation( "Font/MainFont_EN_00.png" );
-	m_uiFont = new BitmapFont( "Font/MainFont_EN.FontDef.xml", &fontTextureLocation, 1 );
+	static const char* fontTextureLocation = "Font/hyperspace_0.png";
+	m_uiFont = new BitmapFont( "Font/hyperspace.fnt", &fontTextureLocation, 1 );
 	uiTextMaterial->SetTextureUniform( "u_diffuseMap", 0, m_uiFont->GetTextureSheet( 0 ) );
 
 
@@ -276,19 +276,19 @@ void MeteoroidGame::CreateUI( ScoringComponent* playerScoreComponent )
 	FrameElement* player1StatFrame = new FrameElement( uiMaterial, Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 0 ) );
 	m_UISystem->ConnectUIElement( player1StatFrame );
 
-	LabelElement* playerLabel1 = new LabelElement( "P1", m_uiFont, 80, uiTextMaterial );
+	LabelElement* playerLabel1 = new LabelElement( "P1", m_uiFont, 60, uiTextMaterial );
 	playerLabel1->position.x = 0.f;
 	playerLabel1->position.y = 0.f;
 	player1StatFrame->InsertUIElement( playerLabel1 );
 
-	NumberDisplayElement* scoreDisplay1 = new NumberDisplayElement( &playerScoreComponent->currentScore, 6, m_uiFont, 36, uiTextMaterial, false );
+	NumberDisplayElement* scoreDisplay1 = new NumberDisplayElement( &playerScoreComponent->currentScore, 6, m_uiFont, 30, uiTextMaterial, false );
 	scoreDisplay1->position.x = 80.f;
 	scoreDisplay1->position.y = 35.f;
 	player1StatFrame->InsertUIElement( scoreDisplay1 );
 
-	NumberDisplayElement* lifeDisplay1 = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, 36, uiTextMaterial );
+	NumberDisplayElement* lifeDisplay1 = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, 30, uiTextMaterial );
 	lifeDisplay1->position.x = 80.f;
-	lifeDisplay1->position.y = 10.f;
+	lifeDisplay1->position.y = 0.f;
 	player1StatFrame->InsertUIElement( lifeDisplay1 );
 
 	player1StatFrame->position.x = 0.f;

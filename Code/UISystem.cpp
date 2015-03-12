@@ -5,7 +5,7 @@
 #include "UIElement.hpp"
 
 
-STATIC const FloatVector2 UISystem::UI_LAYOUT_DIMENSIONS( 1280.f, 720.f );
+STATIC const FloatVector2 UISystem::UI_LAYOUT_DIMENSIONS( 800.f, 800.f );
 
 #pragma region Lifecycle
 //-----------------------------------------------------------------------------------------------

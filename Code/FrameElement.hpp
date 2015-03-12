@@ -15,7 +15,7 @@ struct Material;
 //-----------------------------------------------------------------------------------------------
 struct FrameElement : public UIElement
 {
-	static const FloatVector2 FrameElement::FRAME_PADDING;
+	static const FloatVector2 FRAME_PADDING;
 
 	FrameElement( Material* material, const Color& frameColor = Color( 0, 0, 0, 0 ), const Color& paneColor = Color( 0, 0, 0, 0 ) );
 
