@@ -59,6 +59,9 @@ void LabelElement::PreDestruction()
 void LabelElement::UpdateDisplayedVertices( VertexData& displayedVertices,
 	const char* stringToDisplay, unsigned int fontHeightPixels )
 {
+	width = CalculateTextWidth( stringToDisplay, m_font, (float)fontHeightPixels );
+	height = (float)fontHeightPixels;
+
 	GenerateTextMesh( displayedVertices, stringToDisplay, FloatVector2( 0.f, 0.f ), Color( 255, 255, 255 ), m_font, (float)fontHeightPixels );
-	RendererInterface::BufferVertexData( m_displayedVertices );
+	RendererInterface::BufferVertexData( &displayedVertices );
 }

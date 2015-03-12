@@ -12,6 +12,7 @@
 #include "EntityTypes.h"
 #include "FracturingComponent.hpp"
 #include "GameEvents.hpp"
+#include "FrameElement.hpp"
 #include "LabelElement.hpp"
 #include "MeteoroidBlueprint.hpp"
 #include "NumberDisplayElement.hpp"
@@ -42,7 +43,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	EventCourier::SubscribeForEvent( EVENT_Collision, EventObserver::GenerateFromOneArgFunction< MeteoroidGame, &MeteoroidGame::OnCollisionEvent >( this ) );
 
 	m_backgroundMusic = AudioInterface::GetOrLoadSound( "Audio/music-theme.wav" );
-	AudioInterface::PlaySoundThroughEmitter( m_backgroundMusic, AudioInterface::ANY_EMITTER, true );
+//	AudioInterface::PlaySoundThroughEmitter( m_backgroundMusic, AudioInterface::ANY_EMITTER, true );
 
 	//Framebuffer Creation
 	m_framebufferVertices = new VertexData();
@@ -246,49 +247,76 @@ void MeteoroidGame::CreateFramebuffer()
 //-----------------------------------------------------------------------------------------------
 void MeteoroidGame::CreateUI( ScoringComponent* playerScoreComponent )
 {
+	// Material Setup
 	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
 
-	Material* uiTextMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUITextMaterial" );
-	ShaderPipeline* basicPipeline = nullptr;
+	Material* uiMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUIFlatMaterial" );
+	ShaderPipeline* flatPipeline = nullptr;
 	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
-		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.110.vertex.glsl", "Shaders/Basic.110.fragment.glsl" );
+		flatPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/BasicNoTexture.110.vertex.glsl", "Shaders/BasicNoTexture.110.fragment.glsl" );
 	else
-		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Basic.fragment.cg" );
-	uiTextMaterial->SetShaderPipeline( basicPipeline );
+		flatPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/BasicNoTexture.vertex.cg", "Shaders/BasicNoTexture.fragment.cg" );
+	uiMaterial->SetShaderPipeline( flatPipeline );
+	uiMaterial->SetLineWidth( 2.f );
+
+	Material* uiTextMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUITextMaterial" );
+	ShaderPipeline* textPipeline = nullptr;
+	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
+		textPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.110.vertex.glsl", "Shaders/Basic.110.fragment.glsl" );
+	else
+		textPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Basic.fragment.cg" );
+	uiTextMaterial->SetShaderPipeline( textPipeline );
 
 	std::string fontTextureLocation( "Font/MainFont_EN_00.png" );
 	m_uiFont = new BitmapFont( "Font/MainFont_EN.FontDef.xml", &fontTextureLocation, 1 );
 	uiTextMaterial->SetTextureUniform( "u_diffuseMap", 0, m_uiFont->GetTextureSheet( 0 ) );
 
+
+	// Player 1 Stats
+	FrameElement* player1StatFrame = new FrameElement( uiMaterial, Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 0 ) );
+	m_UISystem->ConnectUIElement( player1StatFrame );
+
 	LabelElement* playerLabel1 = new LabelElement( "P1", m_uiFont, 80, uiTextMaterial );
 	playerLabel1->position.x = 0.f;
-	playerLabel1->position.y = 650.f;
-	m_UISystem->ConnectUIElement( playerLabel1 );
+	playerLabel1->position.y = 0.f;
+	player1StatFrame->InsertUIElement( playerLabel1 );
 
-	NumberDisplayElement* scoreDisplay1 = new NumberDisplayElement( &playerScoreComponent->currentScore, 6, m_uiFont, 36, uiTextMaterial, true );
+	NumberDisplayElement* scoreDisplay1 = new NumberDisplayElement( &playerScoreComponent->currentScore, 6, m_uiFont, 36, uiTextMaterial, false );
 	scoreDisplay1->position.x = 80.f;
-	scoreDisplay1->position.y = 685.f;
-	m_UISystem->ConnectUIElement( scoreDisplay1 );
+	scoreDisplay1->position.y = 35.f;
+	player1StatFrame->InsertUIElement( scoreDisplay1 );
 
 	NumberDisplayElement* lifeDisplay1 = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, 36, uiTextMaterial );
 	lifeDisplay1->position.x = 80.f;
-	lifeDisplay1->position.y = 660.f;
-	m_UISystem->ConnectUIElement( lifeDisplay1 );
+	lifeDisplay1->position.y = 10.f;
+	player1StatFrame->InsertUIElement( lifeDisplay1 );
+
+	player1StatFrame->position.x = 0.f;
+	player1StatFrame->position.y = UISystem::UI_LAYOUT_DIMENSIONS.y - player1StatFrame->height;
+
+
+	// Player 2 Stats
+	FrameElement* player2StatFrame = new FrameElement( uiMaterial, Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 0 ) );
+	m_UISystem->ConnectUIElement( player2StatFrame );
 
 	LabelElement* playerLabel2 = new LabelElement( "P2", m_uiFont, 80, uiTextMaterial );
-	playerLabel2->position.x = 1080.f;
-	playerLabel2->position.y = 650.f;
-	m_UISystem->ConnectUIElement( playerLabel2 );
+	playerLabel2->position.x = 0.f;
+	playerLabel2->position.y = 0.f;
+	player2StatFrame->InsertUIElement( playerLabel2 );
 
 	NumberDisplayElement* scoreDisplay2 = new NumberDisplayElement( &playerScoreComponent->currentScore, 6, m_uiFont, 36, uiTextMaterial, false );
-	scoreDisplay2->position.x = 1160.f;
-	scoreDisplay2->position.y = 685.f;
-	m_UISystem->ConnectUIElement( scoreDisplay2 );
+	scoreDisplay2->position.x = 80.f;
+	scoreDisplay2->position.y = 35.f;
+	player2StatFrame->InsertUIElement( scoreDisplay2 );
 
 	NumberDisplayElement* lifeDisplay2 = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, 36, uiTextMaterial );
-	lifeDisplay2->position.x = 1160.f;
-	lifeDisplay2->position.y = 660.f;
-	m_UISystem->ConnectUIElement( lifeDisplay2 );
+	lifeDisplay2->position.x = 80.f;
+	lifeDisplay2->position.y = 10.f;
+	player2StatFrame->InsertUIElement( lifeDisplay2 );
+
+	player2StatFrame->position.x = UISystem::UI_LAYOUT_DIMENSIONS.x - player2StatFrame->width;
+	player2StatFrame->position.y = UISystem::UI_LAYOUT_DIMENSIONS.y - player2StatFrame->height;
+	player2StatFrame->isVisible = false;
 }
 
 //-----------------------------------------------------------------------------------------------

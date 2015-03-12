@@ -15,9 +15,9 @@ struct UIElement;
 //-----------------------------------------------------------------------------------------------
 class UISystem : public System
 {
+public:
 	static const FloatVector2 UI_LAYOUT_DIMENSIONS;
 
-public:
 	UISystem( IntVector2 windowDimensions )
 	: m_windowDimensions( static_cast< float>( windowDimensions.x ), static_cast< float>( windowDimensions.y ) )
 	{ }

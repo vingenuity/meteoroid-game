@@ -80,6 +80,9 @@ void NumberDisplayElement::UpdateDisplayedVertices( VertexData& displayedVertice
 		numberAsString.insert( ( numberToDisplay < 0 ), m_numDigitsToDisplay - numberAsString.length(), '0' );
 	}
 
+	width = CalculateTextWidth( numberAsString, m_font, (float)fontHeightPixels );
+	height = (float)fontHeightPixels;
+
 	GenerateTextMesh( displayedVertices, numberAsString, FloatVector2( 0.f, 0.f ), Color( 255, 255, 255 ), m_font, (float)fontHeightPixels );
 	RendererInterface::BufferVertexData( m_displayedVertices );
 }
