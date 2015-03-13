@@ -23,6 +23,7 @@
 #include "WeaponSystem.hpp"
 
 class Framebuffer;
+struct FrameElement;
 class MeteoroidBlueprint;
 class ShipBlueprint;
 
@@ -82,15 +83,29 @@ private:
 	ShipBlueprint* m_shipBlueprint;
 	BitmapFont* m_uiFont;
 
-	//Gameplay data
-	static const FloatVector2 SHIP_SPAWN_POSITION;
+	// Window /World Data
 	static const IntVector2 WORLD_DIMENSIONS;
 	IntVector2 m_windowDimensions;
-	int m_playerLivesRemaining;
+
+	// In-Game Data
+	static const FloatVector2 SHIP_SPAWN_POSITION;
 	int m_levelNumber;
 	unsigned int m_numStartingAsteroidsToSpawn;
 	float m_startingAsteroidsMinSpeed;
 	float m_startingAsteroidsMaxSpeed;
+
+	// Attract Mode Data
+	enum AttractFrames
+	{
+		FRAME_PressToPlay,
+		FRAME_Credits,
+		NUMBER_OF_ATTRACT_FRAMES
+	};
+	FrameElement* m_attractFrames[ NUMBER_OF_ATTRACT_FRAMES ];
+	unsigned int m_currentAttractFrameIndex;
+
+	//Stuff that should probably go into some component
+	int m_playerLivesRemaining;
 	AudioInterface::SoundID m_explosionSound;
 };
 

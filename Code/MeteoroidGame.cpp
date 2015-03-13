@@ -317,6 +317,82 @@ void MeteoroidGame::CreateUI( ScoringComponent* playerScoreComponent )
 	player2StatFrame->position.x = UISystem::UI_LAYOUT_DIMENSIONS.x - player2StatFrame->width;
 	player2StatFrame->position.y = UISystem::UI_LAYOUT_DIMENSIONS.y - player2StatFrame->height;
 	player2StatFrame->isVisible = false;
+
+
+
+	// Attract Mode Frame
+	FrameElement* attractModeFrame = new FrameElement( uiMaterial, Color( 255, 255, 255, 255 ), Color( 0, 0, 0, 255 ) );
+	m_UISystem->ConnectUIElement( attractModeFrame );
+
+		LabelElement* gameTitleLabel = new LabelElement( "Meteoroids", m_uiFont, 60, uiTextMaterial );
+		gameTitleLabel->position.x = 60.f;
+		gameTitleLabel->position.y = 375.f;
+		attractModeFrame->InsertUIElement( gameTitleLabel );
+
+		FrameElement* pressToStartFrame = new FrameElement( uiMaterial, Color( 255, 255, 255, 255 ), Color( 0, 0, 0, 255 ) );
+		m_attractFrames[ FRAME_PressToPlay ] = pressToStartFrame;
+
+			LabelElement* pressToStartLabel = new LabelElement( "Press space or A to start!", m_uiFont, 30, uiTextMaterial );
+			pressToStartLabel->position.x = 0.f;
+			pressToStartLabel->position.y = 0.f;
+			pressToStartFrame->InsertUIElement( pressToStartLabel );
+
+		pressToStartFrame->position.y = 250.f;
+		attractModeFrame->InsertUIElement( pressToStartFrame );
+
+
+		FrameElement* creditsFrame = new FrameElement( uiMaterial, Color( 255, 255, 255, 255 ), Color( 0, 0, 0, 255 ) );
+		m_attractFrames[ FRAME_Credits ] = creditsFrame;
+
+			static const unsigned int CREDITS_TEXT_HEIGHT = 28;
+			static const float CREDITS_TEXT_SPACING = CREDITS_TEXT_HEIGHT + 10.f;
+
+			LabelElement* creditsLabel = new LabelElement( "credits:", m_uiFont, 30, uiTextMaterial );
+			creditsLabel->position.x = 250.f;
+			creditsLabel->position.y =  ( CREDITS_TEXT_SPACING * 8.f ) + 10.f;
+			creditsFrame->InsertUIElement( creditsLabel );
+
+			LabelElement* developerCredit = new LabelElement( "developer:  vincent kocks", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
+			developerCredit->position.x = 0.f;
+			developerCredit->position.y = CREDITS_TEXT_SPACING * 7.f;
+			creditsFrame->InsertUIElement( developerCredit );
+
+			LabelElement* fontCredit = new LabelElement( "font by:      pixel sagas", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
+			fontCredit->position.x = 0.f;
+			fontCredit->position.y = CREDITS_TEXT_SPACING * 6.f;
+			creditsFrame->InsertUIElement( fontCredit );
+
+			LabelElement* soundsByCredit = new LabelElement( "audio by:", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
+			soundsByCredit->position.x = 0.f;
+			soundsByCredit->position.y = CREDITS_TEXT_SPACING * 5.f;
+			creditsFrame->InsertUIElement( soundsByCredit );
+
+			LabelElement* soundCredit1 = new LabelElement( "                  levelclearer", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
+			soundCredit1->position.x = 0.f;
+			soundCredit1->position.y = CREDITS_TEXT_SPACING * 4.f;
+			creditsFrame->InsertUIElement( soundCredit1 );
+
+			LabelElement* soundCredit2 = new LabelElement( "                  noirenex", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
+			soundCredit2->position.x = 0.f;
+			soundCredit2->position.y = CREDITS_TEXT_SPACING * 3.f;
+			creditsFrame->InsertUIElement( soundCredit2 );
+
+			LabelElement* soundCredit3 = new LabelElement( "                  jobro", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
+			soundCredit3->position.x = 0.f;
+			soundCredit3->position.y = CREDITS_TEXT_SPACING * 2.f;
+			creditsFrame->InsertUIElement( soundCredit3 );
+
+			LabelElement* soundCredit4 = new LabelElement( "                  gameaudio", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
+			soundCredit4->position.x = 0.f;
+			soundCredit4->position.y = CREDITS_TEXT_SPACING * 1.f;
+			creditsFrame->InsertUIElement( soundCredit4 );
+
+		creditsFrame->position.x = 30.f;
+		creditsFrame->position.y = 0.f;
+		attractModeFrame->InsertUIElement( creditsFrame );
+
+	attractModeFrame->position.x = ( UISystem::UI_LAYOUT_DIMENSIONS.x * 0.5f ) - ( attractModeFrame->width  * 0.5f );
+	attractModeFrame->position.y = ( UISystem::UI_LAYOUT_DIMENSIONS.y * 0.5f ) - ( attractModeFrame->height * 0.5f );
 }
 
 //-----------------------------------------------------------------------------------------------
