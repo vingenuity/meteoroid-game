@@ -6,6 +6,7 @@
 #include <Code/Graphics/RendererInterface.hpp>
 #include <Code/AssertionError.hpp>
 #include <Code/CameraComponent.hpp>
+#include <Code/ColorConstants.hpp>
 #include <Code/EngineMacros.hpp>
 #include <Code/Entity.hpp>
 
@@ -286,7 +287,7 @@ void MeteoroidGame::CreateAttractModeUI()
 	uiTextMaterial->SetTextureUniform( "u_diffuseMap", 0, m_uiFont->GetTextureSheet( 0 ) );
 
 	// Attract Mode Frame
-	FrameElement* attractModeFrame = new FrameElement( uiMaterial, Color( 255, 255, 255, 255 ), Color( 0, 0, 0, 255 ) );
+	FrameElement* attractModeFrame = new FrameElement( uiMaterial, COLOR_Clear, COLOR_Clear );
 	m_UISystem->ConnectUIElement( attractModeFrame );
 
 	LabelElement* gameTitleLabel = new LabelElement( "Meteoroids", m_uiFont, 60, uiTextMaterial );
@@ -294,7 +295,7 @@ void MeteoroidGame::CreateAttractModeUI()
 	gameTitleLabel->position.y = 375.f;
 	attractModeFrame->InsertUIElement( gameTitleLabel );
 
-	FrameElement* pressToStartFrame = new FrameElement( uiMaterial, Color( 255, 255, 255, 255 ), Color( 0, 0, 0, 255 ) );
+	FrameElement* pressToStartFrame = new FrameElement( uiMaterial, COLOR_Clear, COLOR_Clear );
 	pressToStartFrame->isVisible = false;
 	m_attractFrames[ FRAME_PressToPlay ] = pressToStartFrame;
 
@@ -307,7 +308,7 @@ void MeteoroidGame::CreateAttractModeUI()
 	attractModeFrame->InsertUIElement( pressToStartFrame );
 
 
-	FrameElement* creditsFrame = new FrameElement( uiMaterial, Color( 255, 255, 255, 255 ), Color( 0, 0, 0, 255 ) );
+	FrameElement* creditsFrame = new FrameElement( uiMaterial, COLOR_Clear, COLOR_Clear );
 	creditsFrame->isVisible = false;
 	m_attractFrames[ FRAME_Credits ] = creditsFrame;
 
@@ -393,7 +394,7 @@ void MeteoroidGame::CreateGameModeUI( ScoringComponent* playerScoreComponent )
 
 
 	// Player 1 Stats
-	FrameElement* player1StatFrame = new FrameElement( uiMaterial, Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 0 ) );
+	FrameElement* player1StatFrame = new FrameElement( uiMaterial, COLOR_Clear, COLOR_Clear );
 	m_UISystem->ConnectUIElement( player1StatFrame );
 
 	LabelElement* playerLabel1 = new LabelElement( "P1", m_uiFont, 60, uiTextMaterial );
@@ -402,12 +403,12 @@ void MeteoroidGame::CreateGameModeUI( ScoringComponent* playerScoreComponent )
 	player1StatFrame->InsertUIElement( playerLabel1 );
 
 	NumberDisplayElement* scoreDisplay1 = new NumberDisplayElement( &playerScoreComponent->currentScore, 6, m_uiFont, 30, uiTextMaterial, false );
-	scoreDisplay1->position.x = 80.f;
+	scoreDisplay1->position.x = 100.f;
 	scoreDisplay1->position.y = 35.f;
 	player1StatFrame->InsertUIElement( scoreDisplay1 );
 
 	NumberDisplayElement* lifeDisplay1 = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, 30, uiTextMaterial );
-	lifeDisplay1->position.x = 80.f;
+	lifeDisplay1->position.x = 100.f;
 	lifeDisplay1->position.y = 0.f;
 	player1StatFrame->InsertUIElement( lifeDisplay1 );
 
@@ -416,27 +417,27 @@ void MeteoroidGame::CreateGameModeUI( ScoringComponent* playerScoreComponent )
 
 
 	// Player 2 Stats
-	FrameElement* player2StatFrame = new FrameElement( uiMaterial, Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 0 ) );
+	FrameElement* player2StatFrame = new FrameElement( uiMaterial, COLOR_Clear, COLOR_Clear );
 	m_UISystem->ConnectUIElement( player2StatFrame );
 
-	LabelElement* playerLabel2 = new LabelElement( "P2", m_uiFont, 80, uiTextMaterial );
+	LabelElement* playerLabel2 = new LabelElement( "P2", m_uiFont, 60, uiTextMaterial );
 	playerLabel2->position.x = 0.f;
 	playerLabel2->position.y = 0.f;
 	player2StatFrame->InsertUIElement( playerLabel2 );
 
-	NumberDisplayElement* scoreDisplay2 = new NumberDisplayElement( &playerScoreComponent->currentScore, 6, m_uiFont, 36, uiTextMaterial, false );
-	scoreDisplay2->position.x = 80.f;
+	NumberDisplayElement* scoreDisplay2 = new NumberDisplayElement( &playerScoreComponent->currentScore, 6, m_uiFont, 30, uiTextMaterial, false );
+	scoreDisplay2->position.x = 100.f;
 	scoreDisplay2->position.y = 35.f;
 	player2StatFrame->InsertUIElement( scoreDisplay2 );
 
-	NumberDisplayElement* lifeDisplay2 = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, 36, uiTextMaterial );
-	lifeDisplay2->position.x = 80.f;
-	lifeDisplay2->position.y = 10.f;
+	NumberDisplayElement* lifeDisplay2 = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, 30, uiTextMaterial );
+	lifeDisplay2->position.x = 100.f;
+	lifeDisplay2->position.y = 0.f;
 	player2StatFrame->InsertUIElement( lifeDisplay2 );
 
 	player2StatFrame->position.x = UISystem::UI_LAYOUT_DIMENSIONS.x - player2StatFrame->width;
 	player2StatFrame->position.y = UISystem::UI_LAYOUT_DIMENSIONS.y - player2StatFrame->height;
-	player2StatFrame->isVisible = false;
+	//player2StatFrame->isVisible = false;
 }
 
 //-----------------------------------------------------------------------------------------------
