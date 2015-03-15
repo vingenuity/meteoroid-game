@@ -65,7 +65,8 @@ private:
 
 	//Helpers
 	void CreateFramebuffer();
-	void CreateUI( ScoringComponent* playerScoreComponent );
+	void CreateAttractModeUI();
+	void CreateGameModeUI( ScoringComponent* playerScoreComponent );
 	void HandleEntityDestructionOrReuse( Entity*& entity );
 	bool IsGameOver() const;
 	bool IsLevelComplete() const;
@@ -83,11 +84,19 @@ private:
 	ShipBlueprint* m_shipBlueprint;
 	BitmapFont* m_uiFont;
 
-	// Window /World Data
+	// Window/World Data
 	static const IntVector2 WORLD_DIMENSIONS;
 	IntVector2 m_windowDimensions;
+	enum Mode
+	{
+		MODE_Startup,
+		MODE_Game,
+		MODE_Attract,
+		NUMBER_OF_MODES
+	};
+	Mode m_currentMode;
 
-	// In-Game Data
+	// Game Mode Data
 	static const FloatVector2 SHIP_SPAWN_POSITION;
 	int m_levelNumber;
 	unsigned int m_numStartingAsteroidsToSpawn;
@@ -95,14 +104,17 @@ private:
 	float m_startingAsteroidsMaxSpeed;
 
 	// Attract Mode Data
-	enum AttractFrames
+	enum AttractFrame
 	{
 		FRAME_PressToPlay,
 		FRAME_Credits,
-		NUMBER_OF_ATTRACT_FRAMES
+		NUMBER_OF_ATTRACT_FRAMES,
+		FRAME_None = 255
 	};
 	FrameElement* m_attractFrames[ NUMBER_OF_ATTRACT_FRAMES ];
-	unsigned int m_currentAttractFrameIndex;
+	AttractFrame m_currentAttractFrame;
+	float m_secondsSinceLastFrameChange;
+	static const float SECONDS_BETWEEN_FRAME_CHANGES;
 
 	//Stuff that should probably go into some component
 	int m_playerLivesRemaining;
@@ -138,10 +150,16 @@ inline MeteoroidGame::MeteoroidGame()
 	, m_uiFont( nullptr )
 
 	, m_windowDimensions()
-	, m_playerLivesRemaining( 3 )
+	, m_currentMode( MODE_Startup )
+
 	, m_levelNumber( 0 )
 	, m_numStartingAsteroidsToSpawn( 4 )
 	, m_startingAsteroidsMinSpeed( 0.f )
 	, m_startingAsteroidsMaxSpeed( 20.f )
+
+	, m_currentAttractFrame( FRAME_None )
+	, m_secondsSinceLastFrameChange( 0.f )
+
+	, m_playerLivesRemaining( 3 )
 { }
 #endif //INCLUDED_METEOROID_GAME_HPP
