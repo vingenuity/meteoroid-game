@@ -8,7 +8,6 @@
 
 #include "CollisionSystem2D.hpp"
 #include "EntityTypes.h"
-#include "GameInputComponent.hpp"
 #include "MeteoroidGame.hpp"
 #include "WarpComponent.hpp"
 #include "WeaponComponent.hpp"
@@ -88,10 +87,6 @@ void ShipBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame
 	shipCollider->SetColliderToCircle( m_colliderCenter, m_colliderRadius );
 	out_entity.AttachComponent( shipCollider );
 
-	GameInputComponent* playerInput = game->m_gameInputSystem->AcquireComponent();
-	playerInput->playerID = 0;
-	out_entity.AttachComponent( playerInput );
-
 	WarpComponent* warpEngine = game->m_warpSystem->AcquireComponent();
 	warpEngine->secondsSinceLastWarp = warpEngine->secondsNeededBetweenWarps = 2.f;
 	out_entity.AttachComponent( warpEngine );
@@ -100,10 +95,6 @@ void ShipBlueprint::BuildEntityIntoGame( Entity& out_entity, const MeteoroidGame
 	missilePort->firingSound = AudioInterface::GetOrLoadSound( "Audio/laser.wav" );
 	missilePort->minSecondsBetweenShots = 0.75f;
 	out_entity.AttachComponent( missilePort );
-
-	ScoringComponent* shipScore = game->m_scoringSystem->AcquireComponent();
-	shipScore->pointValue = 1000;
-	out_entity.AttachComponent( shipScore );
 }
 
 

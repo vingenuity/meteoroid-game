@@ -29,18 +29,8 @@ void FrameElement::Render() const
 	static const FloatVector3 Z_AXIS( 0.f, 0.f, 1.f );
 
 	RendererInterface::PushMatrix();
-	RendererInterface::TranslateWorld( position + FRAME_PADDING );
 
-	for( unsigned int i = 0; i < m_containedUIElements.size(); ++i )
-	{
-		UIElement* const& uiElement = m_containedUIElements[ i ];
-
-		if( uiElement->isVisible )
-			uiElement->Render();
-	}
-
-	RendererInterface::TranslateWorld( -FloatVector2( FRAME_PADDING ) );
-
+	RendererInterface::TranslateWorld( position );
 	RendererInterface::ApplyMaterial( m_material );
 
 	RendererInterface::BindVertexDataToShader( m_paneVertices, m_material->pipeline );
@@ -53,6 +43,16 @@ void FrameElement::Render() const
 
 	RendererInterface::RemoveMaterial( m_material );
 
+
+	RendererInterface::TranslateWorld( FRAME_PADDING );
+
+	for( unsigned int i = 0; i < m_containedUIElements.size(); ++i )
+	{
+		UIElement* const& uiElement = m_containedUIElements[ i ];
+
+		if( uiElement->isVisible )
+			uiElement->Render();
+	}
 	RendererInterface::PopMatrix();
 }
 

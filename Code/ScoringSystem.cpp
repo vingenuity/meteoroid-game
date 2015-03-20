@@ -67,8 +67,8 @@ void ScoringSystem::OnEntityDestruction( EventDataBundle& eventData )
 	ScoringComponent* entityScoringComponent = entityBeingDestroyed->FindAttachedComponentOfType< ScoringComponent >();
 	if( entityScoringComponent != nullptr && entityScoringComponent->lastCollidedEntity != nullptr )
 	{
-		// The entity loses points for dying
-		entityScoringComponent->currentScore -= entityScoringComponent->pointValue;
+		// The entity loses points for dying (taken out because it's not fun and font can't handle negative numbers)
+		//entityScoringComponent->currentScore -= entityScoringComponent->pointValue;
 
 
 		//Then passes points to its killer as well as anyone who created its killer
