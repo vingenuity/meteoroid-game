@@ -4,6 +4,7 @@
 #include <Code/Graphics/Material.hpp>
 #include <Code/Graphics/MeshGeneration3D.hpp>
 #include <Code/Graphics/RendererInterface.hpp>
+#include <Code/Input/PeripheralInterface.hpp>
 #include <Code/AssertionError.hpp>
 #include <Code/CameraComponent.hpp>
 #include <Code/ColorConstants.hpp>
@@ -21,9 +22,11 @@
 
 
 //-----------------------------------------------------------------------------------------------
+STATIC const FloatVector2	MeteoroidGame::DEAD_SHIP_POSITION( -500.f, -500.f );
 STATIC const IntVector2		MeteoroidGame::WORLD_DIMENSIONS( 700, 700 );
 STATIC const FloatVector2	MeteoroidGame::SHIP_SPAWN_POSITION( WORLD_DIMENSIONS.x * 0.5f, WORLD_DIMENSIONS.y * 0.5f );
 STATIC const float			MeteoroidGame::SECONDS_BETWEEN_FRAME_CHANGES = 15.f;
+STATIC const unsigned int	MeteoroidGame::STARTING_LIFE_COUNT = 3;
 
 //-----------------------------------------------------------------------------------------------
 MeteoroidGame g_game; //This initializes the game and the game interface for the engine simultaneously.
@@ -45,7 +48,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	EventCourier::SubscribeForEvent( EVENT_Collision, EventObserver::GenerateFromOneArgFunction< MeteoroidGame, &MeteoroidGame::OnCollisionEvent >( this ) );
 
 	m_backgroundMusic = AudioInterface::GetOrLoadSound( "Audio/music-theme.wav" );
-//	AudioInterface::PlaySoundThroughEmitter( m_backgroundMusic, AudioInterface::ANY_EMITTER, true );
+	AudioInterface::PlaySoundThroughEmitter( m_backgroundMusic, AudioInterface::ANY_EMITTER, true );
 
 	//Framebuffer Creation
 	m_framebufferVertices = new VertexData();
@@ -75,12 +78,19 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	m_meteoroidBlueprint = new MeteoroidBlueprint( this );
 	m_shipBlueprint = new ShipBlueprint();
 
-	//Ship Creation
-	Entity* playerShip = GetEntityManager().HireEntity();
-	m_shipBlueprint->BuildEntityIntoGame( *playerShip, this, SHIP_SPAWN_POSITION );
-	ScoringComponent* playerScoring = playerShip->FindAttachedComponentOfType< ScoringComponent >();
+	//Player Data
+	m_player[ 0 ].input = m_gameInputSystem->AcquireComponent();
+	m_player[ 0 ].score = m_scoringSystem->AcquireComponent();
+	m_player[ 0 ].score->pointValue = 1000;
+	m_player[ 1 ].input = m_gameInputSystem->AcquireComponent();
+	m_player[ 1 ].score = m_scoringSystem->AcquireComponent();
+	m_player[ 1 ].score->pointValue = 1000;
 
-	CreateGameModeUI( playerScoring );
+	//Ship Creation
+	m_playerShip = GetEntityManager().HireEntity();
+	m_shipBlueprint->BuildEntityIntoGame( *m_playerShip, this, DEAD_SHIP_POSITION );
+
+	CreateGameModeUI( m_player[ 0 ].score, m_player[ 1 ].score );
 	CreateAttractModeUI();
 
 	m_currentMode = MODE_Attract;
@@ -104,6 +114,39 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 
 	if( m_currentMode == MODE_Attract )
 	{
+		Gamepad* gamepad1 = PeripheralInterface::GetGamepadAtIndex( 0 );
+		Gamepad* gamepad2 = PeripheralInterface::GetGamepadAtIndex( 1 );
+		Keyboard* keyboard = PeripheralInterface::GetKeyboard();
+
+		if( keyboard->KeyIsPressed( Keyboard::NUMBER_1 ) ||
+			keyboard->KeyIsPressed( Keyboard::NUMBER_2 ) ||
+			( gamepad1 != nullptr && gamepad1->IsButtonPressed( 0 ) ) ||
+			( gamepad2 != nullptr && gamepad2->IsButtonPressed( 0 ) ) )
+		{
+			m_currentMode = MODE_Game;
+			m_masterAttractFrame->isVisible = false;
+
+			if( keyboard->KeyIsPressed( Keyboard::NUMBER_1 ) ||
+				( gamepad1 != nullptr && gamepad1->IsButtonPressed( 0 ) ) )
+			{
+				m_player[ 0 ].livesRemaining = STARTING_LIFE_COUNT;
+				m_player[ 0 ].score->currentScore = 0;
+			}
+			else if(keyboard->KeyIsPressed( Keyboard::NUMBER_2 ) ||
+				( gamepad2 != nullptr && gamepad2->IsButtonPressed( 0 ) ) )
+			{
+
+				m_player[ 0 ].livesRemaining = STARTING_LIFE_COUNT;
+				m_player[ 0 ].score->currentScore = 0;
+
+				m_player[ 1 ].livesRemaining = STARTING_LIFE_COUNT;
+				m_player[ 1 ].score->currentScore = 0;
+			}
+
+			m_activePlayerIndex = 0;
+			SpawnShip( m_activePlayerIndex );
+		}
+
 		if( m_secondsSinceLastFrameChange > SECONDS_BETWEEN_FRAME_CHANGES )
 		{
 			m_attractFrames[ m_currentAttractFrame ]->isVisible = false;
@@ -113,8 +156,11 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 		}
 		m_secondsSinceLastFrameChange += deltaSeconds;
 	}
-	if( IsLevelComplete() )
-		StartNewLevel();
+	else //( m_currentMode == MODE_Game )
+	{
+		if( IsLevelComplete() )
+			StartNewLevel();
+	}
 
 	m_worldRenderingSystem->OnUpdate( deltaSeconds );
 	m_UISystem->OnUpdate( deltaSeconds );
@@ -299,7 +345,7 @@ void MeteoroidGame::CreateAttractModeUI()
 	pressToStartFrame->isVisible = false;
 	m_attractFrames[ FRAME_PressToPlay ] = pressToStartFrame;
 
-	LabelElement* pressToStartLabel = new LabelElement( "Press space or A to start!", m_uiFont, 30, uiTextMaterial );
+	LabelElement* pressToStartLabel = new LabelElement( "Press 1 or 2 to play!", m_uiFont, 30, uiTextMaterial );
 	pressToStartLabel->position.x = 0.f;
 	pressToStartLabel->position.y = 0.f;
 	pressToStartFrame->InsertUIElement( pressToStartLabel );
@@ -363,10 +409,11 @@ void MeteoroidGame::CreateAttractModeUI()
 	attractModeFrame->position.y = ( UISystem::UI_LAYOUT_DIMENSIONS.y * 0.5f ) - ( attractModeFrame->height * 0.5f );
 	pressToStartFrame->isVisible = true;
 	m_currentAttractFrame = FRAME_PressToPlay;
+	m_masterAttractFrame = attractModeFrame;
 }
 
 //-----------------------------------------------------------------------------------------------
-void MeteoroidGame::CreateGameModeUI( ScoringComponent* playerScoreComponent )
+void MeteoroidGame::CreateGameModeUI( ScoringComponent* player1ScoreComponent, ScoringComponent* player2ScoreComponent )
 {
 	// Material Setup
 	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
@@ -402,12 +449,12 @@ void MeteoroidGame::CreateGameModeUI( ScoringComponent* playerScoreComponent )
 	playerLabel1->position.y = 0.f;
 	player1StatFrame->InsertUIElement( playerLabel1 );
 
-	NumberDisplayElement* scoreDisplay1 = new NumberDisplayElement( &playerScoreComponent->currentScore, 6, m_uiFont, 30, uiTextMaterial, false );
+	NumberDisplayElement* scoreDisplay1 = new NumberDisplayElement( &player1ScoreComponent->currentScore, 6, m_uiFont, 30, uiTextMaterial, false );
 	scoreDisplay1->position.x = 100.f;
 	scoreDisplay1->position.y = 35.f;
 	player1StatFrame->InsertUIElement( scoreDisplay1 );
 
-	NumberDisplayElement* lifeDisplay1 = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, 30, uiTextMaterial );
+	NumberDisplayElement* lifeDisplay1 = new NumberDisplayElement( &m_player[ 0 ].livesRemaining, 6, m_uiFont, 30, uiTextMaterial );
 	lifeDisplay1->position.x = 100.f;
 	lifeDisplay1->position.y = 0.f;
 	player1StatFrame->InsertUIElement( lifeDisplay1 );
@@ -425,19 +472,18 @@ void MeteoroidGame::CreateGameModeUI( ScoringComponent* playerScoreComponent )
 	playerLabel2->position.y = 0.f;
 	player2StatFrame->InsertUIElement( playerLabel2 );
 
-	NumberDisplayElement* scoreDisplay2 = new NumberDisplayElement( &playerScoreComponent->currentScore, 6, m_uiFont, 30, uiTextMaterial, false );
+	NumberDisplayElement* scoreDisplay2 = new NumberDisplayElement( &player2ScoreComponent->currentScore, 6, m_uiFont, 30, uiTextMaterial, false );
 	scoreDisplay2->position.x = 100.f;
 	scoreDisplay2->position.y = 35.f;
 	player2StatFrame->InsertUIElement( scoreDisplay2 );
 
-	NumberDisplayElement* lifeDisplay2 = new NumberDisplayElement( &m_playerLivesRemaining, 6, m_uiFont, 30, uiTextMaterial );
+	NumberDisplayElement* lifeDisplay2 = new NumberDisplayElement( &m_player[ 1 ].livesRemaining, 6, m_uiFont, 30, uiTextMaterial );
 	lifeDisplay2->position.x = 100.f;
 	lifeDisplay2->position.y = 0.f;
 	player2StatFrame->InsertUIElement( lifeDisplay2 );
 
 	player2StatFrame->position.x = UISystem::UI_LAYOUT_DIMENSIONS.x - player2StatFrame->width;
 	player2StatFrame->position.y = UISystem::UI_LAYOUT_DIMENSIONS.y - player2StatFrame->height;
-	//player2StatFrame->isVisible = false;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -455,15 +501,27 @@ void MeteoroidGame::HandleEntityDestructionOrReuse( Entity*& entity )
 		entity->velocity = FloatVector3( 0.f, 0.f, 0.f );
 		entity->acceleration = FloatVector3( 0.f, 0.f, 0.f );
 
-		--m_playerLivesRemaining;
+		--m_player[ m_activePlayerIndex ].livesRemaining;
 		if( IsGameOver() )
 		{
 			//Change our game mode
+			m_currentMode = MODE_Attract;
+			m_masterAttractFrame->isVisible = true;
+
+			m_playerShip->DetachComponent( m_player[ m_activePlayerIndex ].input );
+			m_playerShip->DetachComponent( m_player[ m_activePlayerIndex ].score );
 		}
 		else
 		{
-			entity->position.x = SHIP_SPAWN_POSITION.x;
-			entity->position.y = SHIP_SPAWN_POSITION.y;
+			m_playerShip->DetachComponent( m_player[ m_activePlayerIndex ].input );
+			m_playerShip->DetachComponent( m_player[ m_activePlayerIndex ].score );
+
+			// Since we only have two players, we can do this trick
+			unsigned int nextPlayerIndex = 1 - m_activePlayerIndex;
+
+			if( m_player[ nextPlayerIndex ].livesRemaining > 0 )
+				m_activePlayerIndex = nextPlayerIndex; 
+			SpawnShip( m_activePlayerIndex );
 		}
 		break;
 	case TYPEID_Meteoroid:
@@ -500,7 +558,7 @@ void MeteoroidGame::HandleEntityDestructionOrReuse( Entity*& entity )
 //-----------------------------------------------------------------------------------------------
 bool MeteoroidGame::IsGameOver() const
 {
-	return ( m_playerLivesRemaining <= 0 );
+	return ( ( m_player[ 0 ].livesRemaining <= 0 ) && ( m_player[ 1 ].livesRemaining <= 0 ) );
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -541,6 +599,16 @@ STATIC void MeteoroidGame::SetPillarboxIfNeeded( const IntVector2& windowDimensi
 }
 
 //-----------------------------------------------------------------------------------------------
+void MeteoroidGame::SpawnShip( unsigned int playerIndex )
+{
+	m_playerShip->position.x = SHIP_SPAWN_POSITION.x;
+	m_playerShip->position.y = SHIP_SPAWN_POSITION.y;
+
+	m_playerShip->AttachComponent( m_player[ playerIndex ].input );
+	m_playerShip->AttachComponent( m_player[ playerIndex ].score );
+}
+
+//-----------------------------------------------------------------------------------------------
 void MeteoroidGame::StartNewLevel()
 {
 	Entity* spawnedMeteor = nullptr;
@@ -570,7 +638,7 @@ void MeteoroidGame::StartupGameSystems()
 	m_collisionSystem = new CollisionSystem2D( 100, worldDimensionsAsFloat );
 	m_collisionSystem->OnAttachment( nullptr );
 
-	m_gameInputSystem = new GameInputSystem( 1 );
+	m_gameInputSystem = new GameInputSystem( MAX_NUMBER_OF_PLAYERS );
 	m_gameInputSystem->OnAttachment( nullptr );
 
 	m_fracturingSystem = new FracturingSystem( 100 );

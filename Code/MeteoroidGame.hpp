@@ -28,6 +28,21 @@ class MeteoroidBlueprint;
 class ShipBlueprint;
 
 //-----------------------------------------------------------------------------------------------
+struct PlayerData
+{
+	PlayerData()
+		: input( nullptr )
+		, score( nullptr )
+		, livesRemaining( 0 )
+	{ }
+
+	// Data Members
+	GameInputComponent* input;
+	ScoringComponent* score;
+	int livesRemaining;
+};
+
+//-----------------------------------------------------------------------------------------------
 class MeteoroidGame : public GameInterface
 {
 public:
@@ -66,11 +81,12 @@ private:
 	//Helpers
 	void CreateFramebuffer();
 	void CreateAttractModeUI();
-	void CreateGameModeUI( ScoringComponent* playerScoreComponent );
+	void CreateGameModeUI( ScoringComponent* player1ScoreComponent, ScoringComponent* player2ScoreComponent );
 	void HandleEntityDestructionOrReuse( Entity*& entity );
 	bool IsGameOver() const;
 	bool IsLevelComplete() const;
 	static void SetPillarboxIfNeeded( const IntVector2& windowDimensions, const IntVector2& gameDimensions );
+	void SpawnShip( unsigned int playerIndex );
 	void StartNewLevel();
 	void StartupGameSystems();
 
@@ -97,11 +113,17 @@ private:
 	Mode m_currentMode;
 
 	// Game Mode Data
+	static const FloatVector2 DEAD_SHIP_POSITION;
 	static const FloatVector2 SHIP_SPAWN_POSITION;
+	static const unsigned int STARTING_LIFE_COUNT;
 	int m_levelNumber;
 	unsigned int m_numStartingAsteroidsToSpawn;
 	float m_startingAsteroidsMinSpeed;
 	float m_startingAsteroidsMaxSpeed;
+	Entity* m_playerShip;
+	static const unsigned int MAX_NUMBER_OF_PLAYERS = 2;
+	PlayerData m_player[ MAX_NUMBER_OF_PLAYERS ];
+	unsigned int m_activePlayerIndex;
 
 	// Attract Mode Data
 	enum AttractFrame
@@ -111,13 +133,13 @@ private:
 		NUMBER_OF_ATTRACT_FRAMES,
 		FRAME_None = 255
 	};
+	FrameElement* m_masterAttractFrame;
 	FrameElement* m_attractFrames[ NUMBER_OF_ATTRACT_FRAMES ];
 	AttractFrame m_currentAttractFrame;
 	float m_secondsSinceLastFrameChange;
 	static const float SECONDS_BETWEEN_FRAME_CHANGES;
 
 	//Stuff that should probably go into some component
-	int m_playerLivesRemaining;
 	AudioInterface::SoundID m_explosionSound;
 };
 
@@ -153,13 +175,14 @@ inline MeteoroidGame::MeteoroidGame()
 	, m_currentMode( MODE_Startup )
 
 	, m_levelNumber( 0 )
+	, m_playerShip( nullptr )
 	, m_numStartingAsteroidsToSpawn( 4 )
 	, m_startingAsteroidsMinSpeed( 0.f )
 	, m_startingAsteroidsMaxSpeed( 20.f )
+	, m_activePlayerIndex( 0 )
 
+	, m_masterAttractFrame( nullptr )
 	, m_currentAttractFrame( FRAME_None )
 	, m_secondsSinceLastFrameChange( 0.f )
-
-	, m_playerLivesRemaining( 3 )
 { }
 #endif //INCLUDED_METEOROID_GAME_HPP
