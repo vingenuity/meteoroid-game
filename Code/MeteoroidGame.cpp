@@ -25,7 +25,7 @@
 STATIC const FloatVector2	MeteoroidGame::DEAD_SHIP_POSITION( -500.f, -500.f );
 STATIC const IntVector2		MeteoroidGame::WORLD_DIMENSIONS( 700, 700 );
 STATIC const FloatVector2	MeteoroidGame::SHIP_SPAWN_POSITION( WORLD_DIMENSIONS.x * 0.5f, WORLD_DIMENSIONS.y * 0.5f );
-STATIC const float			MeteoroidGame::SECONDS_BETWEEN_FRAME_CHANGES = 15.f;
+STATIC const float			MeteoroidGame::SECONDS_BETWEEN_FRAME_CHANGES = 5.f;
 STATIC const unsigned int	MeteoroidGame::STARTING_LIFE_COUNT = 3;
 
 //-----------------------------------------------------------------------------------------------
@@ -117,17 +117,20 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 		Gamepad* gamepad1 = PeripheralInterface::GetGamepadAtIndex( 0 );
 		Gamepad* gamepad2 = PeripheralInterface::GetGamepadAtIndex( 1 );
 		Keyboard* keyboard = PeripheralInterface::GetKeyboard();
+		TouchScreen* touchscreen = PeripheralInterface::GetTouchscreen( 0 );
 
 		if( keyboard->KeyIsPressed( Keyboard::NUMBER_1 ) ||
 			keyboard->KeyIsPressed( Keyboard::NUMBER_2 ) ||
 			( gamepad1 != nullptr && gamepad1->IsButtonPressed( 0 ) ) ||
-			( gamepad2 != nullptr && gamepad2->IsButtonPressed( 0 ) ) )
+			( gamepad2 != nullptr && gamepad2->IsButtonPressed( 0 ) ) ||
+			touchscreen->GetNumberOfTouches() > 0 )
 		{
 			m_currentMode = MODE_Game;
 			m_masterAttractFrame->isVisible = false;
 
 			if( keyboard->KeyIsPressed( Keyboard::NUMBER_1 ) ||
-				( gamepad1 != nullptr && gamepad1->IsButtonPressed( 0 ) ) )
+				( gamepad1 != nullptr && gamepad1->IsButtonPressed( 0 ) ) ||
+				touchscreen->GetNumberOfTouches() > 0 )
 			{
 				m_player[ 0 ].livesRemaining = STARTING_LIFE_COUNT;
 				m_player[ 0 ].score->currentScore = 0;
@@ -335,7 +338,7 @@ void MeteoroidGame::CreateAttractModeUI()
 	m_UISystem->ConnectUIElement( attractModeFrame );
 
 	LabelElement* gameTitleLabel = new LabelElement( "Meteoroids", m_uiFont, 60, uiTextMaterial );
-	gameTitleLabel->position.x = 60.f;
+	gameTitleLabel->position.x = 140.f;
 	gameTitleLabel->position.y = 375.f;
 	attractModeFrame->InsertUIElement( gameTitleLabel );
 
@@ -343,7 +346,7 @@ void MeteoroidGame::CreateAttractModeUI()
 	pressToStartFrame->isVisible = false;
 	m_attractFrames[ FRAME_PressToPlay ] = pressToStartFrame;
 
-	LabelElement* pressToStartLabel = new LabelElement( "Press 1 or 2 to play!", m_uiFont, 30, uiTextMaterial );
+	LabelElement* pressToStartLabel = new LabelElement( "Press 1 2 or touch the screen to play", m_uiFont, 30, uiTextMaterial );
 	pressToStartLabel->position.x = 0.f;
 	pressToStartLabel->position.y = 0.f;
 	pressToStartFrame->InsertUIElement( pressToStartLabel );
@@ -360,46 +363,41 @@ void MeteoroidGame::CreateAttractModeUI()
 	static const float CREDITS_TEXT_SPACING = CREDITS_TEXT_HEIGHT + 10.f;
 
 	LabelElement* creditsLabel = new LabelElement( "credits:", m_uiFont, 30, uiTextMaterial );
-	creditsLabel->position.x = 250.f;
-	creditsLabel->position.y =  ( CREDITS_TEXT_SPACING * 8.f ) + 10.f;
+	creditsLabel->position.x = 140.f;
+	creditsLabel->position.y =  ( CREDITS_TEXT_SPACING * 7.f ) + 10.f;
 	creditsFrame->InsertUIElement( creditsLabel );
 
 	LabelElement* developerCredit = new LabelElement( "developer:  vincent kocks", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
 	developerCredit->position.x = 0.f;
-	developerCredit->position.y = CREDITS_TEXT_SPACING * 7.f;
+	developerCredit->position.y = CREDITS_TEXT_SPACING * 6.f + 5.f;
 	creditsFrame->InsertUIElement( developerCredit );
 
-	LabelElement* fontCredit = new LabelElement( "font by:      pixel sagas", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
+	LabelElement* fontCredit = new LabelElement( "font by:    pixel sagas", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
 	fontCredit->position.x = 0.f;
-	fontCredit->position.y = CREDITS_TEXT_SPACING * 6.f;
+	fontCredit->position.y = CREDITS_TEXT_SPACING * 5.f + 5.f;
 	creditsFrame->InsertUIElement( fontCredit );
 
-	LabelElement* soundsByCredit = new LabelElement( "audio by:", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
-	soundsByCredit->position.x = 0.f;
-	soundsByCredit->position.y = CREDITS_TEXT_SPACING * 5.f;
-	creditsFrame->InsertUIElement( soundsByCredit );
-
-	LabelElement* soundCredit1 = new LabelElement( "                  levelclearer", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
+	LabelElement* soundCredit1 = new LabelElement( "audio by:   levelclearer", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
 	soundCredit1->position.x = 0.f;
 	soundCredit1->position.y = CREDITS_TEXT_SPACING * 4.f;
 	creditsFrame->InsertUIElement( soundCredit1 );
 
-	LabelElement* soundCredit2 = new LabelElement( "                  noirenex", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
+	LabelElement* soundCredit2 = new LabelElement( "            noirenex", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
 	soundCredit2->position.x = 0.f;
 	soundCredit2->position.y = CREDITS_TEXT_SPACING * 3.f;
 	creditsFrame->InsertUIElement( soundCredit2 );
 
-	LabelElement* soundCredit3 = new LabelElement( "                  jobro", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
+	LabelElement* soundCredit3 = new LabelElement( "            jobro", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
 	soundCredit3->position.x = 0.f;
 	soundCredit3->position.y = CREDITS_TEXT_SPACING * 2.f;
 	creditsFrame->InsertUIElement( soundCredit3 );
 
-	LabelElement* soundCredit4 = new LabelElement( "                  gameaudio", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
+	LabelElement* soundCredit4 = new LabelElement( "            gameaudio", m_uiFont, CREDITS_TEXT_HEIGHT, uiTextMaterial );
 	soundCredit4->position.x = 0.f;
 	soundCredit4->position.y = CREDITS_TEXT_SPACING * 1.f;
 	creditsFrame->InsertUIElement( soundCredit4 );
 
-	creditsFrame->position.x = 30.f;
+	creditsFrame->position.x = 100.f;
 	creditsFrame->position.y = 0.f;
 	attractModeFrame->InsertUIElement( creditsFrame );
 
@@ -447,12 +445,12 @@ void MeteoroidGame::CreateGameModeUI( ScoringComponent* player1ScoreComponent, S
 	player1StatFrame->InsertUIElement( playerLabel1 );
 
 	NumberDisplayElement* scoreDisplay1 = new NumberDisplayElement( &player1ScoreComponent->currentScore, 6, m_uiFont, 30, uiTextMaterial, false );
-	scoreDisplay1->position.x = 100.f;
+	scoreDisplay1->position.x = 70.f;
 	scoreDisplay1->position.y = 35.f;
 	player1StatFrame->InsertUIElement( scoreDisplay1 );
 
 	NumberDisplayElement* lifeDisplay1 = new NumberDisplayElement( &m_player[ 0 ].livesRemaining, 6, m_uiFont, 30, uiTextMaterial );
-	lifeDisplay1->position.x = 100.f;
+	lifeDisplay1->position.x = 70.f;
 	lifeDisplay1->position.y = 0.f;
 	player1StatFrame->InsertUIElement( lifeDisplay1 );
 
@@ -470,12 +468,12 @@ void MeteoroidGame::CreateGameModeUI( ScoringComponent* player1ScoreComponent, S
 	player2StatFrame->InsertUIElement( playerLabel2 );
 
 	NumberDisplayElement* scoreDisplay2 = new NumberDisplayElement( &player2ScoreComponent->currentScore, 6, m_uiFont, 30, uiTextMaterial, false );
-	scoreDisplay2->position.x = 100.f;
+	scoreDisplay2->position.x = 70.f;
 	scoreDisplay2->position.y = 35.f;
 	player2StatFrame->InsertUIElement( scoreDisplay2 );
 
 	NumberDisplayElement* lifeDisplay2 = new NumberDisplayElement( &m_player[ 1 ].livesRemaining, 6, m_uiFont, 30, uiTextMaterial );
-	lifeDisplay2->position.x = 100.f;
+	lifeDisplay2->position.x = 70.f;
 	lifeDisplay2->position.y = 0.f;
 	player2StatFrame->InsertUIElement( lifeDisplay2 );
 
