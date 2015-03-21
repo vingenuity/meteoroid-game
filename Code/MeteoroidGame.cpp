@@ -1,6 +1,6 @@
 #include "MeteoroidGame.hpp"
 
-#include <Code/Font/BitmapFont.hpp>
+#include <Code/Font/CachingFontLoader.hpp>
 #include <Code/Graphics/Material.hpp>
 #include <Code/Graphics/MeshGeneration3D.hpp>
 #include <Code/Graphics/RendererInterface.hpp>
@@ -230,7 +230,6 @@ void MeteoroidGame::DoBeforeEngineDestruction()
 	GameInterface::DoBeforeEngineDestruction();
 	delete m_framebuffer;
 	delete m_framebufferVertices;
-	delete m_uiFont;
 
 	//Afterwards, the systems may clean up their components
 	m_collisionSystem->OnDestruction();
@@ -328,9 +327,8 @@ void MeteoroidGame::CreateAttractModeUI()
 		textPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Basic.fragment.cg" );
 	uiTextMaterial->SetShaderPipeline( textPipeline );
 
-	static const char* fontTextureLocation = "Font/hyperspace_0.png";
-	m_uiFont = new BitmapFont( "Font/hyperspace.fnt", &fontTextureLocation, 1 );
-	uiTextMaterial->SetTextureUniform( "u_diffuseMap", 0, m_uiFont->GetTextureSheet( 0 ) );
+	m_uiFont = RendererInterface::GetFontLoader()->GetOrLoadFontFromXML( "Font/hyperspace.fnt", "Font/" );
+	uiTextMaterial->SetTextureUniform( "u_diffuseMap", 0, m_uiFont->GetTextureAtlas( 0 ) );
 
 	// Attract Mode Frame
 	FrameElement* attractModeFrame = new FrameElement( uiMaterial, COLOR_Clear, COLOR_Clear );
@@ -435,9 +433,8 @@ void MeteoroidGame::CreateGameModeUI( ScoringComponent* player1ScoreComponent, S
 		textPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Basic.fragment.cg" );
 	uiTextMaterial->SetShaderPipeline( textPipeline );
 
-	static const char* fontTextureLocation = "Font/hyperspace_0.png";
-	m_uiFont = new BitmapFont( "Font/hyperspace.fnt", &fontTextureLocation, 1 );
-	uiTextMaterial->SetTextureUniform( "u_diffuseMap", 0, m_uiFont->GetTextureSheet( 0 ) );
+	m_uiFont = RendererInterface::GetFontLoader()->GetOrLoadFontFromXML( "Font/hyperspace.fnt", "Font/" );
+	uiTextMaterial->SetTextureUniform( "u_diffuseMap", 0, m_uiFont->GetTextureAtlas( 0 ) );
 
 
 	// Player 1 Stats

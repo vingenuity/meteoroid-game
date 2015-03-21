@@ -7,7 +7,7 @@
 
 #include "UIElement.hpp"
 
-class BitmapFont;
+struct BitmapFont;
 struct Material;
 
 
