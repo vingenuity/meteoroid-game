@@ -32,7 +32,8 @@ Global
 		{9C1A287E-4905-4057-B298-1A27AADCF13A}.Debug|Tegra-Android.Build.0 = Debug|Tegra-Android
 		{9C1A287E-4905-4057-B298-1A27AADCF13A}.Debug|Win32.ActiveCfg = Debug|Win32
 		{9C1A287E-4905-4057-B298-1A27AADCF13A}.Debug|Win32.Build.0 = Debug|Win32
-		{9C1A287E-4905-4057-B298-1A27AADCF13A}.Release|Emscripten.ActiveCfg = Release|Win32
+		{9C1A287E-4905-4057-B298-1A27AADCF13A}.Release|Emscripten.ActiveCfg = Release|Emscripten
+		{9C1A287E-4905-4057-B298-1A27AADCF13A}.Release|Emscripten.Build.0 = Release|Emscripten
 		{9C1A287E-4905-4057-B298-1A27AADCF13A}.Release|PS3.ActiveCfg = Release|PS3
 		{9C1A287E-4905-4057-B298-1A27AADCF13A}.Release|PS3.Build.0 = Release|PS3
 		{9C1A287E-4905-4057-B298-1A27AADCF13A}.Release|PSVita.ActiveCfg = Release|PSVita

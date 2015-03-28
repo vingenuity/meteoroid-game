@@ -106,19 +106,19 @@
     <IncludePath>..\..\..\vingine-core\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
-    <OutDir>$(SolutionDir)..\..\Build\Web\</OutDir>
+    <OutDir>$(SolutionDir)..\..\Build\$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
-    <IntDir>$(SolutionDir)..\..\Temp Files\Web_$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)..\..\Temp Files\$(Platform)_$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Emscripten'">
-    <OutDir>$(SolutionDir)..\..\Build\Web\</OutDir>
+    <OutDir>$(SolutionDir)..\..\Build\$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Emscripten'">
-    <IntDir>$(SolutionDir)..\..\Temp Files\Web_$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)..\..\Temp Files\$(Platform)_$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Emscripten'">
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
@@ -211,6 +211,7 @@
     </Link>
     <Link>
       <AdditionalDependencies>..\..\Libraries\Vingine Core_$(Configuration).bc</AdditionalDependencies>
+      <AdditionalOptions>-s TOTAL_MEMORY=150000000 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
