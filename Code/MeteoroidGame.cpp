@@ -52,9 +52,9 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 
 	//Framebuffer Creation
 	m_framebufferVertices = new VertexData();
-	GenerateTexturedPlane( *m_framebufferVertices, FloatVector3( 375.f, 375.f, 0.f ),
+	GenerateTexturedPlane( *m_framebufferVertices, FloatVector3( 0.5f * WORLD_DIMENSIONS.x, 0.5f * WORLD_DIMENSIONS.y, 0.f ),
 		FloatVector3( 0.f, 0.f, 1.f ), (float)WORLD_DIMENSIONS.x, (float)WORLD_DIMENSIONS.y,
-		FloatVector2( 0.f, 0.f ), FloatVector2( 1.f, 1.f ) );
+		FloatVector2( 1.f, 1.f ), FloatVector2( 0.f, 0.f ) );
 	RendererInterface::GenerateBuffer( 1, &m_framebufferVertices->bufferID );
 	RendererInterface::BufferVertexData( m_framebufferVertices );
 
@@ -205,7 +205,6 @@ void MeteoroidGame::DoRender() const
 	RendererInterface::RemoveMaterial( m_framebufferMaterial );
 
 	m_UISystem->OnRender();
-
 }
 
 //-----------------------------------------------------------------------------------------------
