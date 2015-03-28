@@ -23,7 +23,7 @@
 
 //-----------------------------------------------------------------------------------------------
 STATIC const FloatVector2	MeteoroidGame::DEAD_SHIP_POSITION( -500.f, -500.f );
-STATIC const IntVector2		MeteoroidGame::WORLD_DIMENSIONS( 700, 700 );
+STATIC const IntVector2		MeteoroidGame::WORLD_DIMENSIONS( 1100, 1100 );
 STATIC const FloatVector2	MeteoroidGame::SHIP_SPAWN_POSITION( WORLD_DIMENSIONS.x * 0.5f, WORLD_DIMENSIONS.y * 0.5f );
 STATIC const float			MeteoroidGame::SECONDS_BETWEEN_FRAME_CHANGES = 5.f;
 STATIC const unsigned int	MeteoroidGame::STARTING_LIFE_COUNT = 3;
@@ -576,14 +576,14 @@ STATIC void MeteoroidGame::SetPillarboxIfNeeded( const IntVector2& windowDimensi
 	float targetAspectRatio = static_cast< float >( gameDimensions.x / gameDimensions.y );
 
 	// figure out the largest area that fits in this resolution at the desired aspect ratio
-	int viewportWidth = gameDimensions.x;
+	int viewportWidth = windowDimensions.x;
 	int viewportHeight = static_cast< int >( viewportWidth / targetAspectRatio + 0.5f );
 
-	if ( viewportHeight != windowDimensions.y )
+	if ( viewportHeight > windowDimensions.y )
 	{
-		//It doesn't fit our height, we must switch to pillarbox then
-		viewportHeight = windowDimensions.y;
-		viewportWidth = static_cast< int >( viewportHeight * targetAspectRatio + 0.5f );
+			//It doesn't fit our height, we must switch to pillarbox then
+			viewportHeight = windowDimensions.y;
+			viewportWidth = static_cast< int >( viewportHeight * targetAspectRatio + 0.5f );
 	}
 
 	// set up the new viewport centered in the backbuffer
