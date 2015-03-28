@@ -74,6 +74,12 @@
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|PS3'">
     <ExceptionsAndRtti>WithExceptsWithRtti</ExceptionsAndRtti>
   </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <AndroidMinAPI>android-19</AndroidMinAPI>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <AndroidTargetAPI>android-21</AndroidTargetAPI>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -138,6 +144,7 @@
     <OutDir>$(SolutionDir)..\..\Build\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)..\..\Temp Files\$(Platform)_$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+    <LibraryPath>../../../vingine-core/Libraries</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|PSVita'">
     <LibraryPath>../../../vingine-core/Libraries</LibraryPath>
@@ -150,6 +157,11 @@
     <OutDir>$(SolutionDir)..\..\Build\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)..\..\Temp Files\$(Platform)_$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <OutDir>$(SolutionDir)..\..\Build\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\Temp-Files\$(Platform)_$(Configuration)\</IntDir>
+    <TargetName>libMeteoroids</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -216,7 +228,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
     <Link>
-      <AdditionalDependencies>../../Libraries/Vingine Core_Debug.a;../../Libraries/fmod_vc.lib;../../Libraries/OpenAL32.lib;android;EGL;GLESv2;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../../Libraries/Vingine Core_$(Configuration).a;../../Libraries/fmod_vc.lib;../../Libraries/OpenAL32.lib;android;EGL;GLESv2;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>-lGLESv2 -lOpenSLES %(AdditionalOptions)</AdditionalOptions>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <ReportUndefinedSymbols>true</ReportUndefinedSymbols>
@@ -256,7 +268,20 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\..\vingine-core\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <GccExceptionHandling>true</GccExceptionHandling>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>../../Libraries/Vingine Core_$(Configuration).a;../../Libraries/fmod_vc.lib;../../Libraries/OpenAL32.lib;android;EGL;GLESv2;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>-lGLESv2 -lOpenSLES %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <AntBuild>
+      <AntBuildType>Debug</AntBuildType>
+    </AntBuild>
+    <AntBuild>
+      <Debuggable>true</Debuggable>
+    </AntBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|PSVita'">
     <ClCompile>
@@ -283,6 +308,36 @@
     <Link>
       <AdditionalDependencies>../../Libraries/Vingine Core_$(Configuration).a;</AdditionalDependencies>
     </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <AntBuild>
+      <AntBuildType>Release</AntBuildType>
+    </AntBuild>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <AntBuild>
+      <Debuggable>false</Debuggable>
+    </AntBuild>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <AntBuild>
+      <AntBuildType>Debug</AntBuildType>
+    </AntBuild>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <AntBuild>
+      <Debuggable>true</Debuggable>
+    </AntBuild>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <AntBuild>
+      <AntBuildType>Release</AntBuildType>
+    </AntBuild>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <AntBuild>
+      <Debuggable>false</Debuggable>
+    </AntBuild>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\CollisionComponent2D.hpp" />
