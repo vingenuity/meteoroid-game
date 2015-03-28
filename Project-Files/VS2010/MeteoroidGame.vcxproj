@@ -85,10 +85,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)..\..\Build\Win\</OutDir>
+    <OutDir>$(SolutionDir)..\..\Build\$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IntDir>$(SolutionDir)..\..\Temp Files\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)..\..\Temp Files\$(Platform)_$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
@@ -96,10 +96,10 @@
     <LibraryPath>$(CG_LIB_PATH);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)..\..\Build\Win\</OutDir>
+    <OutDir>$(SolutionDir)..\..\Build\$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IntDir>$(SolutionDir)..\..\Temp Files\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)..\..\Temp Files\$(Platform)_$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>$(ProjectName)_$(Configuration)</TargetName>
@@ -160,7 +160,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>../../Libraries/Vingine Core_Debug.lib;../../Libraries/fmod_vc.lib;../../Libraries/OpenAL32.lib;XInput.lib;"C:\Program Files (x86)\Visual Leak Detector\lib\Win32\vld.lib";%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../../Libraries/Vingine Core_$(Configuration).lib;../../Libraries/fmod_vc.lib;../../Libraries/OpenAL32.lib;XInput.lib;"C:\Program Files (x86)\Visual Leak Detector\lib\Win32\vld.lib";%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -170,12 +170,13 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>../../Libraries/Vingine Core_Debug.lib;XInput.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../../Libraries/Vingine Core_$(Configuration).lib;../../Libraries/fmod_vc.lib;XInput.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
