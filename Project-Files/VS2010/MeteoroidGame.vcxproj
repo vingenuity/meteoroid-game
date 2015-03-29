@@ -337,6 +337,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
     <AntBuild>
       <Debuggable>false</Debuggable>
+      <SecurePropertiesLocation>D:\Git\meteoroid-game\Project-Files\VS2010\secure_properties.xml</SecurePropertiesLocation>
     </AntBuild>
   </ItemDefinitionGroup>
   <ItemGroup>
