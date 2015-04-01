@@ -1,6 +1,0 @@
-<project name="secure_properties">
-  <property name="key.store" value="D:\Git\meteoroid-game\Project-Files\VS2010\meteoroid-keystore" />
-  <property name="key.store.password" value="delta11" />
-  <property name="key.alias" value="Meteoroid" />
-  <property name="key.alias.password" value="delta11" />
-</project>
