@@ -252,6 +252,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|PS3'">
     <ClCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>../../Libraries/Vingine Core_$(Configuration).a;%(AdditionalDependencies)</AdditionalDependencies>
@@ -289,6 +290,7 @@
       <CppExceptions>true</CppExceptions>
       <CppLanguageStd>Cpp11</CppLanguageStd>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>../../Libraries/Vingine Core_$(Configuration).a;</AdditionalDependencies>
