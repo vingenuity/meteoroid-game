@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<VingineShaderLanguage version="1.0">
+  <AttributeGroups>
+    <AttributeGroup>
+      <VertexAttribute name="i_vertexWorldPosition" numComponents="2" dataType="32BitFloat" normalize="false" stride="12" offset="0" />
+      <VertexAttribute name="i_vertexColor" numComponents="4" dataType="8BitInteger" normalize="true" stride="12" offset="8" />
+    </AttributeGroup>
+  </AttributeGroups>
+
+  <VertexShader>
+    <GLSL source="Shaders/BasicNoTexture.110.vertex.glsl"/>
+    <CG source="Shaders/BasicNoTexture.vertex.cg"/>
+    <Vita binary="Shaders/BasicNoTexture.vertex.gxp"/>
+  </VertexShader>
+
+  <FragmentShader>
+    <GLSL source="Shaders/BasicNoTexture.110.fragment.glsl"/>
+    <CG source="Shaders/BasicNoTexture.fragment.cg"/>
+    <Vita binary="Shaders/BasicNoTexture.fragment.gxp"/>
+  </FragmentShader>
+</VingineShaderLanguage>

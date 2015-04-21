@@ -2,15 +2,13 @@
 //-----------------------------------------------------------------------------------------------
 void main (	float3				i_vertexWorldPosition	: ATTR0,
 			float4				i_vertexColor			: ATTR1,
-			float2				i_textureCoordinates	: ATTR2,
 
 			uniform float4x4		u_modelMatrix,
 			uniform float4x4		u_viewMatrix,
 			uniform float4x4		u_projectionMatrix,
 
 			out float4			screenPosition		: POSITION,
-			out float4			surfaceColor		: COLOR0,
-			out float2			textureCoordinates	: TEXCOORD0
+			out float4			surfaceColor		: COLOR0
 		  )
 {
 	float4 vertexWorldPosition4 = float4( i_vertexWorldPosition.x, i_vertexWorldPosition.y, i_vertexWorldPosition.z, 1.0 );
@@ -18,5 +16,4 @@ void main (	float3				i_vertexWorldPosition	: ATTR0,
 	screenPosition = mul( vertexWorldPosition4, mul( mul( u_modelMatrix, u_viewMatrix ), u_projectionMatrix ) );
 
 	surfaceColor = i_vertexColor * float4( 0.0039215, 0.0039215, 0.0039215, 0.0039215 );
-	textureCoordinates = i_textureCoordinates;
 }

@@ -60,11 +60,7 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 
 	m_framebufferMaterial = RendererInterface::CreateOrGetNewMaterial( L"FramebufferMaterial" );
 	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
-	ShaderPipeline* framebufferPipeline = nullptr;
-	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
-		framebufferPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.110.vertex.glsl", "Shaders/Glow.110.fragment.glsl" );
-	else
-		framebufferPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Glow.fragment.cg" );
+	ShaderPipeline* framebufferPipeline = shaderLoader->CreateOrGetPipelineFromVSL( "Shaders/Glow.vsl" );
 	m_framebufferMaterial->SetShaderPipeline( framebufferPipeline );
 	m_framebufferMaterial->SetTextureUniform( "u_diffuseMap", 0, m_framebuffer->GetAttachedColorTexture( 0 ) );
 
@@ -314,20 +310,12 @@ void MeteoroidGame::CreateAttractModeUI()
 	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
 
 	Material* uiMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUIFlatMaterial" );
-	ShaderPipeline* flatPipeline = nullptr;
-	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
-		flatPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/BasicNoTexture.110.vertex.glsl", "Shaders/BasicNoTexture.110.fragment.glsl" );
-	else
-		flatPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/BasicNoTexture.vertex.cg", "Shaders/BasicNoTexture.fragment.cg" );
+	ShaderPipeline* flatPipeline = shaderLoader->CreateOrGetPipelineFromVSL( "Shaders/BasicNoTexture.vsl" );
 	uiMaterial->SetShaderPipeline( flatPipeline );
 	uiMaterial->SetLineWidth( 2.f );
 
 	Material* uiTextMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUITextMaterial" );
-	ShaderPipeline* textPipeline = nullptr;
-	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
-		textPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.110.vertex.glsl", "Shaders/Basic.110.fragment.glsl" );
-	else
-		textPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Basic.fragment.cg" );
+	ShaderPipeline* textPipeline = shaderLoader->CreateOrGetPipelineFromVSL( "Shaders/Basic.vsl" );
 	uiTextMaterial->SetShaderPipeline( textPipeline );
 
 	m_uiFont = RendererInterface::GetFontLoader()->GetOrLoadFontFromXML( "Font/hyperspace.fnt", "Font/" );
@@ -415,20 +403,12 @@ void MeteoroidGame::CreateGameModeUI( ScoringComponent* player1ScoreComponent, S
 	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
 
 	Material* uiMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUIFlatMaterial" );
-	ShaderPipeline* flatPipeline = nullptr;
-	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
-		flatPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/BasicNoTexture.110.vertex.glsl", "Shaders/BasicNoTexture.110.fragment.glsl" );
-	else
-		flatPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/BasicNoTexture.vertex.cg", "Shaders/BasicNoTexture.fragment.cg" );
+	ShaderPipeline* flatPipeline = shaderLoader->CreateOrGetPipelineFromVSL( "Shaders/BasicNoTexture.vsl" );
 	uiMaterial->SetShaderPipeline( flatPipeline );
 	uiMaterial->SetLineWidth( 2.f );
 
 	Material* uiTextMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUITextMaterial" );
-	ShaderPipeline* textPipeline = nullptr;
-	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
-		textPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.110.vertex.glsl", "Shaders/Basic.110.fragment.glsl" );
-	else
-		textPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/Basic.vertex.cg", "Shaders/Basic.fragment.cg" );
+	ShaderPipeline* textPipeline = shaderLoader->CreateOrGetPipelineFromVSL( "Shaders/Basic.vsl" );
 	uiTextMaterial->SetShaderPipeline( textPipeline );
 
 	m_uiFont = RendererInterface::GetFontLoader()->GetOrLoadFontFromXML( "Font/hyperspace.fnt", "Font/" );

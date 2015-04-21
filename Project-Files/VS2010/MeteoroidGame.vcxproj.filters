@@ -153,4 +153,9 @@
       <Filter>Code\Component + System</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Data\Shaders\Clear.vsl">
+      <Filter>Data</Filter>
+    </None>
+  </ItemGroup>
 </Project>

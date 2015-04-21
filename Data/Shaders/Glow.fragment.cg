@@ -19,9 +19,9 @@ float CalculatePascalNumberOnRow( int zeroIndexInRow, int zeroIndexedRowNumber )
 }
 
 //-----------------------------------------------------------------------------------------------
-const float BLOOM_DENOMINATOR = 24.0;
-const int MAX_TEXEL_STEP = 2;
-const float TEXTURE_COORD_STEP_SIZE = 0.003;
+static const float BLOOM_DENOMINATOR = 24.0;
+static const int MAX_TEXEL_STEP = 2;
+static const float TEXTURE_COORD_STEP_SIZE = 0.003;
 
 float4 CalculateBloomedTexelColorAt( float2 textureCoordinate, sampler2D textureMap )
 {

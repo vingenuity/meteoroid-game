@@ -391,6 +391,9 @@
     <ClCompile Include="..\..\Code\WarpSystem.cpp" />
     <ClCompile Include="..\..\Code\WeaponSystem.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Data\Shaders\Clear.vsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

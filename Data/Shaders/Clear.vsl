@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<VingineShaderLanguage version="1.0">
+  <AttributeGroups>
+    <AttributeGroup>
+      <VertexAttribute name="i_vertexWorldPosition" numComponents="2" dataType="32BitFloat" normalize="false" stride="8" offset="0" />
+    </AttributeGroup>
+  </AttributeGroups>
+
+  <VertexShader>
+    <CG source="Shaders/Clear.vertex.cg"/>
+    <Vita binary="Shaders/Clear.vertex.gxp"/>
+  </VertexShader>
+
+  <FragmentShader>
+    <CG source="Shaders/Clear.fragment.cg"/>
+    <Vita binary="Shaders/Clear.fragment.gxp"/>
+  </FragmentShader>
+</VingineShaderLanguage>

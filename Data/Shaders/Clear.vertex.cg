@@ -1,0 +1,16 @@
+﻿/* SCE CONFIDENTIAL
+ * PlayStation(R)Vita Programmer Tool Runtime Library Release 03.000.061
+ * Copyright (C) 2010 Sony Computer Entertainment Inc.
+ * All Rights Reserved.
+ */
+
+void main(
+	float2			i_vertexWorldPosition,
+
+	uniform float	u_clearDepth,
+	
+	out float4		screenPosition	: POSITION
+	) : POSITION
+{
+	screenPosition = float4( i_vertexWorldPosition, 1.f/*u_clearDepth*/, 1.f );
+}

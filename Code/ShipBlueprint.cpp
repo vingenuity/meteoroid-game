@@ -49,11 +49,7 @@ ShipBlueprint::ShipBlueprint()
 
 	m_material = RendererInterface::CreateOrGetNewMaterial( L"ShipMaterial" );
 	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
-	ShaderPipeline* basicPipeline = nullptr;
-	if( shaderLoader->SupportsLanguage( LANGUAGE_GLSL ) )
-		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/BasicNoTexture.110.vertex.glsl", "Shaders/BasicNoTexture.110.fragment.glsl" );
-	else
-		basicPipeline = shaderLoader->CreateOrGetShaderProgramFromFiles( "Shaders/BasicNoTexture.vertex.cg", "Shaders/BasicNoTexture.fragment.cg" );
+	ShaderPipeline* basicPipeline = shaderLoader->CreateOrGetPipelineFromVSL( "Shaders/BasicNoTexture.vsl" );
 	m_material->SetShaderPipeline( basicPipeline );
 	m_material->SetLineWidth( 2.f );
 }
