@@ -120,26 +120,33 @@ struct Simple2DVertex
 //-----------------------------------------------------------------------------------------------
 VertexData* MeteoroidBlueprint::BuildMeteoroidVertexData( unsigned int meteorSize )
 {
-	static const unsigned int NUM_METEOR_VERTICES = 12;
+	static const unsigned int NUM_ANGLE_SAMPLES = 12;
+	static const unsigned int NUM_METEOR_VERTICES = 24;
 	static const Color METEOROID_COLOR( 230, 230, 135, 255 );
 
 	VertexData* out_vertData = new VertexData( NUM_METEOR_VERTICES, sizeof( Simple2DVertex ) );
 	Simple2DVertex* meteoroidVertexArray = reinterpret_cast< Simple2DVertex* >( out_vertData->data );
-	float radiansRotatedPerVertex =  ( 2.f * PI ) / NUM_METEOR_VERTICES;
-	for( unsigned int i = 0; i < NUM_METEOR_VERTICES; ++i )
+	float radiansRotatedPerVertex =  ( 2.f * PI ) / NUM_ANGLE_SAMPLES;
+	for( unsigned int i = 0; i < NUM_METEOR_VERTICES; i += 2 )
 	{
 		float meteorRadiusAtThisVert = s_meteoroidMinRadiuses[ meteorSize ] + 
 			( GetRandomFloatBetweenZeroandOne() * s_meteoroidSizeDeltas[ meteorSize ] );
-		meteoroidVertexArray[ i ] = Simple2DVertex( cos( radiansRotatedPerVertex * i ) * meteorRadiusAtThisVert,  
-													sin( radiansRotatedPerVertex * i ) * meteorRadiusAtThisVert, 
+		meteoroidVertexArray[ i ] = Simple2DVertex( cos( radiansRotatedPerVertex * ( i / 2 ) ) * meteorRadiusAtThisVert,  
+													sin( radiansRotatedPerVertex * ( i / 2 ) ) * meteorRadiusAtThisVert, 
 													METEOROID_COLOR );
 	}
+
+	for( unsigned int i = 1; i < NUM_METEOR_VERTICES; i += 2 )
+	{
+		meteoroidVertexArray[ i ] = meteoroidVertexArray[ i + 1 ];
+	}
+	meteoroidVertexArray[ NUM_METEOR_VERTICES - 1 ] = meteoroidVertexArray[ 0 ];
 
 	out_vertData->vertexSizeBytes = sizeof( Simple2DVertex );
 	out_vertData->numberOfVertices = NUM_METEOR_VERTICES;
 	out_vertData->attributes.push_back( VertexAttribute( RendererInterface::DEFAULT_NAME_Vertex, 2, RendererInterface::TYPE_FLOAT, false, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, position.x ) ) );
 	out_vertData->attributes.push_back( VertexAttribute( RendererInterface::DEFAULT_NAME_Color,	4, RendererInterface::TYPE_UNSIGNED_BYTE, true, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, color.r ) ) );
-	out_vertData->shape = RendererInterface::LINE_LOOP;
+	out_vertData->shape = RendererInterface::LINES;
 
 	RendererInterface::GenerateBuffer( 1, &out_vertData->bufferID );
 	RendererInterface::BufferVertexData( out_vertData );

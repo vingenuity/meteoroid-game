@@ -49,14 +49,14 @@ void RenderingSystem2D::OnRender() const
 		RendererInterface::RotateWorldAboutAxisDegrees( Z_AXIS, mesh.owner->orientation.yawDegreesAboutZ );
 		RendererInterface::RotateWorldAboutAxisDegrees( Y_AXIS, mesh.owner->orientation.pitchDegreesAboutY );
 		RendererInterface::RotateWorldAboutAxisDegrees( X_AXIS, mesh.owner->orientation.rollDegreesAboutX );
-
-		RendererInterface::ApplyMaterial( mesh.material );
-		RendererInterface::BindVertexDataToShader( mesh.vertexData, mesh.material->pipeline );
+ 
+ 		RendererInterface::ApplyMaterial( mesh.material );
+ 		RendererInterface::BindVertexDataToShader( mesh.vertexData, mesh.material->pipeline );
 
 		RendererInterface::RenderVertexArray( mesh.vertexData->shape, 0, mesh.vertexData->numberOfVertices );
 
-		RendererInterface::UnbindVertexDataFromShader( mesh.vertexData, mesh.material->pipeline );
-		RendererInterface::RemoveMaterial( mesh.material );
+ 		RendererInterface::UnbindVertexDataFromShader( mesh.vertexData, mesh.material->pipeline );
+ 		RendererInterface::RemoveMaterial( mesh.material );
 
 		RendererInterface::PopMatrix();
 	}

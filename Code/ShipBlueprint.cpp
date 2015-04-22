@@ -111,16 +111,21 @@ void ShipBlueprint::BuildShipVertexData()
 	Simple2DVertex* shipVertexArray = reinterpret_cast< Simple2DVertex* >( m_vertices.data );
 	shipVertexArray[ 0] = Simple2DVertex( -DIST_FROM_CENTER_TO_ENGINE_Y	, -DIST_FROM_CENTER_TO_ENGINE_X		, SHIP_COLOR );
 	shipVertexArray[ 1] = Simple2DVertex( -DIST_FROM_CENTER_TO_WINGTIP_Y	, -DIST_FROM_CENTER_TO_WINGTIP_X	, SHIP_COLOR );
-	shipVertexArray[ 2] = Simple2DVertex(  DIST_FROM_CENTER_TO_FRONT		, 0.f								, SHIP_COLOR );
-	shipVertexArray[ 3] = Simple2DVertex( -DIST_FROM_CENTER_TO_WINGTIP_Y	,  DIST_FROM_CENTER_TO_WINGTIP_X	, SHIP_COLOR );
-	shipVertexArray[ 4] = Simple2DVertex( -DIST_FROM_CENTER_TO_ENGINE_Y	,  DIST_FROM_CENTER_TO_ENGINE_X		, SHIP_COLOR );
+	shipVertexArray[ 2] = shipVertexArray[ 1 ];
+	shipVertexArray[ 3] = Simple2DVertex(  DIST_FROM_CENTER_TO_FRONT		, 0.f								, SHIP_COLOR );
+	shipVertexArray[ 4] = shipVertexArray[ 3 ];
+	shipVertexArray[ 5] = Simple2DVertex( -DIST_FROM_CENTER_TO_WINGTIP_Y	,  DIST_FROM_CENTER_TO_WINGTIP_X	, SHIP_COLOR );
+	shipVertexArray[ 6] = shipVertexArray[ 5 ];
+	shipVertexArray[ 7] = Simple2DVertex( -DIST_FROM_CENTER_TO_ENGINE_Y	,  DIST_FROM_CENTER_TO_ENGINE_X		, SHIP_COLOR );
+	shipVertexArray[ 8] = shipVertexArray[ 5 ];
+	shipVertexArray[ 9] = shipVertexArray[ 0 ];
 
 	m_vertices.data = &shipVertexArray[0];
 	m_vertices.vertexSizeBytes = sizeof( Simple2DVertex );
 	m_vertices.numberOfVertices = NUM_SHIP_VERTICES;
 	m_vertices.attributes.push_back( VertexAttribute( RendererInterface::DEFAULT_NAME_Vertex, 2, RendererInterface::TYPE_FLOAT, false, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, position.x ) ) );
 	m_vertices.attributes.push_back( VertexAttribute( RendererInterface::DEFAULT_NAME_Color, 4, RendererInterface::TYPE_UNSIGNED_BYTE, true, sizeof( Simple2DVertex ), offsetof( Simple2DVertex, color.r ) ) );
-	m_vertices.shape = RendererInterface::LINE_LOOP;
+	m_vertices.shape = RendererInterface::LINES;
 
 	RendererInterface::GenerateBuffer( 1, &m_vertices.bufferID );
 	RendererInterface::BufferVertexData( &m_vertices );

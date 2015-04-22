@@ -4,7 +4,7 @@
   <AttributeGroups>
     <AttributeGroup>
       <VertexAttribute name="i_vertexWorldPosition" numComponents="2" dataType="32BitFloat" normalize="false" stride="20" offset="0" />
-      <VertexAttribute name="i_vertexColor" numComponents="4" dataType="8BitInteger" normalize="true" stride="20" offset="8" />
+      <VertexAttribute name="i_vertexColor" numComponents="4" dataType="8BitUnsignedInteger" normalize="true" stride="20" offset="8" />
       <VertexAttribute name="i_textureCoordinates" numComponents="2" dataType="32BitFloat" normalize="false" stride="20" offset="12" />
     </AttributeGroup>
   </AttributeGroups>

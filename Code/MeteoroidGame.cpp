@@ -169,10 +169,10 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 void MeteoroidGame::DoRender() const
 {
 	//World pass
-	RendererInterface::UseFrameBuffer( *m_framebuffer );
+	//RendererInterface::UseFrameBuffer( *m_framebuffer );
 	RendererInterface::ClearColorBuffer();
-	RendererInterface::ClearDepthBuffer();
-	RendererInterface::SetViewport( 0, 0, WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y );
+ 	RendererInterface::ClearDepthBuffer();
+ 	RendererInterface::SetViewport( 0, 0, WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y );
 
 	m_gameInputSystem->OnRender();
 
@@ -186,21 +186,21 @@ void MeteoroidGame::DoRender() const
 
 	m_worldRenderingSystem->OnRender();
 
-	RendererInterface::UseDefaultFramebuffer();
-	RendererInterface::ClearColorBuffer();
-	RendererInterface::ClearDepthBuffer();
-	SetPillarboxIfNeeded( m_windowDimensions, WORLD_DIMENSIONS );
-	RendererInterface::SetOrthographicProjection( 0.0, (double)WORLD_DIMENSIONS.x, 0.0, (double)WORLD_DIMENSIONS.y, -1.0, 1.0 );
+// 	RendererInterface::UseDefaultFramebuffer();
+// 	RendererInterface::ClearColorBuffer();
+// 	RendererInterface::ClearDepthBuffer();
+// 	SetPillarboxIfNeeded( m_windowDimensions, WORLD_DIMENSIONS );
+// 	RendererInterface::SetOrthographicProjection( 0.0, (double)WORLD_DIMENSIONS.x, 0.0, (double)WORLD_DIMENSIONS.y, -1.0, 1.0 );
+// 
+// 	RendererInterface::ApplyMaterial( m_framebufferMaterial );
+// 	RendererInterface::BindVertexDataToShader( m_framebufferVertices, m_framebufferMaterial->pipeline );
+// 
+// 	RendererInterface::RenderVertexArray( m_framebufferVertices->shape, 0, m_framebufferVertices->numberOfVertices );
+// 
+// 	RendererInterface::UnbindVertexDataFromShader( m_framebufferVertices, m_framebufferMaterial->pipeline );
+// 	RendererInterface::RemoveMaterial( m_framebufferMaterial );
 
-	RendererInterface::ApplyMaterial( m_framebufferMaterial );
-	RendererInterface::BindVertexDataToShader( m_framebufferVertices, m_framebufferMaterial->pipeline );
-
-	RendererInterface::RenderVertexArray( m_framebufferVertices->shape, 0, m_framebufferVertices->numberOfVertices );
-
-	RendererInterface::UnbindVertexDataFromShader( m_framebufferVertices, m_framebufferMaterial->pipeline );
-	RendererInterface::RemoveMaterial( m_framebufferMaterial );
-
-	m_UISystem->OnRender();
+//	m_UISystem->OnRender();
 }
 
 //-----------------------------------------------------------------------------------------------

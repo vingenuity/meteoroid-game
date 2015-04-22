@@ -14,7 +14,7 @@ class MeteoroidGame;
 class ShipBlueprint
 {
 	static const unsigned char SHIP_COLLISION_GROUP = 1;
-	static const unsigned int NUM_SHIP_VERTICES = 5;
+	static const unsigned int NUM_SHIP_VERTICES = 10;
 
 public:
 	ShipBlueprint();

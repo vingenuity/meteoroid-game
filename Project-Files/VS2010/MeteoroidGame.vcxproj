@@ -392,7 +392,10 @@
     <ClCompile Include="..\..\Code\WeaponSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Data\Shaders\Basic.vsl" />
+    <None Include="..\..\Data\Shaders\BasicNoTexture.vsl" />
     <None Include="..\..\Data\Shaders\Clear.vsl" />
+    <None Include="..\..\Data\Shaders\Glow.vsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
