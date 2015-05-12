@@ -16,8 +16,8 @@
   </VertexShader>
 
   <FragmentShader>
-    <GLSL source="Shaders/Glow.110.fragment.glsl"/>
-    <CG source="Shaders/Glow.fragment.cg"/>
-    <Vita binary="Shaders/Glow.fragment.gxp"/>
+    <GLSL source="Shaders/Basic.110.fragment.glsl"/>
+    <CG source="Shaders/Basic.fragment.cg"/>
+    <Vita binary="Shaders/Basic.fragment.gxp"/>
   </FragmentShader>
 </VingineShaderLanguage>

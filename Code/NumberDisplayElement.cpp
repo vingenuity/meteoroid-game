@@ -58,7 +58,6 @@ void NumberDisplayElement::Update( float /*deltaSeconds*/ )
 //-----------------------------------------------------------------------------------------------
 void NumberDisplayElement::PreDestruction()
 {
-	//delete m_font;
 	delete m_displayedVertices;
 }
 #pragma endregion //Lifecycle

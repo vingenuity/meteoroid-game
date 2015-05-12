@@ -23,7 +23,7 @@
 
 //-----------------------------------------------------------------------------------------------
 STATIC const FloatVector2	MeteoroidGame::DEAD_SHIP_POSITION( -500.f, -500.f );
-STATIC const IntVector2		MeteoroidGame::WORLD_DIMENSIONS( 1100, 1100 );
+STATIC const IntVector2		MeteoroidGame::WORLD_DIMENSIONS( 700, 700 );
 STATIC const FloatVector2	MeteoroidGame::SHIP_SPAWN_POSITION( WORLD_DIMENSIONS.x * 0.5f, WORLD_DIMENSIONS.y * 0.5f );
 STATIC const float			MeteoroidGame::SECONDS_BETWEEN_FRAME_CHANGES = 5.f;
 STATIC const unsigned int	MeteoroidGame::STARTING_LIFE_COUNT = 3;
@@ -39,7 +39,6 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 	m_windowDimensions.y = windowHeight;
 	SetPillarboxIfNeeded( m_windowDimensions, WORLD_DIMENSIONS );
 	RendererInterface::EnableFeature( RendererInterface::COLOR_BLENDING );
-	RendererInterface::SetAlphaBlendingFunction( RendererInterface::SOURCE_ALPHA, RendererInterface::ONE_MINUS_SOURCE_ALPHA );
 
 	StartupGameSystems();
 
@@ -52,12 +51,19 @@ VIRTUAL void MeteoroidGame::DoBeforeFirstFrame( unsigned int windowWidth, unsign
 
 	//Framebuffer Creation
 	m_framebufferVertices = new VertexData();
+#if defined( PLATFORM_VITA ) // The vita's framebuffers are upside-down, from OpenGL's normal perspective.
+	GenerateTexturedPlane( *m_framebufferVertices, FloatVector3( 0.5f * WORLD_DIMENSIONS.x, 0.5f * WORLD_DIMENSIONS.y, 0.f ),
+		FloatVector3( 0.f, 0.f, 1.f ), (float)WORLD_DIMENSIONS.x, (float)WORLD_DIMENSIONS.y,
+		FloatVector2( 1.f, 0.f ), FloatVector2( 0.f, 1.f ) );
+#else
 	GenerateTexturedPlane( *m_framebufferVertices, FloatVector3( 0.5f * WORLD_DIMENSIONS.x, 0.5f * WORLD_DIMENSIONS.y, 0.f ),
 		FloatVector3( 0.f, 0.f, 1.f ), (float)WORLD_DIMENSIONS.x, (float)WORLD_DIMENSIONS.y,
 		FloatVector2( 1.f, 1.f ), FloatVector2( 0.f, 0.f ) );
+#endif //defined( PLATFORM_VITA )
 	RendererInterface::GenerateBuffer( 1, &m_framebufferVertices->bufferID );
 	RendererInterface::BufferVertexData( m_framebufferVertices );
 
+	RendererInterface::SetAlphaBlendingFunction( RendererInterface::SOURCE_ALPHA, RendererInterface::ONE_MINUS_SOURCE_ALPHA );
 	m_framebufferMaterial = RendererInterface::CreateOrGetNewMaterial( L"FramebufferMaterial" );
 	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
 	ShaderPipeline* framebufferPipeline = shaderLoader->CreateOrGetPipelineFromVSL( "Shaders/Glow.vsl" );
@@ -169,10 +175,11 @@ void MeteoroidGame::DoUpdate( float deltaSeconds )
 void MeteoroidGame::DoRender() const
 {
 	//World pass
-	//RendererInterface::UseFrameBuffer( *m_framebuffer );
-	RendererInterface::ClearColorBuffer();
- 	RendererInterface::ClearDepthBuffer();
- 	RendererInterface::SetViewport( 0, 0, WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y );
+ 	RendererInterface::UseFrameBuffer( *m_framebuffer );
+ 	RendererInterface::ClearColorBuffer();
+  	RendererInterface::ClearDepthBuffer();
+	RendererInterface::SetViewport( 0, 0, WORLD_DIMENSIONS.x, WORLD_DIMENSIONS.y );
+	RendererInterface::SetOrthographicProjection( 0.0, (double)WORLD_DIMENSIONS.x, 0.0, (double)WORLD_DIMENSIONS.y, -1.0, 1.0 );
 
 	m_gameInputSystem->OnRender();
 
@@ -186,21 +193,21 @@ void MeteoroidGame::DoRender() const
 
 	m_worldRenderingSystem->OnRender();
 
-// 	RendererInterface::UseDefaultFramebuffer();
-// 	RendererInterface::ClearColorBuffer();
-// 	RendererInterface::ClearDepthBuffer();
-// 	SetPillarboxIfNeeded( m_windowDimensions, WORLD_DIMENSIONS );
-// 	RendererInterface::SetOrthographicProjection( 0.0, (double)WORLD_DIMENSIONS.x, 0.0, (double)WORLD_DIMENSIONS.y, -1.0, 1.0 );
-// 
-// 	RendererInterface::ApplyMaterial( m_framebufferMaterial );
-// 	RendererInterface::BindVertexDataToShader( m_framebufferVertices, m_framebufferMaterial->pipeline );
-// 
-// 	RendererInterface::RenderVertexArray( m_framebufferVertices->shape, 0, m_framebufferVertices->numberOfVertices );
-// 
-// 	RendererInterface::UnbindVertexDataFromShader( m_framebufferVertices, m_framebufferMaterial->pipeline );
-// 	RendererInterface::RemoveMaterial( m_framebufferMaterial );
+	RendererInterface::UseDefaultFramebuffer();
+	RendererInterface::ClearColorBuffer();
+	RendererInterface::ClearDepthBuffer();
+	SetPillarboxIfNeeded( m_windowDimensions, WORLD_DIMENSIONS );
+	RendererInterface::SetOrthographicProjection( 0.0, (double)WORLD_DIMENSIONS.x, 0.0, (double)WORLD_DIMENSIONS.y, -1.0, 1.0 );
 
-//	m_UISystem->OnRender();
+	RendererInterface::ApplyMaterial( m_framebufferMaterial );
+	RendererInterface::BindVertexDataToShader( m_framebufferVertices, m_framebufferMaterial->pipeline );
+
+	RendererInterface::RenderVertexArray( m_framebufferVertices->shape, 0, m_framebufferVertices->numberOfVertices );
+
+	RendererInterface::UnbindVertexDataFromShader( m_framebufferVertices, m_framebufferMaterial->pipeline );
+	RendererInterface::RemoveMaterial( m_framebufferMaterial );
+
+	m_UISystem->OnRender();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -309,11 +316,13 @@ void MeteoroidGame::CreateAttractModeUI()
 	// Material Setup
 	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
 
+	RendererInterface::SetAlphaBlendingFunction( RendererInterface::SOURCE_ALPHA, RendererInterface::ONE_MINUS_SOURCE_ALPHA );
 	Material* uiMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUIFlatMaterial" );
 	ShaderPipeline* flatPipeline = shaderLoader->CreateOrGetPipelineFromVSL( "Shaders/BasicNoTexture.vsl" );
 	uiMaterial->SetShaderPipeline( flatPipeline );
 	uiMaterial->SetLineWidth( 2.f );
 
+	RendererInterface::SetAlphaBlendingFunction( RendererInterface::SOURCE_ALPHA, RendererInterface::ONE_MINUS_SOURCE_ALPHA );
 	Material* uiTextMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUITextMaterial" );
 	ShaderPipeline* textPipeline = shaderLoader->CreateOrGetPipelineFromVSL( "Shaders/Basic.vsl" );
 	uiTextMaterial->SetShaderPipeline( textPipeline );
@@ -402,11 +411,13 @@ void MeteoroidGame::CreateGameModeUI( ScoringComponent* player1ScoreComponent, S
 	// Material Setup
 	CachingShaderLoader* shaderLoader = RendererInterface::GetShaderLoader();
 
+	RendererInterface::SetAlphaBlendingFunction( RendererInterface::SOURCE_ALPHA, RendererInterface::ONE_MINUS_SOURCE_ALPHA );
 	Material* uiMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUIFlatMaterial" );
 	ShaderPipeline* flatPipeline = shaderLoader->CreateOrGetPipelineFromVSL( "Shaders/BasicNoTexture.vsl" );
 	uiMaterial->SetShaderPipeline( flatPipeline );
 	uiMaterial->SetLineWidth( 2.f );
 
+	RendererInterface::SetAlphaBlendingFunction( RendererInterface::SOURCE_ALPHA, RendererInterface::ONE_MINUS_SOURCE_ALPHA );
 	Material* uiTextMaterial = RendererInterface::CreateOrGetNewMaterial( L"GameUITextMaterial" );
 	ShaderPipeline* textPipeline = shaderLoader->CreateOrGetPipelineFromVSL( "Shaders/Basic.vsl" );
 	uiTextMaterial->SetShaderPipeline( textPipeline );

@@ -48,7 +48,7 @@ void main(	float4				screenPosition		: POSITION0,
 			float4				surfaceColor		: COLOR0,
 			float2				textureCoordinates	: TEXCOORD0,
 
-			uniform	sampler2D	u_diffuseMap,
+			uniform	sampler2D	u_diffuseMap : TEXUNIT0,
 
 			out float4			out_color			: COLOR
 		 )
